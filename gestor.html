@@ -146,7 +146,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:#F1F5F9;color:#1e293b;mi
     </div>
   </div>
   <div class="hdr-r">
-    <a href="index.html" class="hbtn">📋 Orçamentos</a>
+    <a href="./index.html" class="hbtn">📋 Orçamentos</a>
     <button id="mp-btn" onclick="abrirModalPerfil()" title="Meu Perfil" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;transition:all .15s;color:#fff;font-family:'Nunito',inherit" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
       <span id="mp-avatar-sm" style="width:28px;height:28px;border-radius:50%;background:#3B6FE8;border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0"></span>
       <span style="display:flex;flex-direction:column;align-items:flex-start;gap:1px">
@@ -219,7 +219,7 @@ if (SESS && SESS.email) {
 }
 
 if (!SESS || !SESS.email) {
-  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
+  window.location.replace('./login.html');
 } else {
   var PERFIL = SESS.perfil || '';
   var EMAIL  = SESS.email  || '';
@@ -227,7 +227,7 @@ if (!SESS || !SESS.email) {
 
   var PFOK = ['gestor_cc','gestor_criador','observador'];
   if (!PFOK.includes(PERFIL)) {
-    window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'index.html');
+    window.location.replace('./index.html');
   } else {
     iniciar();
   }
@@ -248,7 +248,7 @@ function iniciar() {
     buildTabs();
   } catch(err) {
     var wrap = document.getElementById('mainWrap');
-    if (wrap) wrap.innerHTML = '<div class="card"><div class="cb" style="padding:20px;color:#B91C1C">Erro ao carregar o painel: ' + String(err) + '<br><br><a href="gestor.html" style="color:#2563EB">Tentar novamente</a></div></div>';
+    if (wrap) wrap.innerHTML = '<div class="card"><div class="cb" style="padding:20px;color:#B91C1C">Erro ao carregar o painel: ' + String(err) + '<br><br><a href="./gestor.html" style="color:#2563EB">Tentar novamente</a></div></div>';
     console.error('Erro em iniciar():', err);
   }
 }
@@ -946,7 +946,7 @@ function showMsg(el,txt,cor){if(el){el.textContent=txt;el.style.color=cor;el.sty
 function logout() {
   try{sessionStorage.removeItem('orc_user');}catch(e){}
   try{localStorage.removeItem('orc_user_fallback');}catch(e){}
-  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
+  window.location.replace('./login.html');
 }
 function showSbox(el,tipo,msg){if(el){el.className='sbox '+tipo;el.style.display='block';el.textContent=msg;}}
 </script>
