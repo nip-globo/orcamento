@@ -3893,13 +3893,328 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SHAREPOINT INTEGRATION ────────────────────────────────────────
-const SP_SITE = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
-const SP_API  = SP_SITE + '/_api/web/lists/getbytitle';
+var SP_SITE_IDX = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
+var SP_API  = SP_SITE_IDX + '/_api/web/lists/getbytitle';
 var   _spReady = false;
 var   _spToken = null;
 
 // Chaves que sincronizam com SharePoint
-const SP_KEYS = {
+var SP_KEYS_IDX = {
+  'orc_h2':         { lista: 'OrcDados',    titulo: 'orc_h2'         },
+  'orc_usuarios':   { lista: 'OrcUsuarios', titulo: 'orc_usuarios'   },
+  'orc_vinculos':   { lista: 'OrcConfig',   titulo: 'orc_vinculos'   },
+  'orc_delegacoes': { lista: 'OrcConfig',   titulo: 'orc_delegacoes' },
+  'orc_c2':         { lista: 'OrcConfig',   titulo: 'orc_c2'         },
+  'orc_reset_sol':  { lista: 'OrcConfig',   titulo: 'orc_reset_sol'  }
+};
+
+// Busca Request Digest (token CSRF do SharePoint)
+async function _spDigest() {
+  if (_spToken) return _spToken;
+  try {
+    const r = await fetch(SP_SITE_IDX + '/_api/contextinfo', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Accept': 'application/json;odata=verbose' }
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    _spToken = d.d.GetContextWebInformation.FormDigestValue;
+    setTimeout(() => { _spToken = null; }, 1500000); // expira em 25min
+    return _spToken;
+  } catch(e) { return null; }
+}
+
+// Verifica se SP está acessível
+async function _spCheck() {
+  try {
+    const r = await fetch(SP_API + "('OrcDados')/items?$top=1", {
+      credentials: 'include',
+      headers: { 'Accept': 'application/json;odata=verbose' }
+    });
+    _spReady = r.ok;
+  } catch(e) { _spReady = false; }
+  return _spReady;
+}
+
+// Lê item do SharePoint
+async function _spGet(lista, titulo) {
+  try {
+    const url = SP_API + `('${lista}')/items?$filter=Title eq '${titulo}'&$select=ID,Title,Dados&$top=1`;
+    const r = await fetch(url, {
+      credentials: 'include',
+      headers: { 'Accept': 'application/json;odata=verbose' }
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    const items = d.d.results;
+    if (!items || !items.length) return null;
+    return { id: items[0].ID, valor: items[0].Dados };
+  } catch(e) { return null; }
+}
+
+// Cria ou atualiza item no SharePoint
+async function _spSet(lista, titulo, valor) {
+  const digest = await _spDigest();
+  if (!digest) return false;
+  try {
+    const existing = await _spGet(lista, titulo);
+    const body = JSON.stringify({
+      '__metadata': { 'type': `SP.Data.${lista}ListItem` },
+      'Title': titulo,
+      'Dados': valor
+    });
+    let url, method, headers;
+    if (existing) {
+      url    = SP_API + `('${lista}')/items(${existing.id})`;
+      method = 'POST';
+      headers = {
+        'Accept': 'application/json;odata=verbose',
+        'Content-Type': 'application/json;odata=verbose',
+        'X-RequestDigest': digest,
+        'X-HTTP-Method': 'MERGE',
+        'IF-MATCH': '*'
+      };
+    } else {
+      url    = SP_API + `('${lista}')/items`;
+      method = 'POST';
+      headers = {
+        'Accept': 'application/json;odata=verbose',
+        'Content-Type': 'application/json;odata=verbose',
+        'X-RequestDigest': digest
+      };
+    }
+    const r = await fetch(url, { method, credentials: 'include', headers, body });
+    return r.ok || r.status === 204;
+  } catch(e) { return false; }
+}
+
+// ── API PÚBLICA: substitui localStorage para chaves críticas ──────
+async function spSave(key, value) {
+  // Salva sempre no localStorage (cache/fallback)
+  try { localStorage.setItem(key, value); } catch(e) {}
+  // Salva no SharePoint se disponível
+  if (_spReady && SP_KEYS_IDX[key]) {
+    const { lista, titulo } = SP_KEYS_IDX[key];
+    await _spSet(lista, titulo, value);
+  }
+}
+
+async function spLoad(key) {
+  if (_spReady && SP_KEYS_IDX[key]) {
+    const { lista, titulo } = SP_KEYS_IDX[key];
+    const item = await _spGet(lista, titulo);
+    if (item && item.valor) {
+      // Atualiza cache local
+      try { localStorage.setItem(key, item.valor); } catch(e) {}
+      return item.valor;
+    }
+  }
+  // Fallback para localStorage
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+
+// Sincroniza todas as chaves do SP para localStorage ao iniciar
+async function spSyncAll() {
+  if (!await _spCheck()) {
+    console.warn('[SP] SharePoint indisponível — usando localStorage local');
+    _showSpStatus(false);
+    return;
+  }
+  _showSpStatus(true);
+  for (const key of Object.keys(SP_KEYS_IDX)) {
+    const { lista, titulo } = SP_KEYS_IDX[key];
+    const item = await _spGet(lista, titulo);
+    if (item && item.valor) {
+      try { localStorage.setItem(key, item.valor); } catch(e) {}
+    }
+  }
+  console.log('[SP] Sincronização completa');
+}
+
+// Indicador visual de status do SP
+function _showSpStatus(ok) {
+  const el = document.getElementById('sp-status');
+  if (!el) return;
+  el.style.display = 'flex';
+  el.innerHTML = ok
+    ? '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span><span style="font-size:10px;color:#16A34A;font-weight:700">SharePoint conectado</span>'
+    : '<span style="width:7px;height:7px;border-radius:50%;background:#EA580C;flex-shrink:0"></span><span style="font-size:10px;color:#EA580C;font-weight:700">Modo offline (local)</span>';
+}
+
+// ── PATCH: intercepta salvar hist e usuarios ──────────────────────
+var _origSaveHist = function(h) {
+  const json = JSON.stringify(h);
+  spSave('orc_h2', json);
+};
+var _origSaveUsers = function(u) {
+  const json = JSON.stringify(u);
+  spSave('orc_usuarios', json);
+};
+var _origSaveVinc = function(v) {
+  const json = JSON.stringify(v);
+  spSave('orc_vinculos', json);
+};
+var _origSaveDel = function(d) {
+  const json = JSON.stringify(d);
+  spSave('orc_delegacoes', json);
+};
+
+
+// ── SINCRONIZAÇÃO AUTOMÁTICA (arquivo na mesma pasta) ────────────
+// orc_sync.json fica na pasta do sistema, sincronizado pelo OneDrive
+
+var _SYNC_KEYS = ['orc_h2','orc_usuarios','orc_vinculos','orc_delegacoes','orc_reset_sol','orc_c2'];
+
+// Importa automaticamente via fetch relativo
+async function syncImportarAuto() {
+  try {
+    var r = await fetch('./orc_sync.json?_=' + Date.now());
+    if (!r.ok) { console.log('[Sync] orc_sync.json nao encontrado'); return false; }
+    var dados = await r.json();
+    if (!dados._exportadoEm) return false;
+    _SYNC_KEYS.forEach(function(k) {
+      if (dados[k]) try { localStorage.setItem(k, JSON.stringify(dados[k])); } catch(e) {}
+    });
+    hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+    var dt = new Date(dados._exportadoEm).toLocaleString('pt-BR');
+    console.log('[Sync] Importado automaticamente. Ultimo export: ' + dt + ' por ' + (dados._exportadoPor||'?'));
+    _setSyncStatus('ok', dt);
+    return true;
+  } catch(e) {
+    console.log('[Sync] Auto-import indisponivel:', e.message);
+    return false;
+  }
+}
+
+// Exporta para arquivo na pasta (via File System Access API ou download)
+async function syncManual() {
+  var statusEl = document.getElementById('sync-modal-status');
+  if (statusEl) { statusEl.style.color='var(--cinza-tx)'; statusEl.textContent = 'Exportando...'; }
+
+  var dados = { _exportadoEm: new Date().toISOString(), _exportadoPor: window._USER ? window._USER.email : '' };
+  _SYNC_KEYS.forEach(function(k) {
+    try { var v = localStorage.getItem(k); if(v) dados[k] = JSON.parse(v); } catch(e) {}
+  });
+  var json = JSON.stringify(dados, null, 2);
+
+  // Tenta File System Access API (Edge/Chrome)
+  if ('showDirectoryPicker' in window) {
+    try {
+      if (!window._syncDirHandle) {
+        window._syncDirHandle = await window.showDirectoryPicker({ mode:'readwrite' });
+      }
+      var fh = await window._syncDirHandle.getFileHandle('orc_sync.json', { create:true });
+      var w  = await fh.createWritable();
+      await w.write(json); await w.close();
+      if (statusEl) { statusEl.style.color='#00A86B'; statusEl.textContent = 'Exportado com sucesso!'; }
+      _setSyncStatus('ok', new Date().toLocaleString('pt-BR'));
+      return;
+    } catch(e) {
+      if (e.name === 'AbortError') { if(statusEl) statusEl.textContent=''; return; }
+    }
+  }
+
+  // Fallback: download
+  var blob = new Blob([json], {type:'application/json'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'orc_sync.json'; a.click();
+  if (statusEl) { statusEl.style.color='#3B6FE8'; statusEl.textContent = 'Arquivo baixado — coloque na pasta do sistema.'; }
+}
+
+// Abre painel de sync
+function abrirPainelSync() {
+  var modal = document.getElementById('modal-sync');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-sync';
+    modal.onclick = function(e){ if(e.target===this) this.style.display='none'; };
+    modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;align-items:center;justify-content:center;font-family:Nunito,system-ui,sans-serif';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);width:100%;max-width:440px;overflow:hidden';
+    box.innerHTML =
+      '<div style="background:linear-gradient(135deg,var(--azul),var(--azul-esc));padding:20px 24px;display:flex;align-items:center;justify-content:space-between">' +
+        '<div><h2 style="color:#fff;font-size:15px;font-weight:800;margin:0 0 3px">Sincronizacao OneDrive</h2>' +
+        '<p style="color:rgba(255,255,255,.75);font-size:11px;margin:0">Compartilhe dados automaticamente</p></div>' +
+        '<button id="btn-fechar-sync" style="background:rgba(255,255,255,.15);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;color:#fff">x</button>' +
+      '</div>' +
+      '<div style="padding:24px">' +
+        '<div style="background:#EBF1FF;border:1.5px solid rgba(59,111,232,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:12px;color:#1A3A8F;line-height:1.8">' +
+          '<strong>Como funciona:</strong><br>' +
+          '1. O arquivo orc_sync.json fica na pasta do sistema<br>' +
+          '2. O OneDrive sincroniza automaticamente para todos<br>' +
+          '3. Ao abrir o sistema, os dados sao importados automaticamente' +
+        '</div>' +
+        '<button id="btn-exportar-sync" style="width:100%;background:linear-gradient(135deg,var(--azul),var(--azul-esc));color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,inherit;margin-bottom:10px">' +
+          'Exportar agora para a pasta' +
+        '</button>' +
+        '<button id="btn-importar-sync" style="width:100%;background:var(--verde-clr);color:#065F46;border:1.5px solid rgba(0,168,107,.25);border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,inherit;margin-bottom:10px">' +
+          'Importar agora da pasta' +
+        '</button>' +
+        '<div id="sync-modal-status" style="font-size:12px;color:var(--cinza-tx);text-align:center;min-height:20px"></div>' +
+      '</div>';
+    modal.appendChild(box);
+    document.body.appendChild(modal);
+    document.getElementById('btn-fechar-sync').onclick = function(){ modal.style.display='none'; };
+    document.getElementById('btn-exportar-sync').onclick = syncManual;
+    document.getElementById('btn-importar-sync').onclick = function(){
+      var statusEl = document.getElementById('sync-modal-status');
+      syncImportarAuto().then(function(ok){
+        if(statusEl) {
+          statusEl.style.color = ok ? '#00A86B' : '#EA580C';
+          statusEl.textContent = ok ? 'Importado com sucesso!' : 'Arquivo nao encontrado na pasta.';
+        }
+        if(ok){ renderHist(); renderNotificacoes(); }
+      });
+    };
+  }
+  modal.style.display = 'flex';
+}
+
+function _setSyncStatus(status, dt) {
+  var btn = document.getElementById('btn-sync');
+  var lbl = document.getElementById('sync-label');
+  if (!btn) return;
+  btn.style.display = 'flex';
+  if (status === 'ok') {
+    btn.style.background = 'rgba(0,168,107,.2)'; btn.style.borderColor = 'rgba(0,168,107,.4)';
+    if (lbl) lbl.textContent = 'Sincronizado';
+  }
+}
+
+function initSync() {
+  var btn = document.getElementById('btn-sync');
+  if (btn) btn.style.display = 'flex';
+  // Importa automaticamente ao abrir (fetch relativo ao index.html)
+  syncImportarAuto().then(function(ok) {
+    if (ok) { renderHist(); renderNotificacoes(); renderBannerDelegacao(); }
+  });
+}
+
+// Exporta automaticamente ao salvar orçamento (chamado externamente)
+async function syncExportar() { await syncManual(); }
+var _syncAtivo = true; // compatibilidade com código existente
+var _syncDirHandle = null;
+
+// ── BASE URL HELPER ──────────────────────────────────────────────
+function baseUrl() {
+  const isGH = window.location.pathname.includes('/orcamento/');
+  return isGH ? '/orcamento/' : './';
+}
+
+// Fix all internal links on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[data-ghfix]').forEach(function(a) {
+    a.href = baseUrl() + a.getAttribute('href').replace('data-ghfix','');
+  });
+});
+
+// ── SHAREPOINT INTEGRATION ────────────────────────────────────────
+var SP_SITE_IDX = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
+var SP_API  = SP_SITE + '/_api/web/lists/getbytitle';
+var   _spReady = false;
+var   _spToken = null;
+
+// Chaves que sincronizam com SharePoint
+var SP_KEYS_IDX = {
   'orc_h2':         { lista: 'OrcDados',    titulo: 'orc_h2'         },
   'orc_usuarios':   { lista: 'OrcUsuarios', titulo: 'orc_usuarios'   },
   'orc_vinculos':   { lista: 'OrcConfig',   titulo: 'orc_vinculos'   },
@@ -4042,19 +4357,19 @@ function _showSpStatus(ok) {
 }
 
 // ── PATCH: intercepta salvar hist e usuarios ──────────────────────
-const _origSaveHist = function(h) {
+var _origSaveHist = function(h) {
   const json = JSON.stringify(h);
   spSave('orc_h2', json);
 };
-const _origSaveUsers = function(u) {
+var _origSaveUsers = function(u) {
   const json = JSON.stringify(u);
   spSave('orc_usuarios', json);
 };
-const _origSaveVinc = function(v) {
+var _origSaveVinc = function(v) {
   const json = JSON.stringify(v);
   spSave('orc_vinculos', json);
 };
-const _origSaveDel = function(d) {
+var _origSaveDel = function(d) {
   const json = JSON.stringify(d);
   spSave('orc_delegacoes', json);
 };
