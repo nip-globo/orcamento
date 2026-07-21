@@ -219,7 +219,7 @@ if (SESS && SESS.email) {
 }
 
 if (!SESS || !SESS.email) {
-  window.location.replace('login.html');
+  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
 } else {
   var PERFIL = SESS.perfil || '';
   var EMAIL  = SESS.email  || '';
@@ -227,7 +227,7 @@ if (!SESS || !SESS.email) {
 
   var PFOK = ['gestor_cc','gestor_criador','observador'];
   if (!PFOK.includes(PERFIL)) {
-    window.location.replace('index.html');
+    window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'index.html');
   } else {
     iniciar();
   }
@@ -946,7 +946,7 @@ function showMsg(el,txt,cor){if(el){el.textContent=txt;el.style.color=cor;el.sty
 function logout() {
   try{sessionStorage.removeItem('orc_user');}catch(e){}
   try{localStorage.removeItem('orc_user_fallback');}catch(e){}
-  window.location.replace('login.html');
+  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
 }
 function showSbox(el,tipo,msg){if(el){el.className='sbox '+tipo;el.style.display='block';el.textContent=msg;}}
 </script>

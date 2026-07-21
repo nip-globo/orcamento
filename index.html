@@ -325,12 +325,12 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
       window._USER = u;
       // Gestores vão direto para o painel próprio
       const perfisGestor = ['gestor_cc','gestor_criador','observador'];
-      if (perfisGestor.includes(u.perfil)) { window.location.replace('gestor.html'); return; }
+      if (perfisGestor.includes(u.perfil)) { window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'gestor.html'); return; }
       return; // sessão OK, continua carregando o site
     }
   } catch(e){}
   // Sem sessão válida: redireciona para login.html
-  window.location.replace('login.html');
+  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
 })();
 </script>
 
@@ -2757,7 +2757,7 @@ function initPerfil() {
   badgeEl.innerHTML = `
     <span id="notif-count-badge" class="notif-badge" style="display:none">0</span>
     ${user.perfil==='admin'
-      ? '<a href="admin.html" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:4px 10px;color:#fff;font-size:11px;text-decoration:none;white-space:nowrap">👤 Admin</a>'
+      ? '<a href="admin.html" data-ghfix="true" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:4px 10px;color:#fff;font-size:11px;text-decoration:none;white-space:nowrap">👤 Admin</a>'
       : ''}
     <button onclick="abrirModalPerfil()" title="Meu Perfil" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;transition:all .15s;color:#fff;font-family:Nunito,inherit" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
       <span style="width:28px;height:28px;border-radius:50%;background:var(--azul);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">${iniciais}</span>
@@ -3005,7 +3005,7 @@ function validarDatas() {
 function logout() {
   sessionStorage.removeItem('orc_user');
   localStorage.removeItem('orc_user_fallback');
-  window.location.replace('login.html');
+  window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'login.html');
 }
 
 function getUsuariosPorPerfil(perfis) {
@@ -3707,6 +3707,191 @@ function confirmarDelegacao() {
 }
 
 
+
+// ── MIGRAÇÃO LOCAL → SHAREPOINT ──────────────────────────────────
+function fecharMigOverlay() { var o=document.getElementById("mig-overlay"); if(o)o.remove(); }
+
+function fecharMigOverlay() { var o=document.getElementById("mig-overlay"); if(o)o.remove(); }
+async function migrarParaSP() {
+  const SP_SITE = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
+  const CHAVES  = [
+    { key: 'orc_h2',         lista: 'OrcDados',    titulo: 'orc_h2'         },
+    { key: 'orc_usuarios',   lista: 'OrcUsuarios', titulo: 'orc_usuarios'   },
+    { key: 'orc_vinculos',   lista: 'OrcConfig',   titulo: 'orc_vinculos'   },
+    { key: 'orc_delegacoes', lista: 'OrcConfig',   titulo: 'orc_delegacoes' },
+    { key: 'orc_reset_sol',  lista: 'OrcConfig',   titulo: 'orc_reset_sol'  },
+    { key: 'orc_c2',         lista: 'OrcConfig',   titulo: 'orc_c2'         }
+  ];
+
+  // Cria modal de progresso
+  var overlay = document.createElement('div');
+  overlay.id  = 'mig-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:Nunito,system-ui,sans-serif';
+  // Build overlay using DOM to avoid quote conflicts
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:16px;padding:32px;width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3)';
+
+  var h2 = document.createElement('h2');
+  h2.style.cssText = 'font-size:16px;font-weight:800;color:#0D1B4B;margin-bottom:6px';
+  h2.textContent = 'Migrando para SharePoint';
+  box.appendChild(h2);
+
+  var pSub = document.createElement('p');
+  pSub.style.cssText = 'font-size:12px;color:#6B7A99;margin-bottom:20px';
+  pSub.textContent = 'Aguarde, nao feche esta janela...';
+  box.appendChild(pSub);
+
+  var migLog = document.createElement('div');
+  migLog.id = 'mig-log';
+  migLog.style.cssText = 'font-size:12px;line-height:1.8;color:#1E293B;max-height:200px;overflow-y:auto';
+  box.appendChild(migLog);
+
+  var barWrap = document.createElement('div');
+  barWrap.style.cssText = 'margin-top:16px;background:#F1F5F9;border-radius:20px;height:8px;overflow:hidden';
+  var barEl = document.createElement('div');
+  barEl.id = 'mig-bar';
+  barEl.style.cssText = 'height:100%;background:linear-gradient(135deg,#3B6FE8,#00A86B);width:0%;transition:width .3s;border-radius:20px';
+  barWrap.appendChild(barEl);
+  box.appendChild(barWrap);
+
+  var footEl = document.createElement('div');
+  footEl.id = 'mig-footer';
+  footEl.style.cssText = 'margin-top:16px;display:none';
+  var closeBtn = document.createElement('button');
+  closeBtn.id = 'mig-close-btn';
+  closeBtn.style.cssText = 'width:100%;background:#3B6FE8;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,inherit';
+  closeBtn.textContent = 'Concluido — Fechar';
+  closeBtn.onclick = fecharMigOverlay;
+  footEl.appendChild(closeBtn);
+  box.appendChild(footEl);
+  overlay.appendChild(box);
+
+  document.body.appendChild(overlay);
+
+  var log  = migLog;
+  var bar  = barEl;
+  var foot = footEl;
+
+  function addLog(msg, cor) {
+    var p = document.createElement('div');
+    p.style.color = cor || '#1E293B';
+    p.innerHTML = msg;
+    log.appendChild(p);
+    log.scrollTop = log.scrollHeight;
+  }
+  function setBar(pct) {
+    bar.style.width = pct + '%';
+  }
+
+  // 1. Obtém token CSRF do SharePoint
+  addLog('🔑 Conectando ao SharePoint...', '#3B6FE8');
+  var digest = null;
+  try {
+    var r = await fetch(SP_SITE + '/_api/contextinfo', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Accept': 'application/json;odata=verbose' }
+    });
+    if (!r.ok) throw new Error('Não autenticado. Faça login no SharePoint primeiro.');
+    var d = await r.json();
+    digest = d.d.GetContextWebInformation.FormDigestValue;
+    addLog('✅ Conectado ao SharePoint!', '#00A86B');
+  } catch(e) {
+    addLog('❌ Erro: ' + e.message + '<br><small>Abra o SharePoint no browser e tente novamente.</small>', '#EA580C');
+    foot.style.display = 'block';
+    return;
+  }
+
+  // 2. Função para gravar item
+  async function salvarItem(lista, titulo, valor) {
+    // Verifica se já existe
+    var urlGet = SP_SITE + '/_api/web/lists/getbytitle(\'' + lista + '\')/items' +
+                 '?$filter=Title eq \'' + titulo + '\'&$select=ID&$top=1';
+    var rg = await fetch(urlGet, { credentials: 'include', headers: { 'Accept': 'application/json;odata=verbose' } });
+    var dg = await rg.json();
+    var items = dg.d.results;
+    var existeId = items && items.length ? items[0].ID : null;
+
+    var body = JSON.stringify({'__metadata':{'type':'SP.Data.'+lista+'ListItem'},'Title':titulo,'Dados':valor});
+    var url = existeId
+      ? SP_SITE + '/_api/web/lists/getbytitle(\'' + lista + '\')/items(' + existeId + ')'
+      : SP_SITE + '/_api/web/lists/getbytitle(\'' + lista + '\')/items';
+    var headers = {
+      'Accept': 'application/json;odata=verbose',
+      'Content-Type': 'application/json;odata=verbose',
+      'X-RequestDigest': digest,
+    };
+    if (existeId) { headers['X-HTTP-Method'] = 'MERGE'; headers['IF-MATCH'] = '*'; }
+    var rs = await fetch(url, { method: 'POST', credentials: 'include', headers, body });
+    return rs.ok || rs.status === 204;
+  }
+
+  // 3. Migra cada chave
+  var total = CHAVES.length;
+  var ok    = 0;
+  var erros = 0;
+
+  for (var i = 0; i < CHAVES.length; i++) {
+    var { key, lista, titulo } = CHAVES[i];
+    var valor = null;
+    try { valor = localStorage.getItem(key); } catch(e) {}
+
+    if (!valor) {
+      addLog('⚪ ' + key + ' — sem dados locais, ignorado');
+      setBar(Math.round((i+1)/total*100));
+      continue;
+    }
+
+    // Conta registros para info
+    var count = '';
+    try {
+      var arr = JSON.parse(valor);
+      if (Array.isArray(arr)) count = ' (' + arr.length + ' registros)';
+    } catch(e) {}
+
+    addLog('⬆️ Enviando ' + key + count + '...');
+    try {
+      var sucesso = await salvarItem(lista, titulo, valor);
+      if (sucesso) {
+        ok++;
+        addLog('✅ ' + key + ' salvo!', '#00A86B');
+      } else {
+        erros++;
+        addLog('⚠️ ' + key + ' — resposta inesperada', '#EA580C');
+      }
+    } catch(e) {
+      erros++;
+      addLog('❌ ' + key + ' — ' + e.message, '#EA580C');
+    }
+    setBar(Math.round((i+1)/total*100));
+    await new Promise(function(r){ setTimeout(r, 400); });
+  }
+
+  // 4. Resultado final
+  addLog('');
+  if (erros === 0) {
+    addLog('<strong style="color:#00A86B">🎉 Migração concluída! ' + ok + ' bases enviadas para o SharePoint.</strong>');
+    addLog('<small style="color:#6B7A99">Agora abra o sistema pelo GitHub Pages — os dados estarão disponíveis para todos.</small>');
+  } else {
+    addLog('<strong style="color:#EA580C">⚠️ ' + ok + ' bases enviadas, ' + erros + ' com erro.</strong>');
+    addLog('<small style="color:#6B7A99">Certifique-se de estar logado no SharePoint e tente novamente.</small>');
+  }
+  setBar(100);
+  foot.style.display = 'block';
+}
+
+// ── BASE URL HELPER ──────────────────────────────────────────────
+function baseUrl() {
+  const isGH = window.location.pathname.includes('/orcamento/');
+  return isGH ? '/orcamento/' : './';
+}
+
+// Fix all internal links on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[data-ghfix]').forEach(function(a) {
+    a.href = baseUrl() + a.getAttribute('href').replace('data-ghfix','');
+  });
+});
+
 // ── SHAREPOINT INTEGRATION ────────────────────────────────────────
 const SP_SITE = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
 const SP_API  = SP_SITE + '/_api/web/lists/getbytitle';
@@ -4092,7 +4277,7 @@ if (window._USER) {
   // Gestores e observadores vão para painel próprio
   const perfisGestor = ['gestor_cc','gestor_criador','observador'];
   if (perfisGestor.includes(window._USER.perfil)) {
-    window.location.replace('gestor.html');
+    window.location.replace(window.location.origin + (window.location.pathname.includes('github.io') ? '/orcamento/' : '/') + 'gestor.html');
   } else {
     // Sincroniza com SharePoint (async, não bloqueia UI)
     spSyncAll().then(function(){
@@ -4158,6 +4343,7 @@ if (window._USER) {
     <!-- Alterar senha -->
     <div style="padding:20px 24px 24px;margin-top:14px">
       <div style="border-top:1px solid var(--cinza-bd);padding-top:18px">
+        <div id="mig-perfil-wrap"></div>
         <div id="del-perfil-wrap"></div>
         <h3 style="font-size:12px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px">🔑 Alterar Senha</h3>
         <div style="display:flex;flex-direction:column;gap:12px">
@@ -4201,6 +4387,20 @@ function abrirModalPerfil() {
   document.getElementById('mp-email').textContent    = user.email;
   document.getElementById('mp-perfil-txt').textContent  = labels[user.perfil] || user.perfil;
   document.getElementById('mp-perfil-badge').textContent = labels[user.perfil] || user.perfil;
+
+  // Botão de migração para Admin
+  const migWrap = document.getElementById('mig-perfil-wrap');
+  if (migWrap) {
+    if (user.perfil === 'admin') {
+      migWrap.innerHTML = '<div style="border-top:1px solid var(--cinza-bd);padding-top:16px;margin-bottom:18px">' +
+        '<h3 style="font-size:12px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">☁️ Migração de Dados</h3>' +
+        '<button onclick="fecharModalPerfil();migrarParaSP()" style="width:100%;background:linear-gradient(135deg,#00A86B,#065F46);color:#fff;border:none;border-radius:8px;padding:10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:Nunito,inherit;margin-bottom:4px">☁️ Migrar dados locais para SharePoint</button>' +
+        '<p style="font-size:10.5px;color:var(--cinza-tx);margin:4px 0 0;line-height:1.5">Envia todos os dados do localStorage para as listas do SharePoint. Execute uma vez para sincronizar.</p>' +
+        '</div>';
+    } else {
+      migWrap.innerHTML = '';
+    }
+  }
 
   // Seção de delegação (só para criador e aprovador)
   const delWrap = document.getElementById('del-perfil-wrap');
