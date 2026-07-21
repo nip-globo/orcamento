@@ -4622,8 +4622,16 @@ if (window._USER) {
         }
       });
     }
-    initSync();
-    initPerfil();
+    syncImportarAuto().then(function() {
+  hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+  initPerfil();
+  initForm();
+  renderHist();
+  renderBannerDelegacao();
+  renderNotificacoes();
+  calc();
+});
+return;
     initForm();
     renderHist();
     renderBannerDelegacao();
