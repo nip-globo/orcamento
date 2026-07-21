@@ -1,0 +1,3008 @@
+{
+  "_exportadoEm": "2026-07-21T16:58:16.488Z",
+  "_exportadoPor": "admin@g.globo",
+  "orc_h2": [
+    {
+      "num": "ORC-038",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "DOMINGÃO 2026",
+      "dataG": "2026-07-01",
+      "dataE": "2026-07-12",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "DOMINGÃO 2026",
+      "ppm": "11122",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1235,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3344,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 43343,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 4579,
+      "ct": 43343,
+      "ta": 47922,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 17:26:55",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "20/07/2026, 17:30:33",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "20/07/2026, 17:30:33",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-037",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "QUE SEJA DOCE - 11ª T",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-16",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "QUE SEJA DOCE - 11ª T",
+      "ppm": "1111",
+      "tac": "MERCHA",
+      "contabil": "P.SER.000301-011-999 - QUE SEJA DOCE/11ª/NA",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2334,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 34555,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 22344,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 36889,
+      "ct": 22344,
+      "ta": 59233,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 16:43:11",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "20/07/2026, 16:47:56",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "20/07/2026, 16:47:56",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-036",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "NOVELA III - QUEM AMA CUIDA",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-17",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "56",
+      "cena": "3",
+      "prog": "NOVELA III - QUEM AMA CUIDA",
+      "ppm": "11111",
+      "tac": "MERCHAN",
+      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 3444,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 21333,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5789,
+      "ct": 21333,
+      "ta": 27122,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 12:34:54",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-035",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "NOVELA II - CORAÇÃO ACELERADO",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-31",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "44",
+      "cena": "7",
+      "prog": "NOVELA II - CORAÇÃO ACELERADO",
+      "ppm": "21212",
+      "tac": "MERCHAN",
+      "contabil": "P.NOV.000101-001-003 - CORAÇÃO ACELERADO/1ª/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 1345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 9870,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 3690,
+      "ct": 9870,
+      "ta": 13560,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 12:26:52",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-034",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "NOVELA I - A NOBREZA DO AMOR",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-29",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "34",
+      "cena": "8",
+      "prog": "NOVELA I - A NOBREZA DO AMOR",
+      "ppm": "11111",
+      "tac": "MERCHAN",
+      "contabil": "P.NOV.000100-001-999 - A NOBREZA DO AMOR/1ª/NA",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3344,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 5678,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 36900,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9022,
+      "ct": 36900,
+      "ta": 45922,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 12:20:15",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-033",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "É DE CASA 2026",
+      "dataG": "2026-07-25",
+      "dataE": "2026-07-25",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "É DE CASA 2026",
+      "ppm": "33345",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 23456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 9089,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 19800,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 32545,
+      "ct": 19800,
+      "ta": 52345,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 12:14:46",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-032",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "ALTAS HORAS 2026",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-25",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "CLARO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "ALTAS HORAS 2026",
+      "ppm": "22223",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 4222,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Gastos Com Talentos",
+          "tipo": "producao",
+          "valor": 12456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 25000,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 16678,
+      "ct": 25000,
+      "ta": 41678,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 12:03:39",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-031",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "DOMINGÃO 2026",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-25",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "DOMINGÃO 2026",
+      "ppm": "23456",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 4567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Gastos Com Talentos",
+          "tipo": "producao",
+          "valor": 11345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 21390,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 15912,
+      "ct": 21390,
+      "ta": 37302,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 11:56:53",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
+      "num": "ORC-030",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "ALTAS HORAS 2026",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-25",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "ALTAS HORAS 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 1000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 4567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 23457,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5567,
+      "ct": 23457,
+      "ta": 29024,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "20/07/2026, 08:02:04",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "20/07/2026, 08:29:40",
+      "aprovadorNome": "Sandro Silva",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "20/07/2026, 08:29:40",
+          "por": "Sandro Silva"
+        }
+      ]
+    },
+    {
+      "num": "ORC-029",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "É DE CASA 2026",
+      "dataG": "2026-07-11",
+      "dataE": "2026-07-11",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "É DE CASA 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 5670,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 8765,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 13456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 14435,
+      "ct": 13456,
+      "ta": 27891,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 23:36:02",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 23:39:17",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 23:39:17",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-028",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A 2026",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-15",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.EVT.000022-006-999 - CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A/2026/NA",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Pedidos de Produção",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 15678,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5801,
+      "ct": 15678,
+      "ta": 21479,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 23:40:46",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "historicoStatus": [
+        {
+          "status": "devolvido",
+          "obs": "ALTERE A DATA DE EXIBIÇÃO.",
+          "data": "19/07/2026, 23:39:39",
+          "por": "Sandro Rosa"
+        },
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "19/07/2026, 23:40:48",
+          "por": "Sandro Silva"
+        },
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 23:41:36",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 23:41:36",
+      "aprovadorNome": "Sandro Rosa"
+    },
+    {
+      "num": "ORC-027",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-11",
+      "observadores": [],
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1234,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 11346,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 3590,
+      "ct": 11346,
+      "ta": 14936,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 23:05:23",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "rejeitado",
+      "obsAprovacao": "AÇÃO CANCELADA.",
+      "dataAcao": "19/07/2026, 23:39:51",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "AÇÃO CANCELADA.",
+          "data": "19/07/2026, 23:39:51",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "ciente": true,
+      "cienteEm": "19/07/2026, 23:40:25",
+      "cientePor": "Sandro Silva"
+    },
+    {
+      "num": "ORC-026",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "dataG": "2026-07-01",
+      "dataE": "2026-07-22",
+      "cliente": "SEARA",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 1090,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 2300,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 4600,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 3390,
+      "ct": 4600,
+      "ta": 7990,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 11:25:49",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:26:37",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:26:37",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-025",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "MAIS VOCÊ 2026",
+      "dataG": "2026-07-21",
+      "dataE": "2026-07-21",
+      "cliente": "SEARA",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "MAIS VOCÊ 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 100,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 500,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 5000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 5600,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 6600,
+      "ct": 5600,
+      "ta": 12200,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 11:04:00",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:04:39",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:04:39",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-024",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "VIVER SERTANEJO - 2ª T - 2026",
+      "dataG": "2026-06-29",
+      "dataE": "2026-07-12",
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "VIVER SERTANEJO - 2ª T - 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2ª/AÇÕES MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 5000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 34000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 23456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 42200,
+      "ct": 23456,
+      "ta": 65656,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:59:21",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:04:42",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:04:42",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-023",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "VIVER SERTANEJO - 2ª T - 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-19",
+      "cliente": "SEARA",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "VIVER SERTANEJO - 2ª T - 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2ª/AÇÕES MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 5000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 34000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 23456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 42200,
+      "ct": 23456,
+      "ta": 65656,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:57:19",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:04:45",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:04:45",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-022",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "DOMINGÃO 2026",
+      "dataG": "2026-07-05",
+      "dataE": "2026-07-29",
+      "cliente": "CIMED",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "DOMINGÃO 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 10000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 9000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 3500,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 12450,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 23700,
+      "ct": 12450,
+      "ta": 36150,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:47:46",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:04:48",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:04:48",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-021",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-18",
+      "cliente": "TIM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 4567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3400,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 14500,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9167,
+      "ct": 14500,
+      "ta": 23667,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:38:16",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 11:04:51",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 11:04:51",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-020",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "dataG": "2026-07-08",
+      "dataE": "2026-07-16",
+      "cliente": "SEARA",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "sla": "8",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE DE PREENCHIMENTO",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 1200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 4567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 25678,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 11679,
+      "ct": 25678,
+      "ta": 37357,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:15:22",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 10:17:29",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 10:17:29",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "BET MGM - CIRCUITO SERTANEJO",
+      "dataG": "2026-07-22",
+      "dataE": "2026-07-25",
+      "cliente": "AMBEV",
+      "focal": "",
+      "cap": "",
+      "cena": "",
+      "prog": "BET MGM - CIRCUITO SERTANEJO",
+      "ppm": "",
+      "tac": "",
+      "contabil": "I.NIP.000075-002-999 - BET MGM/CIRCUITO SERTANEJO/NA",
+      "sla": "3",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 1389,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 897,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Figuração",
+          "tipo": "producao",
+          "valor": 9800,
+          "desc": "",
+          "extra": true
+        },
+        "extra_5": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 45678,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 17898,
+      "ct": 45678,
+      "ta": 63576,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 10:00:58",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "rejeitado",
+      "obsAprovacao": "ERRO NA NUMERAÇÃO DO ORÇAMENTO.",
+      "dataAcao": "19/07/2026, 10:08:46",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "ERRO NA NUMERAÇÃO DO ORÇAMENTO.",
+          "data": "19/07/2026, 10:08:46",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "ciente": true,
+      "cienteEm": "19/07/2026, 10:09:29",
+      "cientePor": "Sandro Silva"
+    },
+    {
+      "num": "ORC-019",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160610003 - Produção Integrada - Regionais e Afiliadas e Noticias",
+      "proj": "DOMINGÃO 2026",
+      "dataG": "2026-07-14",
+      "dataE": "2026-07-30",
+      "cliente": "GM",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "DOMINGÃO 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "sla": "12",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3445,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 1231,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figuração",
+          "tipo": "producao",
+          "valor": 987,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 13546,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5663,
+      "ct": 13546,
+      "ta": 19209,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 03:17:09",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "historicoStatus": [
+        {
+          "status": "enviado",
+          "obs": "Rascunho enviado para aprovação",
+          "data": "19/07/2026, 03:17:11",
+          "por": "Sandro Silva"
+        },
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 03:56:47",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 03:56:47",
+      "aprovadorNome": "Sandro Rosa"
+    },
+    {
+      "num": "ORC-018",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160610003 - Produção Integrada - Regionais e Afiliadas e Noticias",
+      "proj": "BET MGM - DOMINGÃO",
+      "dataG": "2026-07-10",
+      "dataE": "2026-08-05",
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "BET MGM - DOMINGÃO",
+      "ppm": "",
+      "tac": "",
+      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMINGÃO/NA",
+      "sla": "12",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 1900,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3450,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figuração",
+          "tipo": "producao",
+          "valor": 500,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 12345,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5850,
+      "ct": 12345,
+      "ta": 18195,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 03:15:33",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "rejeitado",
+      "obsAprovacao": "ERRO DE PREENCHIMENTO.",
+      "dataAcao": "19/07/2026, 03:57:08",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "ERRO DE PREENCHIMENTO.",
+          "data": "19/07/2026, 03:57:08",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "ciente": true,
+      "cienteEm": "19/07/2026, 04:49:31",
+      "cientePor": "Sandro Silva"
+    },
+    {
+      "num": "ORC-017",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-24",
+      "cliente": "vivo",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 3452,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 1238,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 34565,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 3666,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 54378,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 42921,
+      "ct": 54378,
+      "ta": 97299,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "19/07/2026, 01:52:47",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "19/07/2026, 02:03:46",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "19/07/2026, 02:03:46",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-016",
+      "tipoAcao": "Visu",
+      "cc": "GL160603003 - Gestão de Elenco",
+      "proj": "BIG BROTHER BRASIL 2026",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-30",
+      "cliente": "TIM",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "BIG BROTHER BRASIL 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.RLT.000002-005-003 - BBB/2026/AÇÕES MERCHANDISING",
+      "sla": "7",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 43535,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 54646,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 65657,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 34355,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 163838,
+      "ct": 34355,
+      "ta": 198193,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 21:46:32",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "18/07/2026, 22:17:24",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "18/07/2026, 22:17:24",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-015",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-30",
+      "cliente": "Tim",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2367,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3457,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 18902,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9525,
+      "ct": 18902,
+      "ta": 28427,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 19:58:15",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "18/07/2026, 20:20:14",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "18/07/2026, 20:20:14",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-016",
+      "tipoAcao": "Visu",
+      "cc": "GL160603003 - Gestão de Elenco",
+      "proj": "CIRCUITO SERTANEJO 2026",
+      "dataG": "2026-07-05",
+      "dataE": "2026-07-08",
+      "cliente": "ambev",
+      "focal": "",
+      "cap": "",
+      "cena": "",
+      "prog": "CIRCUITO SERTANEJO 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.EVT.000261-005-999 - CIRCUITO SERTANEJO/2026/NA",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 6789,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 27900,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 10245,
+      "ct": 27900,
+      "ta": 38145,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 20:37:18",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "historicoStatus": [
+        {
+          "status": "devolvido",
+          "obs": "Erro de preenchimento",
+          "data": "18/07/2026, 20:20:38",
+          "por": "Sandro Rosa"
+        },
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "18/07/2026, 20:37:20",
+          "por": "Sandro Silva"
+        },
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "18/07/2026, 21:28:52",
+          "por": "Sandro Rosa da Silva"
+        }
+      ],
+      "obsAprovacao": "",
+      "dataAcao": "18/07/2026, 21:28:52",
+      "aprovadorNome": "Sandro Rosa da Silva"
+    },
+    {
+      "num": "ORC-015",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-06-18",
+      "cliente": "Tim",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2367,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3457,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 18902,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9525,
+      "ct": 18902,
+      "ta": 28427,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 17:55:31",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "rejeitado",
+      "obsAprovacao": "Ação cancelada",
+      "dataAcao": "18/07/2026, 20:20:54",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "Ação cancelada",
+          "data": "18/07/2026, 20:20:54",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "ciente": true,
+      "cienteEm": "18/07/2026, 20:46:29",
+      "cientePor": "Sandro Silva"
+    },
+    {
+      "num": "ORC-015",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-30",
+      "cliente": "Tim",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2367,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3457,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 18902,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9525,
+      "ct": 18902,
+      "ta": 28427,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 20:09:41",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "historicoStatus": [
+        {
+          "status": "enviado",
+          "obs": "Rascunho enviado para aprovação",
+          "data": "18/07/2026, 20:09:43",
+          "por": "Sandro Silva"
+        },
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "18/07/2026, 20:21:30",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "obsAprovacao": "",
+      "dataAcao": "18/07/2026, 20:21:30",
+      "aprovadorNome": "Sandro Rosa"
+    },
+    {
+      "num": "ORC-013",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "BET MGM - DOMINGÃO",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-30",
+      "cliente": "BET MGM",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "BET MGM - DOMINGÃO",
+      "ppm": "",
+      "tac": "",
+      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMINGÃO/NA",
+      "sla": "5",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1234,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1900,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 21345,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 10157,
+      "ct": 21345,
+      "ta": 31502,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 17:42:52",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "rejeitado",
+      "obsAprovacao": "Cancelamento por parte do cliente",
+      "dataAcao": "18/07/2026, 17:47:16",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "Cancelamento por parte do cliente",
+          "data": "18/07/2026, 17:47:16",
+          "por": "Sandro Rosa"
+        }
+      ],
+      "ciente": true,
+      "cienteEm": "18/07/2026, 20:46:30",
+      "cientePor": "Sandro Silva"
+    },
+    {
+      "num": "ORC-012",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-13",
+      "dataE": "2026-07-24",
+      "cliente": "Tim",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2367,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3457,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1356,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 18902,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 9525,
+      "ct": 18902,
+      "ta": 28427,
+      "emails": [
+        "sandro.aprovador@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 17:39:18",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aprovado",
+      "obsAprovacao": "",
+      "dataAcao": "18/07/2026, 17:40:43",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "aprovado",
+          "obs": "",
+          "data": "18/07/2026, 17:40:43",
+          "por": "Sandro Rosa"
+        }
+      ]
+    },
+    {
+      "num": "ORC-011",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160609004 - Projetos Mercadológicos e Filmes",
+      "proj": "CIRCUITO SERTANEJO 2026 - BARRETOS",
+      "dataG": "2026-07-13",
+      "dataE": "2026-07-31",
+      "cliente": "TIM",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CIRCUITO SERTANEJO 2026 - BARRETOS",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.EVT.000261-005-011 - CIRCUITO SERTANEJO/2026/BARRETOS",
+      "sla": "5",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "Teste",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 1290,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 5670,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 6700,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 11230,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 45678,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 24890,
+      "ct": 45678,
+      "ta": 70568,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 03:14:46"
+    },
+    {
+      "num": "ORC-010",
+      "tipoAcao": "Visu",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-25",
+      "cliente": "TIM",
+      "focal": "Sandro",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "5",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "",
+      "contas": {
+        "extra_0": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 2000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 3400,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 5690,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 11230,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 21456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 22320,
+      "ct": 21456,
+      "ta": 43776,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 02:27:36"
+    },
+    {
+      "num": "ORC-009",
+      "tipoAcao": "VISU",
+      "cc": "GL160606004 - Variedades e Auditório",
+      "proj": "ALTAS HORAS 2026",
+      "dataG": "2026-07-13",
+      "dataE": "2026-07-29",
+      "cliente": "ITAÚ",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "ALTAS HORAS 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "sla": "7",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 3345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 2670,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 6790,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 7980,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 18900,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 20785,
+      "ct": 18900,
+      "ta": 39685,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 02:18:12"
+    },
+    {
+      "num": "ORC-008",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "AVISA LÁ QUE EU VOU/5ª T",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-29",
+      "cliente": "STONE",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "AVISA LÁ QUE EU VOU/5ª T",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.SER.000437-005-003 - AVISA LÁ QUE EU VOU/5ª/AÇÕES DE MERCHANDISING",
+      "sla": "8",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 5670,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 11690,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 9800,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 34445,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 27160,
+      "ct": 34445,
+      "ta": 61605,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 02:05:00"
+    },
+    {
+      "num": "ORC-007",
+      "tipoAcao": "VISU",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "MAIS VOCÊ 2026",
+      "dataG": "2026-07-08",
+      "dataE": "2026-07-30",
+      "cliente": "STONE",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "MAIS VOCÊ 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 2300,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1560,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 3480,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 23456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 7340,
+      "ct": 23456,
+      "ta": 30796,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 01:56:13"
+    },
+    {
+      "num": "ORC-006",
+      "tipoAcao": "Ação Simples",
+      "cc": "GL160606004 - Variedades e Auditório",
+      "proj": "DOMINGÃO 2026",
+      "dataG": "2026-06-30",
+      "dataE": "2026-07-28",
+      "cliente": "CIMED",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "DOMINGÃO 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "sla": "20",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1200,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2300,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 15000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 5600,
+          "desc": "",
+          "extra": true
+        },
+        "extra_4": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 25000,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 24100,
+      "ct": 25000,
+      "ta": 49100,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 01:44:12"
+    },
+    {
+      "num": "ORC-005",
+      "tipoAcao": "Ação Plena",
+      "cc": "GL160606005 - Variedades e Produções Externas",
+      "proj": "CALDEIRÃO DO MION 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-16",
+      "cliente": "AMBEV",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "CALDEIRÃO DO MION 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "sla": "10",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 34567,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 23000,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 37567,
+      "ct": 23000,
+      "ta": 60567,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 01:30:52"
+    },
+    {
+      "num": "ORC-004",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160606003 - Variedades e Realities",
+      "proj": "BIG BROTHER BRASIL 2026",
+      "dataG": "2026-07-01",
+      "dataE": "2026-08-06",
+      "cliente": "AMBEV",
+      "focal": "SANDRO",
+      "cap": "",
+      "cena": "",
+      "prog": "BIG BROTHER BRASIL 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.RLT.000002-005-003 - BBB/2026/AÇÕES MERCHANDISING",
+      "sla": "10",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 1000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2876,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 20000,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "",
+          "valor": 23456,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 23876,
+      "ct": 0,
+      "ta": 23876,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "18/07/2026, 01:03:12"
+    },
+    {
+      "num": "ORC-003",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160603002 - Dramaturgia",
+      "proj": "NOVELA III - QUEM AMA CUIDA",
+      "dataG": "2026-07-13",
+      "dataE": "2026-08-05",
+      "cliente": "AMBEV",
+      "focal": "SANDRO",
+      "cap": "33",
+      "cena": "12",
+      "prog": "NOVELA III - QUEM AMA CUIDA",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "sla": "12",
+      "obs": "TESTE",
+      "contas": {
+        "arte": {
+          "nome": "Arte",
+          "valor": 0,
+          "desc": ""
+        },
+        "cenografia": {
+          "nome": "Cenografia",
+          "valor": 1000,
+          "desc": ""
+        },
+        "figurino": {
+          "nome": "Figurino",
+          "valor": 0,
+          "desc": ""
+        },
+        "caracterizacao": {
+          "nome": "Caracterização",
+          "valor": 0,
+          "desc": ""
+        },
+        "figuracao": {
+          "nome": "Figuração",
+          "valor": 0,
+          "desc": ""
+        },
+        "pedidos": {
+          "nome": "Pedidos de Produção",
+          "valor": 0,
+          "desc": ""
+        },
+        "talentos": {
+          "nome": "Gastos Com Talentos",
+          "valor": 0,
+          "desc": ""
+        },
+        "tecnologia": {
+          "nome": "Tecnologia",
+          "valor": 1000,
+          "desc": ""
+        },
+        "outros": {
+          "nome": "Outros (Especificar)",
+          "valor": 0,
+          "desc": ""
+        }
+      },
+      "ci": 0,
+      "tp": 2000,
+      "ct": 1000,
+      "ta": 2000,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "17/07/2026, 17:59:33"
+    },
+    {
+      "num": "ORC-002",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160601001 - Produtos Publicitários Canais",
+      "proj": "TREINAMENTO - ORÇAMENTO ADMINISTRATIVO DA ÁREA",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-07",
+      "cliente": "teste",
+      "focal": "teste",
+      "cap": "30",
+      "cena": "7",
+      "prog": "TREINAMENTO - ORÇAMENTO ADMINISTRATIVO DA ÁREA",
+      "ppm": "",
+      "tac": "MERCHAN",
+      "contabil": "I.NIP.000032-003-999 - TREINAMENTO/CAPACITAÇÃO/NA",
+      "sla": "20",
+      "obs": "TESTE",
+      "contas": {
+        "arte": {
+          "nome": "Arte",
+          "valor": 2000,
+          "desc": ""
+        },
+        "cenografia": {
+          "nome": "Cenografia",
+          "valor": 0,
+          "desc": ""
+        },
+        "figurino": {
+          "nome": "Figurino",
+          "valor": 1200,
+          "desc": ""
+        },
+        "caracterizacao": {
+          "nome": "Caracterização",
+          "valor": 0,
+          "desc": ""
+        },
+        "figuracao": {
+          "nome": "Figuração",
+          "valor": 0,
+          "desc": ""
+        },
+        "pedidos": {
+          "nome": "Pedidos de Produção",
+          "valor": 0,
+          "desc": ""
+        },
+        "talentos": {
+          "nome": "Gastos Com Talentos",
+          "valor": 50000,
+          "desc": ""
+        },
+        "tecnologia": {
+          "nome": "Tecnologia",
+          "valor": 23000,
+          "desc": ""
+        },
+        "outros": {
+          "nome": "Outros (Especificar)",
+          "valor": 0,
+          "desc": ""
+        }
+      },
+      "ci": 0,
+      "tp": 76200,
+      "ct": 23000,
+      "ta": 76200,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "17/07/2026, 17:15:58"
+    },
+    {
+      "num": "ORC-001",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160606002",
+      "proj": "QUEM AMA CUIDA",
+      "dataG": "2026-07-17",
+      "dataE": "2026-08-03",
+      "cliente": "AMBEV",
+      "focal": "SANDRO",
+      "cap": "33",
+      "cena": "12",
+      "prog": "QUEM AMA CUIDA",
+      "ppm": "TESTE",
+      "tac": "AÇÃO PLENA",
+      "contabil": "PNOV000109001003 - P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "sla": "2026-07-16",
+      "obs": "TESTE",
+      "contas": {
+        "arte": {
+          "nome": "Arte",
+          "valor": 2000,
+          "desc": "Teste Arte"
+        },
+        "cenografia": {
+          "nome": "Cenografia",
+          "valor": 3000,
+          "desc": "Teste Cenografia"
+        },
+        "figurino": {
+          "nome": "Figurino",
+          "valor": 0,
+          "desc": ""
+        },
+        "caracterizacao": {
+          "nome": "Caracterização",
+          "valor": 0,
+          "desc": ""
+        },
+        "figuracao": {
+          "nome": "Figuração",
+          "valor": 1500,
+          "desc": "Teste Figuração"
+        },
+        "pedidos": {
+          "nome": "Pedidos de Produção",
+          "valor": 0,
+          "desc": ""
+        },
+        "talentos": {
+          "nome": "Gastos Com Talentos",
+          "valor": 0,
+          "desc": ""
+        },
+        "tecnologia": {
+          "nome": "Tecnologia",
+          "valor": 6590,
+          "desc": "Teste Tecnologia"
+        },
+        "outros": {
+          "nome": "Outros (Especificar)",
+          "valor": 0,
+          "desc": ""
+        }
+      },
+      "ci": 0,
+      "tp": 13090,
+      "ct": 6590,
+      "ta": 13090,
+      "emails": [
+        "sandro.silva@g.globo"
+      ],
+      "dataEnvio": "17/07/2026, 12:43:42"
+    }
+  ],
+  "orc_usuarios": [
+    {
+      "email": "admin@g.globo",
+      "senha": "Admin@2026",
+      "nome": "Administrador",
+      "perfil": "admin",
+      "ativo": true
+    },
+    {
+      "email": "sandro.silva@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Rosa da Silva",
+      "perfil": "admin",
+      "ativo": true,
+      "criadoEm": "18/07/2026, 16:58:45"
+    },
+    {
+      "email": "sandro.teste@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Silva",
+      "perfil": "criador",
+      "ativo": true,
+      "criadoEm": "18/07/2026, 17:07:59"
+    },
+    {
+      "email": "sandro.aprovador@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Rosa",
+      "perfil": "aprovador",
+      "ativo": true,
+      "criadoEm": "18/07/2026, 17:08:44"
+    },
+    {
+      "email": "sanddro.gestor@g.globo",
+      "senha": "123456",
+      "nome": "Snadro Silva",
+      "perfil": "gestor_cc",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "GL160602002 - Dados & Insights",
+      "criadoEm": "18/07/2026, 21:30:30"
+    },
+    {
+      "email": "sandro.gestorcriador@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Silva",
+      "perfil": "gestor_criador",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "",
+      "criadoEm": "18/07/2026, 21:31:12"
+    },
+    {
+      "email": "sandro.teste2@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Silva",
+      "perfil": "aprovador",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "",
+      "criadoEm": "18/07/2026, 22:31:06",
+      "aprovadoPor": "sanddro.gestor@g.globo",
+      "aprovadoEm": "18/07/2026, 22:39:50"
+    },
+    {
+      "email": "sandro.observador@g.globo",
+      "senha": "123456",
+      "nome": "Sandro Rosa",
+      "perfil": "observador",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "",
+      "criadoEm": "19/07/2026, 22:49:47"
+    },
+    {
+      "email": "lenilson.reis_manpowerstaffing@prestador.globo",
+      "senha": "123456",
+      "nome": "Lenilson Reis",
+      "perfil": "criador",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "",
+      "criadoEm": "20/07/2026, 17:12:50"
+    }
+  ],
+  "orc_vinculos": {
+    "sandro.gestorcriador@g.globo": [
+      "sandro.teste@g.globo"
+    ]
+  },
+  "orc_delegacoes": [
+    {
+      "id": "DEL-1784545569426",
+      "delegante": "sandro.aprovador@g.globo",
+      "delegado": "sandro.teste2@g.globo",
+      "dataInicio": "2026-07-20",
+      "dataFim": "2026-07-21",
+      "motivo": "FOLGA",
+      "status": "cancelada",
+      "criadaEm": "20/07/2026, 08:06:09",
+      "criadaPor": "sandro.aprovador@g.globo",
+      "canceladaEm": "20/07/2026, 08:31:18"
+    }
+  ],
+  "orc_reset_sol": [
+    {
+      "email": "sandro.silva@g.globo",
+      "nome": "Sandro Rosa da Silva",
+      "token": "108337",
+      "solicitadoEm": "19/07/2026, 23:51:18",
+      "status": "pendente"
+    },
+    {
+      "email": "sandro.teste@g.globo",
+      "nome": "Sandro Silva",
+      "token": "115140",
+      "solicitadoEm": "20/07/2026, 00:04:58",
+      "status": "pendente"
+    }
+  ],
+  "orc_c2": {}
+}
