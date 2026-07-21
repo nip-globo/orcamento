@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Atualizar Bases — Orçamento Merchandising</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;min-height:100vh}
+    .header{background:linear-gradient(135deg,#1B2A4A,#2563EB);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+    .header-left{display:flex;align-items:center;gap:14px}
+    .header-left img{height:26px;filter:brightness(0) invert(1);opacity:.95}
+    .header-title h1{color:#fff;font-size:16px;font-weight:700}
+    .header-title p{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+    .btn-back{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:7px;
+      padding:7px 14px;color:#fff;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-back:hover{background:rgba(255,255,255,.25)}
+
+    .container{max-width:860px;margin:24px auto;padding:0 24px;display:flex;flex-direction:column;gap:16px}
+
+    .info-card{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:14px 18px;font-size:13px;color:#1D4ED8;line-height:1.7}
+    .info-card strong{color:#1B2A4A}
+
+    .card{background:#fff;border-radius:12px;box-shadow:0 1px 8px rgba(0,0,0,.07);overflow:visible}
+    .card-header{background:#1B2A4A;padding:12px 18px;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:10px}
+    .card-header h2{color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;flex:1}
+    .step-badge{background:#2563EB;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .card-body{padding:16px 18px}
+
+    .upload-row{display:flex;align-items:center;gap:10px}
+    .upload-btn{background:#2563EB;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;flex-shrink:0}
+    .upload-btn:hover{opacity:.88}
+    .upload-status{font-size:12px;color:#64748B;flex:1}
+    .upload-status.ok{color:#16A34A;font-weight:600}
+    .upload-status.err{color:#DC2626}
+
+    .preview{margin-top:10px;max-height:150px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:8px;display:none}
+    .preview table{width:100%;border-collapse:collapse;font-size:11.5px}
+    .preview th{background:#1B2A4A;color:#fff;padding:7px 10px;text-align:left;font-weight:600;position:sticky;top:0}
+    .preview td{padding:5px 10px;border-bottom:1px solid #F1F5F9}
+    .preview tr:nth-child(even) td{background:#F8FAFC}
+    .more-rows{padding:5px 10px;font-size:10.5px;color:#94A3B8;font-style:italic}
+
+    .hint{font-size:11px;color:#94A3B8;margin-top:5px;line-height:1.5}
+
+    .btn-salvar-base{background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border:none;border-radius:7px;
+      padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;margin-top:10px;
+      transition:opacity .15s;box-shadow:0 2px 8px rgba(22,163,74,.2)}
+    .btn-salvar-base:hover:not(:disabled){opacity:.9}
+    .btn-salvar-base:disabled{background:#94A3B8;box-shadow:none;cursor:not-allowed}
+
+    .sbox-base{padding:10px 12px;border-radius:7px;font-size:12px;display:none;margin-top:8px}
+    .sbox-base.ok{background:#F0FFF4;color:#15803D;border:1px solid #86EFAC}
+    .sbox-base.err{background:#FEF2F2;color:#B91C1C;border:1px solid #FCA5A5}
+    .sbox-base.info{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE}
+
+    .folder-hint{font-size:11.5px;color:#64748B;background:#F8FAFC;border:1px solid #E2E8F0;
+      border-radius:7px;padding:10px 12px;margin-top:10px;line-height:1.6}
+    .folder-hint strong{color:#1B2A4A}
+
+    .footer{background:#1B2A4A;color:rgba(255,255,255,.6);text-align:center;padding:12px;font-size:10.5px;
+      margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .footer img{height:16px;opacity:.8;filter:brightness(0) invert(1)}
+    .footer strong{color:#fff}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <img src="globo_logo.png" onerror="this.style.display='none'">
+    <div class="header-title">
+      <h1>⚙️ Atualizar Bases de Dados</h1>
+      <p>Orçamento Merchandising</p>
+    </div>
+  </div>
+  <a href="index.html" class="btn-back">← Voltar ao Site</a>
+</div>
+
+<div class="container">
+
+  <div class="info-card">
+    💡 <strong>Cada base é independente</strong> — atualize apenas o que precisar.<br>
+    Selecione o arquivo Excel, confira a prévia e clique em <strong>"💾 Salvar esta base"</strong>.<br>
+    Selecione a pasta do site quando solicitado. Depois pressione <strong>F5</strong> no site.
+  </div>
+
+  <!-- BASE 1: Centro de Custo -->
+  <div class="card">
+    <div class="card-header"><div class="step-badge">1</div><h2>Centro de Custo Merchandising</h2></div>
+    <div class="card-body">
+      <div class="upload-row">
+        <button class="upload-btn" id="btn-cc">📂 Selecionar Excel</button>
+        <input type="file" id="file-cc" accept=".xlsx,.xls" style="display:none">
+        <span class="upload-status" id="st-cc">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="hint">Col. A: <strong>Centro de Custo</strong> &nbsp;|&nbsp; Col. B: <strong>Gestor</strong> (e-mail @g.globo) — opcional</div>
+      <div class="preview" id="prev-cc"><table><thead><tr><th>Centro de Custo</th><th>Gestor</th></tr></thead><tbody id="tbody-cc"></tbody></table></div>
+      <button class="btn-salvar-base" id="salvar-cc" disabled onclick="salvarBase('cc')">💾 Salvar esta base</button>
+      <div class="sbox-base" id="sbox-cc"></div>
+    </div>
+  </div>
+
+  <!-- BASE 2: Programa e Projeto -->
+  <div class="card">
+    <div class="card-header"><div class="step-badge">2</div><h2>Programa e Projeto Contábil</h2></div>
+    <div class="card-body">
+      <div class="upload-row">
+        <button class="upload-btn" id="btn-pp">📂 Selecionar Excel</button>
+        <input type="file" id="file-pp" accept=".xlsx,.xls" style="display:none">
+        <span class="upload-status" id="st-pp">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="hint">Col. A: <strong>Programa</strong> &nbsp;|&nbsp; Col. B: <strong>Projeto Contábil</strong></div>
+      <div class="preview" id="prev-pp"><table><thead><tr><th>Programa</th><th>Projeto Contábil</th></tr></thead><tbody id="tbody-pp"></tbody></table></div>
+      <button class="btn-salvar-base" id="salvar-pp" disabled onclick="salvarBase('pp')">💾 Salvar esta base</button>
+      <div class="sbox-base" id="sbox-pp"></div>
+    </div>
+  </div>
+
+  <!-- BASE 3: Finalidade -->
+  <div class="card">
+    <div class="card-header"><div class="step-badge">3</div><h2>Finalidade</h2></div>
+    <div class="card-body">
+      <div class="upload-row">
+        <button class="upload-btn" id="btn-fin">📂 Selecionar Excel</button>
+        <input type="file" id="file-fin" accept=".xlsx,.xls" style="display:none">
+        <span class="upload-status" id="st-fin">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="hint">Coluna A: <strong>Finalidade</strong> (ex: FG000023 - PRODUÇÃO TERCEIRIZADA)</div>
+      <div class="preview" id="prev-fin"><table><thead><tr><th>Finalidade</th></tr></thead><tbody id="tbody-fin"></tbody></table></div>
+      <button class="btn-salvar-base" id="salvar-fin" disabled onclick="salvarBase('fin')">💾 Salvar esta base</button>
+      <div class="sbox-base" id="sbox-fin"></div>
+    </div>
+  </div>
+
+  <!-- BASE 4: Contas -->
+  <div class="card">
+    <div class="card-header"><div class="step-badge">4</div><h2>Contas e Tipos</h2></div>
+    <div class="card-body">
+      <div class="upload-row">
+        <button class="upload-btn" id="btn-contas">📂 Selecionar Excel</button>
+        <input type="file" id="file-contas" accept=".xlsx,.xls" style="display:none">
+        <span class="upload-status" id="st-contas">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="hint">Col. A: <strong>Conta</strong> &nbsp;|&nbsp; Col. B: <strong>Tipo</strong> ("Produção" ou "Tecnologia")</div>
+      <div class="preview" id="prev-contas"><table><thead><tr><th>Conta</th><th>Tipo</th></tr></thead><tbody id="tbody-contas"></tbody></table></div>
+      <button class="btn-salvar-base" id="salvar-contas" disabled onclick="salvarBase('contas')">💾 Salvar esta base</button>
+      <div class="sbox-base" id="sbox-contas"></div>
+    </div>
+  </div>
+
+  <div class="folder-hint">
+    💡 Ao clicar em <strong>"Salvar esta base"</strong>: selecione a pasta <strong>orcamento-site</strong>
+    (onde está o <em>index.html</em>). O arquivo <strong>bases.js</strong> é atualizado automaticamente
+    com a nova base mantendo as demais intactas.
+  </div>
+
+</div>
+
+<div class="footer">
+  
+  <img src="globo_logo.png" onerror="this.style.display='none'">
+</div>
+
+<script src="xlsx.min.js"></script>
+<script src="bases.js"></script>
+<script>
+// ── Estado por base ───────────────────────────────────────────────
+const parsed = { cc:null, pp:null, fin:null, contas:null };
+let dirHandle = null;
+
+// ── Conecta botões ────────────────────────────────────────────────
+['cc','pp','fin','contas'].forEach(k => {
+  document.getElementById(`btn-${k}`).addEventListener('click', () =>
+    document.getElementById(`file-${k}`).click());
+  document.getElementById(`file-${k}`).addEventListener('change', e =>
+    lerExcel(k, e.target.files[0]));
+});
+
+// ── Leitura de Excel ──────────────────────────────────────────────
+function lerExcel(key, file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb   = XLSX.read(e.target.result, {type:'array'});
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      let items  = [];
+
+      if (key === 'cc') {
+        rows.slice(1).forEach(r => {
+          const nome   = String(r[0]||'').trim();
+          const gestor = String(r[1]||'').trim();
+          if (nome) items.push({nome, gestor: gestor||''});
+        });
+      } else if (key === 'pp') {
+        rows.slice(1).forEach(r => {
+          const prog = String(r[0]||'').trim();
+          const proj = String(r[1]||'').trim();
+          if (prog && proj) items.push([prog, proj]);
+        });
+      } else if (key === 'fin') {
+        rows.slice(1).forEach(r => {
+          const v = String(r[0]||'').trim();
+          if (v) items.push(v);
+        });
+      } else { // contas
+        rows.slice(1).forEach(r => {
+          const nome = String(r[0]||'').trim();
+          const tipo = String(r[1]||'').trim().toLowerCase();
+          if (nome) items.push({nome, tipo: tipo.includes('tec')?'tecnologia':'producao'});
+        });
+      }
+
+      // Remove duplicatas
+      if (key === 'pp') {
+        const seen = new Set();
+        items = items.filter(([p]) => { if(seen.has(p))return false; seen.add(p); return true; });
+      } else if (key !== 'contas') {
+        items = [...new Set(items)];
+      }
+
+      parsed[key] = items;
+      mostrarPreview(key, items, file.name);
+      document.getElementById(`salvar-${key}`).disabled = false;
+    } catch(err) {
+      document.getElementById(`st-${key}`).textContent = `❌ Erro: ${err.message}`;
+      document.getElementById(`st-${key}`).className   = 'upload-status err';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── Preview ───────────────────────────────────────────────────────
+function mostrarPreview(key, items, fname) {
+  document.getElementById(`st-${key}`).textContent = `✓ ${fname} — ${items.length} registros`;
+  document.getElementById(`st-${key}`).className   = 'upload-status ok';
+  const tbody = document.getElementById(`tbody-${key}`);
+  const max   = 6;
+
+  if (key === 'cc') {
+    tbody.innerHTML = items.slice(0,max).map(c=>
+      `<tr><td>${esc(c.nome||c)}</td><td style="font-size:11px;color:#2563EB">${esc(c.gestor||'—')}</td></tr>`).join('');
+  } else if (key === 'pp') {
+    tbody.innerHTML = items.slice(0,max).map(([p,pc])=>
+      `<tr><td>${esc(p)}</td><td style="font-size:11px;color:#64748B">${esc(pc)}</td></tr>`).join('');
+  } else if (key === 'contas') {
+    tbody.innerHTML = items.slice(0,max).map(c=>
+      `<tr><td>${esc(c.nome)}</td><td style="color:#2563EB;font-size:11px">${c.tipo==='tecnologia'?'Tecnologia':'Produção'}</td></tr>`).join('');
+  } else {
+    tbody.innerHTML = items.slice(0,max).map(v=>`<tr><td>${esc(v)}</td></tr>`).join('');
+  }
+  if (items.length > max) {
+    tbody.innerHTML += `<tr><td colspan="2" class="more-rows">… e mais ${items.length-max}</td></tr>`;
+  }
+  document.getElementById(`prev-${key}`).style.display = 'block';
+}
+
+// ── Salvar base individualmente ───────────────────────────────────
+async function salvarBase(key) {
+  const btn  = document.getElementById(`salvar-${key}`);
+  const sbox = document.getElementById(`sbox-${key}`);
+  btn.disabled = true; btn.textContent = '⏳ Salvando...';
+
+  try {
+    // Seleciona pasta se ainda não selecionada (reutiliza se já selecionada)
+    if (!dirHandle) {
+      dirHandle = await window.showDirectoryPicker({mode:'readwrite'});
+    }
+
+    // Lê o bases.js atual da pasta
+    let basesAtual = '';
+    try {
+      const fh = await dirHandle.getFileHandle('bases.js');
+      const f  = await fh.getFile();
+      basesAtual = await f.text();
+    } catch(e) { basesAtual = ''; }
+
+    // Gera o novo bloco JS para esta base
+    const novoBloco = gerarBlocoJs(key, parsed[key]);
+
+    // Substitui ou adiciona o bloco no bases.js
+    const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS'}[key];
+    const regex   = new RegExp(`const ${varName}\\s*=\\s*\\[[\\s\\S]*?\\];`, 'm');
+
+    let novoConteudo;
+    if (regex.test(basesAtual)) {
+      novoConteudo = basesAtual.replace(regex, novoBloco);
+    } else {
+      novoConteudo = basesAtual + '\n\n' + novoBloco;
+    }
+
+    // Atualiza comentário de data
+    novoConteudo = novoConteudo.replace(
+      /\/\/ bases\.js — Atualizado em .*/,
+      `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}`
+    );
+    if (!novoConteudo.includes('// bases.js')) {
+      novoConteudo = `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}\n\n` + novoConteudo;
+    }
+
+    // Grava o arquivo
+    const fileHandle = await dirHandle.getFileHandle('bases.js', {create:true});
+    const writable   = await fileHandle.createWritable();
+    await writable.write(novoConteudo);
+    await writable.close();
+
+    sbox.className = 'sbox-base ok'; sbox.style.display = 'block';
+    sbox.innerHTML = `✅ <strong>${varName}</strong> atualizada! Pressione <strong>F5</strong> no site.`;
+    btn.textContent = '✅ Salvo!';
+
+  } catch(err) {
+    if (err.name === 'AbortError') {
+      dirHandle = null; // reset para próxima tentativa
+      // Download manual como fallback
+      baixarBasesJs(key);
+    } else {
+      sbox.className = 'sbox-base err'; sbox.style.display = 'block';
+      sbox.textContent = `❌ Erro: ${err.message}`;
+      btn.disabled = false; btn.textContent = '💾 Salvar esta base';
+    }
+  }
+}
+
+// ── Fallback: baixa o bases.js completo ──────────────────────────
+async function baixarBasesJs(key) {
+  const sbox = document.getElementById(`sbox-${key}`);
+  // Recria o bases.js completo com a base atualizada
+  const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS'}[key];
+  const js = `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}\n\n` +
+    gerarBlocoJs('cc',      parsed.cc      || (typeof BASE_CC!=='undefined'?BASE_CC:[])) + '\n\n' +
+    gerarBlocoJs('pp',      parsed.pp      || (typeof BASE_PP!=='undefined'?BASE_PP:[])) + '\n\n' +
+    gerarBlocoJs('fin',     parsed.fin     || (typeof BASE_FIN!=='undefined'?BASE_FIN:[])) + '\n\n' +
+    gerarBlocoJs('contas',  parsed.contas  || (typeof BASE_CONTAS!=='undefined'?BASE_CONTAS:[]));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
+  a.download = 'bases.js'; a.click();
+  sbox.className = 'sbox-base info'; sbox.style.display = 'block';
+  sbox.innerHTML = `📥 <strong>bases.js baixado!</strong> Substitua o arquivo na pasta do site e recarregue com <strong>F5</strong>.`;
+  document.getElementById(`salvar-${key}`).textContent = '💾 Salvar esta base';
+}
+
+// ── Gera bloco JS de uma base ─────────────────────────────────────
+function gerarBlocoJs(key, items) {
+  const e2 = s => String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  if (key === 'cc') {
+    return `const BASE_CC = [\n${items.map(c=>
+      typeof c === 'string'
+        ? `  {nome:'${e2(c)}',gestor:''}`
+        : `  {nome:'${e2(c.nome)}',gestor:'${e2(c.gestor||'')}'}`
+    ).join(',\n')}\n];`;
+  }
+  if (key === 'pp')  return `const BASE_PP = [\n${items.map(([p,pc])=>`  ['${e2(p)}', '${e2(pc)}']`).join(',\n')}\n];`;
+  if (key === 'fin') return `const BASE_FIN = [\n${items.map(v=>`  '${e2(v)}'`).join(',\n')}\n];`;
+  // contas
+  return `const BASE_CONTAS = [\n${items.map(c=>`  {nome:'${e2(c.nome)}',tipo:'${c.tipo}'}`).join(',\n')}\n];`;
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

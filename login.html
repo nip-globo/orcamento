@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Login — Orçamento Merchandising</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0D1B4B;overflow:hidden;position:relative;}
+.bg-grad{position:fixed;inset:0;background:linear-gradient(145deg,#051035 0%,#0D2680 45%,#1A4FD8 100%);z-index:0;}
+.bg-grafismo{position:fixed;right:-8vw;bottom:-8vw;width:72vw;height:72vw;max-width:820px;max-height:820px;background:url('grafismo.png') no-repeat center/contain;opacity:.18;z-index:1;pointer-events:none;}
+.bg-grafismo-2{position:fixed;left:-18vw;top:-18vw;width:55vw;height:55vw;max-width:640px;max-height:640px;background:url('grafismo.png') no-repeat center/contain;opacity:.09;z-index:1;pointer-events:none;transform:rotate(180deg);}
+.login-wrap{position:relative;z-index:10;width:100%;max-width:420px;padding:20px;}
+.login-card{background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.15);padding:44px 40px 36px;backdrop-filter:blur(12px);transition:all .3s;}
+.logo-area{text-align:center;margin-bottom:32px}
+.logo-area img{height:36px;filter:brightness(0) saturate(100%) invert(29%) sepia(95%) saturate(1500%) hue-rotate(210deg) brightness(95%);margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;}
+.logo-area h1{font-size:20px;font-weight:900;color:#0D1B4B;letter-spacing:-.3px;line-height:1.2;}
+.logo-area p{font-size:12px;color:#6B7A99;margin-top:6px;font-weight:600;}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+.field label{font-size:10px;font-weight:800;color:#3B6FE8;text-transform:uppercase;letter-spacing:.8px;}
+.field input{border:1.5px solid #E4E9F2;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Nunito',inherit;font-weight:600;color:#0D1B4B;background:#F5F7FA;transition:all .18s;}
+.field input:focus{outline:none;border-color:#3B6FE8;background:#fff;box-shadow:0 0 0 4px rgba(59,111,232,.12);}
+.field input::placeholder{color:#A0ADBF;font-weight:500}
+.btn-login{width:100%;background:linear-gradient(135deg,#3B6FE8 0%,#1A3AC8 100%);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;letter-spacing:.2px;font-family:'Nunito',inherit;box-shadow:0 6px 20px rgba(59,111,232,.4);transition:all .18s;}
+.btn-login:hover{background:linear-gradient(135deg,#2D5DD4 0%,#1230A8 100%);box-shadow:0 8px 28px rgba(59,111,232,.5);transform:translateY(-1px);}
+.btn-login:active{transform:translateY(0)}
+.btn-link{background:none;border:none;color:#3B6FE8;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',inherit;text-decoration:underline;padding:0;margin-top:14px;display:block;text-align:center;transition:color .15s;}
+.btn-link:hover{color:#1A3AC8;}
+.msg{border-radius:8px;padding:11px 14px;font-size:12.5px;font-weight:700;display:none;margin-top:12px;line-height:1.5;}
+.msg.err{background:#FEF2F2;color:#991B1B;border:1.5px solid rgba(229,53,53,.2);}
+.msg.ok{background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25);}
+.msg.info{background:#EBF1FF;color:#1A3A8F;border:1.5px solid rgba(59,111,232,.2);}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;}
+.divider span{font-size:11px;color:#A0ADBF;white-space:nowrap;font-weight:600;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#E4E9F2;}
+.back-link{background:none;border:none;color:#6B7A99;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',inherit;display:flex;align-items:center;gap:5px;margin-bottom:18px;padding:0;transition:color .15s;}
+.back-link:hover{color:#3B6FE8;}
+.login-footer{text-align:center;margin-top:20px;font-size:11px;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.3px;}
+
+/* Reset view */
+#view-reset{display:none;}
+.reset-steps{display:flex;gap:8px;margin-bottom:20px;}
+.step{flex:1;padding:8px;border-radius:8px;text-align:center;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:#F5F7FA;color:#A0ADBF;border:1.5px solid #E4E9F2;}
+.step.active{background:#EBF1FF;color:#3B6FE8;border-color:rgba(59,111,232,.3);}
+.step.done{background:#ECFDF5;color:#065F46;border-color:rgba(0,168,107,.25);}
+
+/* Solicitação pendente no admin */
+.reset-badge{display:inline-flex;align-items:center;gap:5px;background:#FFF7ED;color:#C2410C;border:1.5px solid #FED7AA;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;}
+</style>
+</head>
+<body>
+<div class="bg-grad"></div>
+<div class="bg-grafismo"></div>
+<div class="bg-grafismo-2"></div>
+
+<div class="login-wrap">
+  <div class="login-card">
+
+    <!-- ── VIEW LOGIN ── -->
+    <div id="view-login">
+      <div class="logo-area">
+        <img src="globo_logo.png" onerror="this.style.display='none'">
+        <h1>Orçamento Merchandising</h1>
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu.nome@g.globo" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')fazerLogin()">
+      </div>
+      <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+      <div class="msg err" id="err-login"></div>
+      <button class="btn-link" onclick="irParaReset()">Esqueci minha senha</button>
+    </div>
+
+    <!-- ── VIEW RESET ── -->
+    <div id="view-reset">
+      <button class="back-link" onclick="voltarLogin()">← Voltar ao login</button>
+      <div class="logo-area" style="margin-bottom:20px">
+        <h1 style="font-size:17px">Recuperar senha</h1>
+        <p>Informe seu e-mail cadastrado</p>
+      </div>
+
+      <div class="reset-steps">
+        <div class="step active" id="step1">1. E-mail</div>
+        <div class="step" id="step2">2. Envio</div>
+        <div class="step" id="step3">3. Redefinir</div>
+      </div>
+
+      <!-- Passo 1: digita e-mail -->
+      <div id="reset-p1">
+        <div class="field">
+          <label>Seu e-mail</label>
+          <input type="email" id="reset-email" placeholder="seu.nome@g.globo"
+            onkeydown="if(event.key==='Enter')solicitarReset()">
+        </div>
+        <button class="btn-login" onclick="solicitarReset()">Solicitar redefinição</button>
+        <div class="msg" id="msg-reset-p1"></div>
+      </div>
+
+      <!-- Passo 2: instruções de envio -->
+      <div id="reset-p2" style="display:none">
+
+        <!-- Opção A: notificar Admin via Outlook -->
+        <div style="background:#EBF1FF;border:1.5px solid rgba(59,111,232,.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
+          <p style="font-size:12px;font-weight:800;color:#1A3A8F;margin-bottom:4px">Opção 1 — Notificar o Administrador</p>
+          <p style="font-size:11.5px;color:#3B6FE8;margin-bottom:10px;line-height:1.5">Envie um e-mail ao Admin. Ele redefinirá sua senha e te informará o código de 6 dígitos.</p>
+          <button class="btn-login" style="padding:10px;font-size:13px" onclick="abrirOutlookReset()">✉️ Abrir Outlook Web</button>
+        </div>
+
+        <!-- Opção B: inserir token -->
+        <div style="background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:10px;padding:14px 16px">
+          <p style="font-size:12px;font-weight:800;color:#0D1B4B;margin-bottom:4px">Opção 2 — Já tenho o código</p>
+          <p style="font-size:11.5px;color:#6B7A99;margin-bottom:10px;line-height:1.5">Cole abaixo o código de 6 dígitos informado pelo Administrador.</p>
+          <div class="field" style="margin-bottom:10px">
+            <input type="text" id="reset-token-input" placeholder="000000"
+              style="text-align:center;font-size:22px;font-weight:800;letter-spacing:6px;font-family:'Nunito',inherit"
+              maxlength="6" onkeydown="if(event.key==='Enter')validarToken()">
+          </div>
+          <button class="btn-login" style="background:linear-gradient(135deg,#00A86B,#065F46);padding:10px;font-size:13px" onclick="validarToken()">
+            ✅ Confirmar código
+          </button>
+          <div class="msg" id="msg-token" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- Passo 3: nova senha -->
+      <div id="reset-p3" style="display:none">
+        <div class="msg ok" style="display:block;margin-bottom:16px">
+          ✅ Código válido! Defina sua nova senha.
+        </div>
+        <div class="field">
+          <label>Nova senha</label>
+          <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="field">
+          <label>Confirmar senha</label>
+          <input type="password" id="nova-senha-conf" placeholder="Repita a senha"
+            onkeydown="if(event.key==='Enter')confirmarNovaSenha()">
+        </div>
+        <button class="btn-login" onclick="confirmarNovaSenha()">💾 Salvar nova senha</button>
+        <div class="msg" id="msg-nova-senha" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+  </div>
+  <p class="login-footer">Orçamento Merchandising · Estúdios Globo</p>
+</div>
+
+<script>
+// ── Utils ─────────────────────────────────────────────────────────
+function getUsuarios() {
+  const pad = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin'}];
+  return JSON.parse(localStorage.getItem('orc_usuarios') || JSON.stringify(pad));
+}
+function saveUsuarios(u) { localStorage.setItem('orc_usuarios', JSON.stringify(u)); }
+function getSolicitacoes() { return JSON.parse(localStorage.getItem('orc_reset_sol') || '[]'); }
+function saveSolicitacoes(s) { localStorage.setItem('orc_reset_sol', JSON.stringify(s)); }
+function showMsg(id, tipo, txt) {
+  const el = document.getElementById(id);
+  el.className = 'msg ' + tipo; el.style.display = 'block'; el.innerHTML = txt;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────
+function fazerLogin() {
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const senha  = document.getElementById('senha').value;
+  const err    = document.getElementById('err-login');
+  err.style.display = 'none';
+  if (!email || !senha) { err.textContent='Preencha e-mail e senha.'; err.style.display='block'; return; }
+  const user = getUsuarios().find(u => u.email.toLowerCase()===email && u.senha===senha && u.ativo!==false);
+  if (!user) { err.textContent='E-mail ou senha incorretos, ou usuário inativo.'; err.style.display='block'; return; }
+  const sess = {email:user.email, nome:user.nome, perfil:user.perfil, _ts:Date.now()};
+  sessionStorage.setItem('orc_user', JSON.stringify(sess));
+  try { localStorage.setItem('orc_user_fallback', JSON.stringify(sess)); } catch(e) {}
+  const gestores = ['gestor_cc','gestor_criador','observador'];
+  window.location.replace(gestores.includes(user.perfil) ? 'gestor.html' : 'index.html');
+}
+
+// ── NAVEGAÇÃO RESET ───────────────────────────────────────────────
+function irParaReset() {
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-reset').style.display = 'block';
+}
+function voltarLogin() {
+  document.getElementById('view-reset').style.display = 'none';
+  document.getElementById('view-login').style.display = 'block';
+  // Limpa campos
+  ['reset-email','reset-token-input','nova-senha','nova-senha-conf'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  // Reset steps
+  ['reset-p1','reset-p2','reset-p3'].forEach((id,i) => {
+    document.getElementById(id).style.display = i===0 ? 'block' : 'none';
+  });
+  setStep(1);
+}
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('step'+i);
+    el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+  });
+}
+
+// ── PASSO 1: Solicitar reset ──────────────────────────────────────
+let _resetEmail = '';
+let _resetToken = '';
+
+function solicitarReset() {
+  const email = document.getElementById('reset-email').value.trim().toLowerCase();
+  if (!email) { showMsg('msg-reset-p1','err','Informe seu e-mail.'); return; }
+
+  const usuarios = getUsuarios();
+  const user = usuarios.find(u => u.email.toLowerCase() === email);
+  if (!user) {
+    showMsg('msg-reset-p1','err','E-mail não encontrado no sistema.');
+    return;
+  }
+  if (user.ativo === false) {
+    showMsg('msg-reset-p1','err','Usuário inativo. Contate o Administrador.');
+    return;
+  }
+
+  // Gera token de 6 dígitos
+  _resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+  _resetEmail = email;
+
+  // Registra solicitação no localStorage (Admin vê no painel)
+  const sols = getSolicitacoes();
+  const idx  = sols.findIndex(s => s.email === email);
+  const sol  = {
+    email, nome: user.nome,
+    token: _resetToken,
+    solicitadoEm: new Date().toLocaleString('pt-BR'),
+    status: 'pendente'
+  };
+  if (idx >= 0) sols[idx] = sol; else sols.push(sol);
+  saveSolicitacoes(sols);
+
+  // Avança para passo 2
+  document.getElementById('reset-p1').style.display = 'none';
+  document.getElementById('reset-p2').style.display = 'block';
+  setStep(2);
+}
+
+// ── PASSO 2: Abrir Outlook com e-mail pré-formatado ───────────────
+function abrirOutlookReset() {
+  // Busca admin para pegar e-mail
+  const admin = getUsuarios().find(u => u.perfil === 'admin');
+  const adminEmail = admin ? admin.email : 'admin@g.globo';
+
+  const assunto = encodeURIComponent('Solicitação de Redefinição de Senha — Orçamento Merchandising');
+  const owaDest = encodeURIComponent(adminEmail);
+  const owaUrl  = 'https://outlook.office.com/mail/deeplink/compose?to='+owaDest+'&subject='+assunto;
+  window.open(owaUrl, '_blank');
+
+  // Corpo para copiar
+  const corpo = `Olá,\n\nSolicito a redefinição de senha para o usuário:\n\nE-mail: ${_resetEmail}\nToken: ${_resetToken}\n\nPor favor, utilize o token acima para liberar a redefinição no painel Admin, ou informe-me o token para que eu possa redefinir minha senha diretamente.\n\nObrigado.`;
+
+  navigator.clipboard.writeText(corpo).catch(() => {});
+
+  // Cria overlay com corpo do e-mail para copiar
+  const ov = document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;padding:20px';
+  ov.innerHTML=`<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <h3 style="font-size:14px;font-weight:800;color:#0D1B4B;margin-bottom:8px">✉️ Outlook aberto!</h3>
+    <p style="font-size:12px;color:#6B7A99;margin-bottom:12px;line-height:1.5">Cole o texto abaixo no corpo do e-mail e envie ao Admin:</p>
+    <textarea readonly style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:11.5px;font-family:Nunito,sans-serif;height:130px;resize:none;background:#F5F7FA;color:#0D1B4B">${corpo}</textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="navigator.clipboard.writeText(document.querySelector('textarea').value).then(()=>{this.textContent='✅ Copiado!';this.style.background='#00A86B'})" style="flex:1;background:#3B6FE8;color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">📋 Copiar</button>
+      <button onclick="this.closest('div').parentElement.remove()" style="background:#F5F7FA;color:#6B7A99;border:1.5px solid #E4E9F2;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">Fechar</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+
+// ── PASSO 2: Validar token ────────────────────────────────────────
+function validarToken() {
+  const inp = document.getElementById('reset-token-input').value.trim();
+  if (!inp) { showMsg('msg-token','err','Informe o código.'); return; }
+
+  const sols = getSolicitacoes();
+  // Aceita token pendente OU já concluído pelo Admin (usuário ainda pode trocar)
+  const sol = sols.find(s => s.token === inp && (s.status === 'pendente' || s.status === 'concluido'));
+
+  if (!sol) {
+    showMsg('msg-token','err','Código inválido ou cancelado. Solicite uma nova redefinição.');
+    return;
+  }
+
+  _resetEmail = sol.email;
+  _resetToken = inp;
+
+  // Se Admin já resetou, avisa mas permite o usuário definir a própria senha
+  document.getElementById('reset-p2').style.display = 'none';
+  document.getElementById('reset-p3').style.display = 'block';
+  setStep(3);
+
+  if (sol.status === 'concluido') {
+    showMsg('msg-nova-senha','info','ℹ️ O Admin já redefiniu sua senha. Você pode definir uma nova senha pessoal agora.');
+  }
+}
+
+// ── PASSO 3: Confirmar nova senha ─────────────────────────────────
+function confirmarNovaSenha() {
+  const nova  = document.getElementById('nova-senha').value;
+  const conf  = document.getElementById('nova-senha-conf').value;
+  if (!nova || nova.length < 6) { showMsg('msg-nova-senha','err','Senha deve ter no mínimo 6 caracteres.'); return; }
+  if (nova !== conf)             { showMsg('msg-nova-senha','err','As senhas não coincidem.'); return; }
+
+  // Salva nova senha
+  const usuarios = getUsuarios();
+  const u = usuarios.find(x => x.email.toLowerCase() === _resetEmail.toLowerCase());
+  if (!u) { showMsg('msg-nova-senha','err','Usuário não encontrado.'); return; }
+  u.senha = nova;
+  saveUsuarios(usuarios);
+
+  // Marca solicitação como concluída
+  const sols = getSolicitacoes();
+  const sol  = sols.find(s => s.token === _resetToken);
+  if (sol) { sol.status = 'concluido'; sol.concluidoEm = new Date().toLocaleString('pt-BR'); sol.token = ''; } // invalida token após uso
+  saveSolicitacoes(sols);
+
+  showMsg('msg-nova-senha','ok','✅ Senha redefinida com sucesso! Redirecionando para o login...');
+  setTimeout(() => voltarLogin(), 2200);
+}
+
+// ── AUTO-LOGIN ────────────────────────────────────────────────────
+const sessAtiva = JSON.parse(sessionStorage.getItem('orc_user')||localStorage.getItem('orc_user_fallback')||'null');
+if (sessAtiva && sessAtiva.email) {
+  const gestores = ['gestor_cc','gestor_criador','observador'];
+  window.location.replace(gestores.includes(sessAtiva.perfil) ? 'gestor.html' : 'index.html');
+}
+
+// ── TOKEN VIA URL (link direto) ───────────────────────────────────
+const urlToken = new URLSearchParams(window.location.search).get('token');
+if (urlToken) {
+  irParaReset();
+  document.getElementById('reset-token-input').value = urlToken;
+  document.getElementById('reset-p1').style.display = 'none';
+  document.getElementById('reset-p2').style.display = 'block';
+  setStep(2);
+}
+</script>
+</body>
+</html>

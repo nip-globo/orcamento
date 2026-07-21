@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Admin — Gestão de Usuários e Perfis</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B2A4A,#2563EB);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.header h1{color:#fff;font-size:16px;font-weight:700}
+.header-right{display:flex;align-items:center;gap:10px}
+.btn-back{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:6px 13px;color:#fff;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer}
+.btn-back:hover{background:rgba(255,255,255,.25)}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:#fff;border-bottom:2px solid #E2E8F0;padding:0 24px}
+.tab{padding:12px 20px;font-size:13px;font-weight:600;color:#64748B;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tab:hover{color:#2563EB}
+.tab.active{color:#2563EB;border-bottom-color:#2563EB}
+.tab-count{background:#EF4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:6px}
+
+.container{max-width:1000px;margin:20px auto;padding:0 24px;display:flex;flex-direction:column;gap:16px}
+
+/* Cards */
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 8px rgba(0,0,0,.07);overflow:hidden}
+.card-header{background:#1B2A4A;padding:11px 18px;display:flex;align-items:center;justify-content:space-between}
+.card-header h2{color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.card-body{padding:18px}
+
+/* Form */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:10px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:'Nunito',inherit;background:#F8FAFC;transition:border-color .15s}
+.field input:focus,.field select:focus{outline:none;border-color:#2563EB;background:#fff}
+.btn-add{background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px}
+.btn-add:hover{background:#1D4ED8}
+
+/* Tabela */
+.utable{width:100%;border-collapse:collapse;font-size:12px}
+.utable th{background:#1B2A4A;color:#fff;padding:8px 12px;text-align:left;font-size:11px;font-weight:700;white-space:nowrap}
+.utable td{padding:8px 12px;border-bottom:1px solid #F1F5F9;vertical-align:middle}
+.utable tr:nth-child(even) td{background:#F8FAFC}
+.utable tr:hover td{background:#EFF6FF}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
+.b-admin{background:#FFF7ED;color:#EA580C}
+.b-aprovador{background:#F0FFF4;color:#16A34A}
+.b-criador{background:#EFF6FF;color:#2563EB}
+.b-observador{background:#F5F3FF;color:#7C3AED}
+.b-gestor_cc{background:#FFF0F6;color:#BE185D}
+.b-gestor_criador{background:#FEF9C3;color:#854D0E}
+.b-pendente{background:#FFF7ED;color:#EA580C;border:1px dashed #FED7AA}
+
+/* Ações */
+.btn-acao{border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-weight:600;transition:opacity .15s}
+.btn-acao:hover{opacity:.8}
+.btn-ativar{background:#F0FFF4;color:#15803D}
+.btn-desativar{background:#FEF2F2;color:#B91C1C}
+.btn-aprovar-user{background:#16A34A;color:#fff}
+.btn-rejeitar-user{background:#EF4444;color:#fff}
+.btn-excluir{background:#F1F5F9;color:#64748B}
+.btn-senha{background:#EFF6FF;color:#2563EB}
+
+/* Status */
+.sbox{padding:10px 14px;border-radius:8px;font-size:12.5px;display:none;margin-top:10px}
+.sbox.ok{background:#F0FFF4;color:#15803D;border:1px solid #86EFAC}
+.sbox.err{background:#FEF2F2;color:#B91C1C;border:1px solid #FCA5A5}
+.empty{text-align:center;color:#94A3B8;padding:20px;font-style:italic}
+
+/* Vincular criadores */
+.vinculo-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F1F5F9}
+.vinculo-row:last-child{border-bottom:none}
+
+.footer{background:#1B2A4A;color:rgba(255,255,255,.6);text-align:center;padding:10px;font-size:10.5px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>👤 Gestão de Usuários e Perfis</h1>
+  <div class="header-right">
+    <span id="userInfo" style="color:rgba(255,255,255,.7);font-size:12px"></span>
+    <a href="index.html" class="btn-back">← Voltar</a>
+    <a href="#" onclick="logout()" class="btn-back" style="background:rgba(239,68,68,.3)">Sair</a>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('usuarios')">👥 Usuários <span id="cnt-usuarios" class="tab-count" style="display:none"></span></div>
+  <div class="tab" onclick="showTab('pendentes')">⏳ Pendentes <span id="cnt-pendentes" class="tab-count">0</span></div>
+  <div class="tab" onclick="showTab('vinculos')">🔗 Vínculos</div>
+  <div class="tab" onclick="showTab('resets')">🔑 Redefinições <span id="cnt-resets" class="tab-count" style="display:none;background:#EA580C">0</span></div>
+  <div class="tab" onclick="showTab('delegacoes')">🔁 Delegações <span id="cnt-del" class="tab-count" style="display:none;background:#7C3AED">0</span></div>
+</div>
+
+<div class="container">
+
+<!-- ABA: Usuários -->
+<div id="tab-usuarios">
+  <div class="card">
+    <div class="card-header"><h2>➕ Adicionar Usuário</h2></div>
+    <div class="card-body">
+      <div class="grid g4">
+        <div class="field"><label>Nome</label><input id="n_nome" placeholder="João Silva"></div>
+        <div class="field"><label>E-mail</label><input id="n_email" type="email" placeholder="joao@g.globo"></div>
+        <div class="field"><label>Senha inicial</label><input id="n_senha" type="password" placeholder="Mín. 6 chars"></div>
+        <div class="field"><label>Perfil</label>
+          <select id="n_perfil" onchange="mostrarCamposExtra()">
+            <option value="criador">Criador</option>
+            <option value="aprovador">Aprovador</option>
+            <option value="observador">Observador</option>
+            <option value="gestor_cc">Gestor CC</option>
+            <option value="gestor_criador">Gestor de Criadores</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+      <div id="campos-extra" style="margin-top:12px;display:none">
+        <div class="grid g2">
+          <div class="field" id="campo-cc" style="display:none">
+            <label>Centro de Custo vinculado (Gestor CC)</label>
+            <select id="n_cc" style="border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:'Nunito',inherit;background:#F8FAFC">
+              <option value="">Selecione o CC...</option>
+            </select>
+          </div>
+          <div class="field" id="campo-gestor-aprov" style="display:none">
+            <label>Precisa de aprovação do Gestor CC?</label>
+            <select id="n_precisa_aprovacao">
+              <option value="sim">Sim — aguardar aprovação do Gestor CC</option>
+              <option value="nao">Não — ativar diretamente</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-add" onclick="adicionarUsuario()">+ Adicionar</button>
+      <div class="sbox" id="sbox-add"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>👥 Usuários Ativos</h2></div>
+    <div class="card-body" style="padding:0">
+      <div id="lista-usuarios"><div class="empty">Carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA: Pendentes -->
+<div id="tab-pendentes" style="display:none">
+  <div class="card">
+    <div class="card-header"><h2>⏳ Aprovadores aguardando validação do Gestor CC</h2></div>
+    <div class="card-body" style="padding:0">
+      <div id="lista-pendentes"><div class="empty">Nenhum usuário pendente.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA: Vínculos -->
+<div id="tab-vinculos" style="display:none">
+  <!-- Gestor CC → CCs -->
+  <div class="card">
+    <div class="card-header"><h2>🏢 Gestores CC — Centros de Custo vinculados</h2></div>
+    <div class="card-body" style="padding:0"><div id="lista-gestores-cc" style="padding:8px 0"></div></div>
+  </div>
+
+  <!-- Gestor Criador → Criadores -->
+  <div class="card">
+    <div class="card-header"><h2>👥 Gestores de Criadores — Vínculos</h2></div>
+    <div class="card-body">
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="field"><label>Gestor de Criadores</label>
+          <select id="v_gestor" onchange="carregarVinculosCriadores()">
+            <option value="">Selecione o gestor...</option>
+          </select>
+        </div>
+        <div class="field"><label>Criador para vincular</label>
+          <select id="v_criador"><option value="">Selecione o criador...</option></select>
+        </div>
+      </div>
+      <button class="btn-add" onclick="vincularCriador()" style="margin-right:8px">+ Vincular</button>
+      <div id="vinculos-criadores" style="margin-top:12px"></div>
+      <div class="sbox" id="sbox-vinculos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA: Redefinições de Senha -->
+<div id="tab-resets" style="display:none">
+  <div class="card">
+    <div class="card-header"><h2>🔑 Solicitações de Redefinição de Senha</h2></div>
+    <div class="card-body" style="padding:0">
+      <div id="lista-resets" style="padding:8px 0"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABA: Delegações -->
+<div id="tab-delegacoes" style="display:none">
+  <div class="card">
+    <div class="card-header" style="justify-content:space-between">
+      <h2>🔁 Delegações de Poderes</h2>
+      <button onclick="abrirModalAdminDel()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer">+ Nova Delegação</button>
+    </div>
+    <div class="card-body" style="padding:0"><div id="lista-delegacoes"></div></div>
+  </div>
+</div>
+
+<!-- Modal Admin Delegação -->
+<div id="modal-admin-del" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;align-items:center;justify-content:center;font-family:'Nunito',system-ui,sans-serif">
+  <div style="background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);width:100%;max-width:440px;padding:28px">
+    <h2 style="font-size:15px;font-weight:800;color:#0D1B4B;margin-bottom:18px">🔁 Nova Delegação</h2>
+    <div class="field" style="margin-bottom:12px"><label>Perfil</label>
+      <select id="adel-perfil" onchange="atualizarOpcoesAdel()" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit">
+        <option value="criador">Criador</option>
+        <option value="aprovador">Aprovador</option>
+      </select></div>
+    <div class="field" style="margin-bottom:12px"><label>Delegante (quem vai delegar)</label>
+      <select id="adel-de" onchange="atualizarOpcoesAdel()" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"><option value="">Selecione...</option></select></div>
+    <div class="field" style="margin-bottom:12px"><label>Delegado (quem vai receber)</label>
+      <select id="adel-para" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"><option value="">Selecione...</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="field"><label>Data início</label><input type="date" id="adel-ini" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"></div>
+      <div class="field"><label>Data fim</label><input type="date" id="adel-fim" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"></div>
+    </div>
+    <div class="field" style="margin-bottom:16px"><label>Motivo (opcional)</label>
+      <input type="text" id="adel-motivo" placeholder="Ex: Férias, licença..." style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"></div>
+    <div id="adel-err" style="display:none;background:#FEF2F2;color:#991B1B;border-radius:7px;padding:9px;font-size:12px;font-weight:700;margin-bottom:12px"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="confirmarAdminDel()" style="flex:1;background:#3B6FE8;color:#fff;border:none;border-radius:9px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',inherit">✅ Criar Delegação</button>
+      <button onclick="document.getElementById('modal-admin-del').style.display='none'" style="background:#F1F5F9;color:#64748B;border:1.5px solid #E4E9F2;border-radius:9px;padding:12px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',inherit">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">Orçamento Merchandising</div>
+
+<script src="bases.js"></script>
+<script src="spbridge.js"></script>
+<script>
+// ── Sessão ────────────────────────────────────────────────────────
+const sess = JSON.parse(sessionStorage.getItem('orc_user')||'null');
+if (!sess || sess.perfil !== 'admin') window.location.href = 'index.html';
+document.getElementById('userInfo').textContent = sess?.nome + ' · Admin';
+
+function logout(){ sessionStorage.removeItem('orc_user'); window.location.href='login.html'; }
+
+// ── Dados ─────────────────────────────────────────────────────────
+const PERFIS_LABELS = {
+  admin:'Admin', aprovador:'Aprovador', criador:'Criador',
+  observador:'Observador', gestor_cc:'Gestor CC', gestor_criador:'Gestor Criadores'
+};
+const PERFIS_BADGES = {
+  admin:'b-admin', aprovador:'b-aprovador', criador:'b-criador',
+  observador:'b-observador', gestor_cc:'b-gestor_cc', gestor_criador:'b-gestor_criador'
+};
+const USUARIOS_DEFAULT = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin',ativo:true}];
+
+function getUsers(){ return JSON.parse(localStorage.getItem('orc_usuarios')||JSON.stringify(USUARIOS_DEFAULT)); }
+
+// ── SP SYNC (admin) ───────────────────────────────────────────────
+const SP_SITE_A = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
+var _spReadyA=false, _spTokenA=null;
+async function _spDigestA(){
+  if(_spTokenA) return _spTokenA;
+  try{
+    const r=await fetch(SP_SITE_A+'/_api/contextinfo',{method:'POST',credentials:'include',headers:{'Accept':'application/json;odata=verbose'}});
+    if(!r.ok) return null;
+    const d=await r.json(); _spTokenA=d.d.GetContextWebInformation.FormDigestValue;
+    setTimeout(()=>{_spTokenA=null;},1500000); return _spTokenA;
+  }catch(e){return null;}
+}
+async function _spGetA(lista,titulo){
+  try{
+    const r=await fetch(SP_SITE_A+`/_api/web/lists/getbytitle('${lista}')/items?$filter=Title eq '${titulo}'&$select=ID,Dados&$top=1`,{credentials:'include',headers:{'Accept':'application/json;odata=verbose'}});
+    if(!r.ok) return null;
+    const d=await r.json(); const items=d.d.results;
+    if(!items||!items.length) return null;
+    return {id:items[0].ID,valor:items[0].Dados};
+  }catch(e){return null;}
+}
+async function _spSetA(lista,titulo,valor){
+  const digest=await _spDigestA(); if(!digest) return;
+  try{
+    const ex=await _spGetA(lista,titulo);
+    const body=JSON.stringify({'__metadata':{'type':`SP.Data.${lista}ListItem`},'Title':titulo,'Dados':valor});
+    const url=ex ? SP_SITE_A+`/_api/web/lists/getbytitle('${lista}')/items(${ex.id})` : SP_SITE_A+`/_api/web/lists/getbytitle('${lista}')/items`;
+    const headers={'Accept':'application/json;odata=verbose','Content-Type':'application/json;odata=verbose','X-RequestDigest':digest,...(ex?{'X-HTTP-Method':'MERGE','IF-MATCH':'*'}:{})};
+    await fetch(url,{method:'POST',credentials:'include',headers,body});
+  }catch(e){}
+}
+async function spSaveAdmin(key,lista,titulo,value){
+  try{localStorage.setItem(key,value);}catch(e){}
+  try{
+    const r=await fetch(SP_SITE_A+'/_api/contextinfo',{method:'POST',credentials:'include',headers:{'Accept':'application/json;odata=verbose'}});
+    _spReadyA=r.ok; if(_spReadyA) _spSetA(lista,titulo,value);
+  }catch(e){}
+}
+
+function saveUsers(u){ const j=JSON.stringify(u); localStorage.setItem('orc_usuarios',j); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_usuarios',j); else spSaveAdmin('orc_usuarios','OrcUsuarios','orc_usuarios',j); }
+function getVinculos(){ return JSON.parse(localStorage.getItem('orc_vinculos')||'{}'); }
+function saveVinculos(v){ localStorage.setItem('orc_vinculos',JSON.stringify(v)); }
+
+// ── Tabs ──────────────────────────────────────────────────────────
+function showTab(id) {
+  var tabs = ['usuarios','pendentes','vinculos','resets','delegacoes'];
+  tabs.forEach(function(t){
+    var el = document.getElementById('tab-'+t);
+    if(el) el.style.display = t===id?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(function(el,i){
+    el.classList.toggle('active', el.onclick && el.onclick.toString().includes("'"+tabs[i]+"'") || el.getAttribute('onclick') === "showTab('"+tabs[i]+"')");
+  });
+  // Simpler active toggle
+  document.querySelectorAll('.tab').forEach(function(el){
+    var match = el.getAttribute('onclick') === "showTab('"+id+"')";
+    el.classList.toggle('active', match);
+  });
+  if(id==='vinculos') renderVinculos();
+  if(id==='resets') renderResets();
+  if(id==='delegacoes') renderDelegacoes();
+}
+
+// ── Campos extra no form ──────────────────────────────────────────
+function mostrarCamposExtra() {
+  const perfil = document.getElementById('n_perfil').value;
+  const extra  = document.getElementById('campos-extra');
+  const campoCC= document.getElementById('campo-cc');
+  const campoAp= document.getElementById('campo-gestor-aprov');
+
+  extra.style.display   = (perfil==='gestor_cc'||perfil==='aprovador') ? 'block' : 'none';
+  campoCC.style.display = perfil==='gestor_cc' ? 'block' : 'none';
+  campoAp.style.display = perfil==='aprovador' ? 'block' : 'none';
+
+  if (perfil==='gestor_cc') {
+    const sel = document.getElementById('n_cc');
+    const ccs = typeof BASE_CC!=='undefined' ? BASE_CC : [];
+    sel.innerHTML = '<option value="">Selecione o CC...</option>' +
+      ccs.map(c=>{ const nm=typeof c==='string'?c:c.nome; return `<option value="${nm}">${nm}</option>`; }).join('');
+  }
+}
+
+// ── Adicionar usuário ─────────────────────────────────────────────
+function adicionarUsuario() {
+  const nome   = document.getElementById('n_nome').value.trim();
+  const email  = document.getElementById('n_email').value.trim().toLowerCase();
+  const senha  = document.getElementById('n_senha').value;
+  const perfil = document.getElementById('n_perfil').value;
+  const sbox   = document.getElementById('sbox-add');
+
+  if (!nome||!email||!senha){ show(sbox,'err','Preencha todos os campos.'); return; }
+  if (senha.length<6){ show(sbox,'err','Senha mínima: 6 caracteres.'); return; }
+
+  const users = getUsers();
+  if (users.find(u=>u.email===email)){ show(sbox,'err','E-mail já cadastrado.'); return; }
+
+  const novoUser = {
+    email, senha, nome, perfil,
+    ativo: perfil!=='aprovador' || document.getElementById('n_precisa_aprovacao')?.value==='nao',
+    pendente: perfil==='aprovador' && document.getElementById('n_precisa_aprovacao')?.value==='sim',
+    ccVinculado: perfil==='gestor_cc' ? (()=>{
+      const raw = document.getElementById('n_cc')?.value || '';
+      // Decodifica entidades HTML que o browser pode ter no value do option
+      const txt = document.createElement('textarea');
+      txt.innerHTML = raw;
+      return txt.value;
+    })() : '',
+    criadoEm: new Date().toLocaleString('pt-BR'),
+  };
+
+  users.push(novoUser);
+  saveUsers(users);
+  renderTudo();
+// Inicializa SP Bridge no admin
+if (window.SP_BRIDGE) {
+  window.SP_BRIDGE.init().then(function(ok) {
+    if (ok) {
+      // Recarrega usuários do SP
+      renderTudo();
+      var hdr = document.querySelector('.hdr');
+      if (hdr) {
+        var spTag = document.createElement('span');
+        spTag.style.cssText = 'font-size:10px;color:#16A34A;font-weight:700;padding:2px 8px;background:#ECFDF5;border-radius:10px;margin-left:8px';
+        spTag.textContent = '● SharePoint';
+        hdr.appendChild(spTag);
+      }
+    }
+  });
+}
+  ['n_nome','n_email','n_senha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('campos-extra').style.display='none';
+  show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
+}
+
+// ── Render usuários ───────────────────────────────────────────────
+function renderUsuarios() {
+  const users  = getUsers().filter(u=>!u.pendente);
+  const el     = document.getElementById('lista-usuarios');
+  if (!users.length){ el.innerHTML='<div class="empty">Nenhum usuário.</div>'; return; }
+  el.innerHTML = `<table class="utable"><thead><tr>
+    <th>Nome</th><th>E-mail</th><th>Perfil</th><th>CC / Info</th><th>Status</th><th>Criado em</th><th>Ações</th>
+  </tr></thead><tbody>${users.map(u=>`<tr>
+    <td><strong>${u.nome}</strong></td>
+    <td style="font-size:11px">${u.email}</td>
+    <td><span class="badge ${PERFIS_BADGES[u.perfil]||'b-criador'}">${PERFIS_LABELS[u.perfil]||u.perfil}</span></td>
+    <td style="font-size:11px;color:#64748B">${u.ccVinculado||'—'}</td>
+    <td><span style="font-size:11px;font-weight:600;color:${u.ativo!==false?'#16A34A':'#94A3B8'}">${u.ativo!==false?'✓ Ativo':'✗ Inativo'}</span></td>
+    <td style="font-size:11px;color:#94A3B8">${u.criadoEm||'—'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn-acao ${u.ativo!==false?'btn-desativar':'btn-ativar'}" onclick="toggleAtivo('${u.email}')">${u.ativo!==false?'Desativar':'Ativar'}</button>
+      <button class="btn-acao btn-senha" onclick="resetarSenha('${u.email}')" style="margin-left:4px">🔑 Senha</button>
+      <button class="btn-acao btn-excluir" onclick="excluir('${u.email}')" style="margin-left:4px">Excluir</button>
+    </td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+// ── Render pendentes ──────────────────────────────────────────────
+function renderPendentes() {
+  const pendentes = getUsers().filter(u=>u.pendente);
+  const el = document.getElementById('lista-pendentes');
+  const badge = document.getElementById('cnt-pendentes');
+  badge.textContent = pendentes.length;
+  badge.style.display = pendentes.length ? 'inline' : 'none';
+
+  if (!pendentes.length){ el.innerHTML='<div class="empty">Nenhum usuário pendente.</div>'; return; }
+  el.innerHTML = `<table class="utable"><thead><tr>
+    <th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Cadastrado em</th><th>Ações Admin</th>
+  </tr></thead><tbody>${pendentes.map(u=>`<tr>
+    <td><strong>${u.nome}</strong></td>
+    <td style="font-size:11px">${u.email}</td>
+    <td><span class="badge b-pendente">⏳ ${PERFIS_LABELS[u.perfil]||u.perfil} Pendente</span></td>
+    <td style="font-size:11px;color:#EA580C">Aguardando aprovação Gestor CC</td>
+    <td style="font-size:11px;color:#94A3B8">${u.criadoEm||'—'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn-acao btn-aprovar-user" onclick="aprovarUser('${u.email}')">✅ Aprovar</button>
+      <button class="btn-acao btn-rejeitar-user" onclick="rejeitarUser('${u.email}')" style="margin-left:4px">❌ Rejeitar</button>
+    </td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+// ── Render vínculos ───────────────────────────────────────────────
+function renderVinculos() {
+  // Gestores CC
+  const gestoresCC = getUsers().filter(u=>u.perfil==='gestor_cc'&&u.ativo!==false);
+  const elCC = document.getElementById('lista-gestores-cc');
+  if (!gestoresCC.length) { elCC.innerHTML='<div class="empty">Nenhum Gestor CC cadastrado.</div>'; }
+  else {
+    elCC.innerHTML = gestoresCC.map(g=>`
+      <div style="padding:10px 18px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;gap:12px">
+        <div style="flex:1">
+          <strong style="font-size:12.5px">${g.nome}</strong>
+          <span style="font-size:11px;color:#64748B;margin-left:8px">${g.email}</span>
+        </div>
+        <div style="font-size:12px;color:#1B2A4A;font-weight:600">${g.ccVinculado||'<span style="color:#94A3B8">Sem CC vinculado</span>'}</div>
+      </div>`).join('');
+  }
+
+  // Gestores Criadores
+  const gestoresCr = getUsers().filter(u=>u.perfil==='gestor_criador'&&u.ativo!==false);
+  const criadores  = getUsers().filter(u=>u.perfil==='criador'&&u.ativo!==false);
+  const selG = document.getElementById('v_gestor');
+  const selC = document.getElementById('v_criador');
+  selG.innerHTML = '<option value="">Selecione o gestor...</option>' +
+    gestoresCr.map(g=>`<option value="${g.email}">${g.nome}</option>`).join('');
+  selC.innerHTML = '<option value="">Selecione o criador...</option>' +
+    criadores.map(c=>`<option value="${c.email}">${c.nome} (${c.email})</option>`).join('');
+}
+
+function carregarVinculosCriadores() {
+  const gestor = document.getElementById('v_gestor').value;
+  const el     = document.getElementById('vinculos-criadores');
+  if (!gestor) { el.innerHTML=''; return; }
+  const vinculos  = getVinculos();
+  const lista     = vinculos[gestor] || [];
+  const users     = getUsers();
+  if (!lista.length) { el.innerHTML='<div style="color:#94A3B8;font-size:12px;padding:8px 0">Nenhum criador vinculado.</div>'; return; }
+  el.innerHTML = lista.map(email=>{
+    const u = users.find(x=>x.email===email);
+    return `<div class="vinculo-row">
+      <span style="font-size:12.5px;flex:1"><strong>${u?.nome||email}</strong> <span style="color:#64748B;font-size:11px">${email}</span></span>
+      <button class="btn-acao btn-excluir" onclick="desvincularCriador('${gestor}','${email}')">Desvincular</button>
+    </div>`;
+  }).join('');
+}
+
+function vincularCriador() {
+  const gestor  = document.getElementById('v_gestor').value;
+  const criador = document.getElementById('v_criador').value;
+  const sbox    = document.getElementById('sbox-vinculos');
+  if (!gestor||!criador){ show(sbox,'err','Selecione o gestor e o criador.'); return; }
+  const vinculos = getVinculos();
+  if (!vinculos[gestor]) vinculos[gestor]=[];
+  if (vinculos[gestor].includes(criador)){ show(sbox,'err','Já vinculado.'); return; }
+  vinculos[gestor].push(criador);
+  saveVinculos(vinculos);
+  carregarVinculosCriadores();
+  show(sbox,'ok','✅ Criador vinculado com sucesso!');
+}
+
+function desvincularCriador(gestor, criador) {
+  if (!confirm('Desvincular este criador?')) return;
+  const vinculos = getVinculos();
+  vinculos[gestor] = (vinculos[gestor]||[]).filter(e=>e!==criador);
+  saveVinculos(vinculos);
+  carregarVinculosCriadores();
+}
+
+// ── Ações de usuário ──────────────────────────────────────────────
+function toggleAtivo(email) {
+  const users=getUsers(); const u=users.find(x=>x.email===email);
+  if(u) u.ativo=!u.ativo; saveUsers(users); renderTudo();
+}
+function excluir(email) {
+  if(email==='admin@g.globo'){alert('Admin principal não pode ser excluído.');return;}
+  if(!confirm(`Excluir ${email}?`))return;
+  saveUsers(getUsers().filter(u=>u.email!==email)); renderTudo();
+}
+function aprovarUser(email) {
+  const users=getUsers(); const u=users.find(x=>x.email===email);
+  if(u){ u.pendente=false; u.ativo=true; } saveUsers(users); renderTudo();
+}
+function rejeitarUser(email) {
+  if(!confirm('Rejeitar e excluir este cadastro?'))return;
+  saveUsers(getUsers().filter(u=>u.email!==email)); renderTudo();
+}
+function resetarSenha(email) {
+  const nova=prompt(`Nova senha para ${email} (mín. 6 caracteres):`);
+  if(!nova||nova.length<6){alert('Senha inválida.');return;}
+  const users=getUsers(); const u=users.find(x=>x.email===email);
+  if(u){ u.senha=nova; saveUsers(users); alert('✅ Senha redefinida!'); }
+}
+
+// ── Utils ─────────────────────────────────────────────────────────
+function show(el,tipo,msg){ el.className='sbox '+tipo; el.style.display='block'; el.textContent=msg; }
+function getSolicitacoes() { return JSON.parse(localStorage.getItem('orc_reset_sol')||'[]'); }
+function saveSolicitacoes(s) { const j=JSON.stringify(s); localStorage.setItem('orc_reset_sol',j); spSaveAdmin('orc_reset_sol','OrcConfig','orc_reset_sol',j); }
+
+function renderResets() {
+  const sols = getSolicitacoes();
+  const pendentes = sols.filter(s => s.status === 'pendente');
+  const cnt = document.getElementById('cnt-resets');
+  if (cnt) {
+    cnt.textContent = pendentes.length;
+    cnt.style.display = pendentes.length ? 'inline-flex' : 'none';
+  }
+
+  const el = document.getElementById('lista-resets');
+  if (!el) return;
+
+  if (!sols.length) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:#94A3B8;font-style:italic">Nenhuma solicitação de redefinição.</div>';
+    return;
+  }
+
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr style="background:#3B6FE8">
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">Usuário</th>
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">E-mail</th>
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">Solicitado em</th>
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">Status</th>
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">Token</th>
+      <th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">Ações</th>
+    </tr></thead><tbody>
+    ${sols.slice().reverse().map((s,i) => {
+      const isPend = s.status === 'pendente';
+      const bg = i%2===0?'#fff':'#F8FAFC';
+      const stBadge = isPend
+        ? '<span style="background:#FFF7ED;color:#C2410C;border:1.5px solid #FED7AA;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:800">⏳ Pendente</span>'
+        : '<span style="background:#ECFDF5;color:#065F46;border:1.5px solid #BBF7D0;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:800">✅ Concluído</span>';
+      const tokenCell = isPend
+        ? `<span style="font-family:monospace;font-size:13px;font-weight:800;color:#1A3A8F;background:#EBF1FF;padding:3px 8px;border-radius:6px;letter-spacing:2px">${s.token}</span>`
+        : '<span style="color:#CBD5E1;font-size:12px">—</span>';
+      const acoes = isPend ? `
+        <button onclick="resetarSenhaAdmin('${s.email}','${s.token}')" style="background:#3B6FE8;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px;font-family:inherit">🔑 Resetar</button>
+        <button onclick="cancelarReset('${s.token}')" style="background:#FEF2F2;color:#991B1B;border:1.5px solid #FECACA;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">✕ Cancelar</button>
+      ` : '<span style="font-size:11px;color:#94A3B8">' + (s.concluidoEm||'') + '</span>';
+      return `<tr style="background:${bg}">
+        <td style="padding:8px 12px;font-weight:700">${s.nome||s.email}</td>
+        <td style="padding:8px 12px;font-size:12px;color:#6B7A99">${s.email}</td>
+        <td style="padding:8px 12px;font-size:12px;color:#6B7A99">${s.solicitadoEm||'—'}</td>
+        <td style="padding:8px 12px">${stBadge}</td>
+        <td style="padding:8px 12px">${tokenCell}</td>
+        <td style="padding:8px 12px">${acoes}</td>
+      </tr>`;
+    }).join('')}
+    </tbody></table>`;
+}
+
+function resetarSenhaAdmin(email, token) {
+  const nova = prompt('Nova senha para ' + email + ' (mínimo 6 caracteres):');
+  if (!nova || nova.length < 6) { alert('Senha inválida.'); return; }
+  const users = getUsers();
+  const u = users.find(x => x.email === email);
+  if (u) { u.senha = nova; saveUsers(users); }
+  // Marca como concluído
+  const sols = getSolicitacoes();
+  const sol  = sols.find(s => s.token === token);
+  if (sol) { sol.status = 'concluido'; sol.concluidoEm = new Date().toLocaleString('pt-BR'); }
+  saveSolicitacoes(sols);
+  alert('✅ Senha de ' + email + ' redefinida! Informe a nova senha ao usuário.');
+  renderResets();
+}
+
+function cancelarReset(token) {
+  if (!confirm('Cancelar esta solicitação de redefinição?')) return;
+  const sols = getSolicitacoes();
+  const sol  = sols.find(s => s.token === token);
+  if (sol) { sol.status = 'cancelado'; }
+  saveSolicitacoes(sols);
+  renderResets();
+}
+
+function getDels()  { return JSON.parse(localStorage.getItem('orc_delegacoes')||'[]'); }
+function saveDels(d){ const j=JSON.stringify(d); localStorage.setItem('orc_delegacoes',j); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_delegacoes',j); else spSaveAdmin('orc_delegacoes','OrcConfig','orc_delegacoes',j); }
+
+function renderDelegacoes() {
+  var ds  = getDels();
+  var el  = document.getElementById('lista-delegacoes');
+  var cnt = document.getElementById('cnt-del');
+  var ativ = ds.filter(function(d){ return d.status==='ativa'; }).length;
+  if (cnt) { cnt.textContent=ativ; cnt.style.display=ativ?'inline-flex':'none'; }
+  if (!el) return;
+
+  var users = getUsers();
+  function nomeU(e){ var u=users.find(function(x){return x.email===e;}); return u?u.nome:e; }
+
+  if (!ds.length) {
+    el.innerHTML='<div style="padding:20px;text-align:center;color:#94A3B8;font-style:italic">Nenhuma delegação registrada.</div>';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:#3B6FE8">';
+  ['Delegante','Delegado','Período','Motivo','Status','Ações'].forEach(function(h){
+    html += '<th style="padding:9px 12px;color:#fff;text-align:left;font-size:10.5px;text-transform:uppercase;font-weight:800">'+h+'</th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  ds.slice().reverse().forEach(function(d, i) {
+    var bg = i%2===0 ? '#fff' : '#F8FAFC';
+    var stBadge = d.status==='ativa'
+      ? '<span style="background:#EBF1FF;color:#1A3A8F;border:1.5px solid rgba(59,111,232,.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:800">✅ Ativa</span>'
+      : '<span style="background:#F5F7FA;color:#94A3B8;border:1.5px solid #E4E9F2;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:800">'+d.status+'</span>';
+    var acoesTd = d.status==='ativa'
+      ? '<button data-did="'+d.id+'" onclick="cancelarAdminDel(this.dataset.did)" style="background:#FEF2F2;color:#991B1B;border:1.5px solid #FECACA;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">✕ Cancelar</button>'
+      : '';
+    html += '<tr style="background:'+bg+'">';
+    html += '<td style="padding:8px 12px;font-weight:700">'+nomeU(d.delegante)+'</td>';
+    html += '<td style="padding:8px 12px">'+nomeU(d.delegado)+'</td>';
+    html += '<td style="padding:8px 12px;font-size:12px;color:#64748B">'+new Date(d.dataInicio).toLocaleDateString('pt-BR')+' → '+new Date(d.dataFim).toLocaleDateString('pt-BR')+'</td>';
+    html += '<td style="padding:8px 12px;font-size:12px;color:#64748B">'+esc(d.motivo||'—')+'</td>';
+    html += '<td style="padding:8px 12px">'+stBadge+'</td>';
+    html += '<td style="padding:8px 12px">'+acoesTd+'</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+
+function cancelarAdminDel(id) {
+  if(!confirm('Cancelar esta delegação?')) return;
+  var ds=getDels(), d=ds.find(function(x){return x.id===id;});
+  if(d){d.status='cancelada';d.canceladaEm=new Date().toLocaleString('pt-BR');}
+  saveDels(ds); renderDelegacoes();
+}
+
+function abrirModalAdminDel() {
+  var hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('adel-ini').value = hoje;
+  document.getElementById('adel-fim').value = '';
+  document.getElementById('adel-motivo').value = '';
+  document.getElementById('adel-err').style.display = 'none';
+  atualizarOpcoesAdel();
+  document.getElementById('modal-admin-del').style.display = 'flex';
+}
+
+function atualizarOpcoesAdel() {
+  var perfil = document.getElementById('adel-perfil').value;
+  var de     = document.getElementById('adel-de').value;
+  var users  = getUsers().filter(function(u){ return u.perfil===perfil && u.ativo!==false; });
+  var selDe  = document.getElementById('adel-de');
+  var selPara= document.getElementById('adel-para');
+  selDe.innerHTML  = '<option value="">Selecione...</option>' + users.map(function(u){return '<option value="'+u.email+'"'+(u.email===de?' selected':'')+'>'+u.nome+'</option>';}).join('');
+  selPara.innerHTML= '<option value="">Selecione...</option>' + users.filter(function(u){return u.email!==selDe.value;}).map(function(u){return '<option value="'+u.email+'">'+u.nome+'</option>';}).join('');
+}
+
+function confirmarAdminDel() {
+  var de     = document.getElementById('adel-de').value;
+  var para   = document.getElementById('adel-para').value;
+  var ini    = document.getElementById('adel-ini').value;
+  var fim    = document.getElementById('adel-fim').value;
+  var motivo = document.getElementById('adel-motivo').value.trim();
+  var err    = document.getElementById('adel-err');
+  function showE(m){ err.textContent=m; err.style.display='block'; }
+  err.style.display='none';
+  if(!de||!para){ showE('Selecione delegante e delegado.'); return; }
+  if(de===para) { showE('Delegante e delegado não podem ser o mesmo usuário.'); return; }
+  if(!ini||!fim){ showE('Informe as datas.'); return; }
+  if(ini>fim)   { showE('Data início deve ser anterior ao fim.'); return; }
+  var ds=getDels();
+  ds.push({id:'DEL-'+Date.now(),delegante:de,delegado:para,dataInicio:ini,dataFim:fim,motivo:motivo,status:'ativa',criadaEm:new Date().toLocaleString('pt-BR'),criadaPor:sess.email});
+  saveDels(ds);
+  document.getElementById('modal-admin-del').style.display='none';
+  renderDelegacoes();
+}
+
+function renderTudo(){ renderUsuarios(); renderPendentes(); renderResets(); renderDelegacoes(); }
+renderTudo();
+</script>
+</body>
+</html>
