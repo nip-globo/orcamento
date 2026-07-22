@@ -3342,10 +3342,10 @@ var _rsel = {};
 function getListaRel() {
   var user = window._USER;
   if (!user) return [];
-  // Usa hist em memória (já carregado do GitHub) — fallback para cookie
   var all = hist.length ? hist : JSON.parse(_ck('orc_h2') || '[]');
-  if (user.perfil === 'criador')   return all.filter(function(o){ return o.criador === user.email; });
-  if (user.perfil === 'aprovador') return all.filter(function(o){ return o.aprovador === user.email; });
+  if (user.perfil === 'criador')    return all.filter(function(o){ return o.criador === user.email; });
+  if (user.perfil === 'aprovador')  return all.filter(function(o){ return o.aprovador === user.email; });
+  if (user.perfil === 'observador') return all.filter(function(o){ return (o.observadores||[]).includes(user.email); });
   return all; // admin vê tudo
 }
 
