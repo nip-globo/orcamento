@@ -1115,25 +1115,44 @@ document.addEventListener('click', e => {
 function renderEmails(){
   document.getElementById('eTags').innerHTML=
     emails.map(e=>`<div class="etag">${e}<button onclick="removeEmail('${e}')">×</button></div>`).join('');
-  // Atualiza select de aprovador — filtra apenas aprovadores e admins do sistema
   const sel = document.getElementById('f_aprovador');
   if (!sel) return;
   const atual = sel.value;
   const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
-  // Filtra destinatários que têm perfil aprovador ou admin
-  const aprovaveisDestino = emails.filter(e => {
+
+  // Somente destinatários com perfil aprovador ou admin podem ser aprovadores
+  const aprovadores = emails.filter(e => {
     const u = usuarios.find(x => x.email === e);
     return !u || u.perfil === 'aprovador' || u.perfil === 'admin';
   });
-  // Se nenhum destinatário tem perfil aprovador, mostra todos
-  const lista = aprovaveisDestino.length ? aprovaveisDestino : emails;
-  sel.innerHTML = '<option value="">Selecione o aprovador...</option>' +
-    lista.map(e => {
-      const u = usuarios.find(x => x.email === e);
-      const label = u ? `${u.nome} (${u.perfil})` : e;
-      return `<option value="${e}"${e===atual?' selected':''}>${label}</option>`;
-    }).join('');
-  if (atual && lista.includes(atual)) sel.value = atual;
+
+  if (!aprovadores.length) {
+    sel.innerHTML = '<option value="">— Nenhum destinatário com perfil Aprovador —</option>';
+    // Aviso visual
+    var aviso = document.getElementById('aviso-aprovador');
+    if (!aviso) {
+      aviso = document.createElement('p');
+      aviso.id = 'aviso-aprovador';
+      aviso.style.cssText = 'font-size:11px;color:#991B1B;margin-top:5px;background:#FEF2F2;border:1px solid rgba(229,53,53,.2);border-radius:6px;padding:6px 8px;font-weight:700';
+      sel.parentNode.insertBefore(aviso, sel.nextSibling);
+    }
+    if (emails.length) {
+      aviso.textContent = '⚠️ Nenhum dos destinatários tem perfil Aprovador. Adicione um usuário com perfil Aprovador para poder enviar.';
+      aviso.style.display = 'block';
+    } else {
+      aviso.style.display = 'none';
+    }
+  } else {
+    var aviso = document.getElementById('aviso-aprovador');
+    if (aviso) aviso.style.display = 'none';
+    sel.innerHTML = '<option value="">Selecione o aprovador...</option>' +
+      aprovadores.map(e => {
+        const u = usuarios.find(x => x.email === e);
+        const label = u ? `${u.nome} (${u.perfil})` : e;
+        return `<option value="${e}"${e===atual?' selected':''}>${label}</option>`;
+      }).join('');
+    if (atual && aprovadores.includes(atual)) sel.value = atual;
+  }
 }
 
 // ── OBSERVADORES ─────────────────────────────────────────────────
@@ -1335,6 +1354,15 @@ function validar(o){
   if(!o.dataG)    return'Preencha a Data de Gravação.';
   if(!(document.getElementById('f_fin')?.value||'').trim()) return'O campo Finalidade é obrigatório.';
   if(!(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
+  // Valida perfil do aprovador
+  const aprovEmail = (document.getElementById('f_aprovador')?.value||'').trim();
+  if (aprovEmail) {
+    const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
+    const aprovUser = usuarios.find(u => u.email === aprovEmail);
+    if (aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin') {
+      return `"${aprovUser.nome}" tem perfil "${aprovUser.perfil}" e não pode ser aprovador. Selecione um usuário com perfil Aprovador ou Admin.`;
+    }
+  }
   if(o.ta<=0)     return'Informe ao menos uma conta com valor.';
   if(!emails.length)return'Adicione ao menos um destinatário.';
   // Valida datas: gravação não pode ser posterior à exibição
