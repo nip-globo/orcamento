@@ -4593,47 +4593,44 @@ if (window._USER) {
   if (perfisGestor.includes(window._USER.perfil)) {
     window.location.replace('./gestor.html');
   } else {
-    // Sincroniza com SharePoint (async, não bloqueia UI)
+    // Inicializa UI imediatamente com dados do _USER
+    initPerfil();
+    initForm();
+    calc();
+
+    // Sincroniza dados em background (não bloqueia UI)
     spSyncAll().then(function(){
-      hist = JSON.parse((_ck('orc_h2')||'[]');
+      try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
       renderHist();
       renderBannerDelegacao();
       renderNotificacoes();
     });
-    // Inicializa SharePoint Bridge (se disponível)
+
+    // GitHub Bridge em background
     if (window.SP_BRIDGE) {
       window.SP_BRIDGE.init().then(function(ok) {
         if (ok) {
-          // Recarrega dados do SP
-          hist = JSON.parse((_ck('orc_h2') || '[]');
-          renderHist();
-          renderNotificacoes();
-          renderBannerDelegacao();
-          // Atualiza indicador
-          var spEl = document.getElementById('sp-status');
-          if (spEl) {
-            spEl.style.display = 'flex';
-            spEl.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span>' +
-              '<span style="font-size:10px;color:#16A34A;font-weight:700">SharePoint</span>';
-          }
+          window.SP_BRIDGE.syncAll().then(function(){
+            try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
+            renderHist();
+            renderNotificacoes();
+            renderBannerDelegacao();
+            var spEl = document.getElementById('sp-status');
+            if (spEl) {
+              spEl.style.display = 'flex';
+              spEl.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span>' +
+                '<span style="font-size:10px;color:#16A34A;font-weight:700">GitHub</span>';
+            }
+          });
         }
       });
     }
-    syncImportarAuto().then(function() {
-  hist = JSON.parse((_ck('orc_h2') || '[]');
-  initPerfil();
-  initForm();
-  renderHist();
-  renderBannerDelegacao();
-  renderNotificacoes();
-  calc();
-});
-    initForm();
+
+    // Carrega histórico inicial do cookie
+    try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
     renderHist();
     renderBannerDelegacao();
     renderNotificacoes();
-    calc();
-
   }
 }
 </script>
