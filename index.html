@@ -4631,6 +4631,12 @@ if (window._USER) {
         if (data.orc_reset_sol)  _ckSet('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
         // Atualiza histórico e renderiza
         try { hist = data.orc_h2 || []; } catch(e){ hist=[]; }
+        // Atualiza numeração com base no histórico real
+        var novoNum = proxNum();
+        var fNum = document.getElementById('f_num');
+        var hNum = document.getElementById('hdrNum');
+        if (fNum && (!fNum.value || fNum.value === 'ORC-001')) fNum.value = novoNum;
+        if (hNum && (hNum.textContent === 'ORC-001')) hNum.textContent = novoNum;
         renderHist();
         renderBannerDelegacao();
         renderNotificacoes();
