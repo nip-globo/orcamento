@@ -4641,6 +4641,8 @@ if (window._USER) {
         renderHist();
         renderBannerDelegacao();
         renderNotificacoes();
+        // Re-renderiza filtros/relatórios com dados reais
+        if (typeof renderRelatoriosIndex === 'function') renderRelatoriosIndex();
       })
       .catch(function(e){ console.warn('[index] Falha ao carregar GitHub:', e.message); });
 
