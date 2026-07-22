@@ -144,6 +144,11 @@
 
     async set(key, value) {
       COOKIE.set(key, value, 0.02);
+      // Se não está pronto, tenta inicializar primeiro
+      if (!this.ready) {
+        const ok = await this.init();
+        if (!ok) { console.warn('[GH Bridge] Sem token — dado salvo só localmente'); return false; }
+      }
       let data = await ghRead() || {};
       try { data[key] = typeof value === 'string' ? JSON.parse(value) : value; }
       catch (e) { data[key] = value; }
