@@ -185,21 +185,45 @@ const STORE = {
 };
 
 // ══════════════════════════════════════════════════════════════════
-//  GITHUB BRIDGE — usa window.SP_BRIDGE (spbridge.js v3)
-//  Fallback: cookie local se o GitHub não responder
+//  GITHUB BRIDGE — leitura pública + escrita com token
 // ══════════════════════════════════════════════════════════════════
-const PAD_USUARIOS = JSON.stringify([
+const GH_RAW_URL = 'https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json';
+
+const PAD_USUARIOS = [
   { email:'admin@g.globo', senha:'Admin@2026', nome:'Administrador', perfil:'admin', ativo:true }
-]);
+];
+
+// Lê orc_sync.json diretamente do GitHub (sem token, sem CORS)
+async function lerSyncPublico() {
+  try {
+    const r = await fetch(GH_RAW_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch(e) {
+    console.warn('[Login] Falha ao ler orc_sync.json:', e.message);
+    return null;
+  }
+}
 
 async function getUsuarios() {
-  if (window.SP_BRIDGE) {
+  // 1. Tenta SP_BRIDGE (que tem cache em memória)
+  if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
     try {
       const val = await window.SP_BRIDGE.get('orc_usuarios');
       if (val) return JSON.parse(val);
     } catch(e) {}
   }
-  return JSON.parse(STORE.get('orc_usuarios') || PAD_USUARIOS);
+  // 2. Lê direto do GitHub público (sempre funciona, sem token)
+  const sync = await lerSyncPublico();
+  if (sync && sync.orc_usuarios && sync.orc_usuarios.length) {
+    STORE.set('orc_usuarios', JSON.stringify(sync.orc_usuarios), 0.02);
+    return sync.orc_usuarios;
+  }
+  // 3. Cookie local
+  const cached = STORE.get('orc_usuarios');
+  if (cached) return JSON.parse(cached);
+  // 4. Padrão admin
+  return PAD_USUARIOS;
 }
 
 async function saveUsuarios(arr) {
@@ -209,12 +233,8 @@ async function saveUsuarios(arr) {
 }
 
 async function getSolicitacoes() {
-  if (window.SP_BRIDGE) {
-    try {
-      const val = await window.SP_BRIDGE.get('orc_reset_sol');
-      if (val) return JSON.parse(val);
-    } catch(e) {}
-  }
+  const sync = await lerSyncPublico();
+  if (sync && sync.orc_reset_sol) return sync.orc_reset_sol;
   return JSON.parse(STORE.get('orc_reset_sol') || '[]');
 }
 
@@ -413,29 +433,21 @@ async function confirmarNovaSenha() {
     try { document.cookie = encodeURIComponent('orc_user') + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax'; } catch(e2){}
   }
 
-  // ── Inicializa GitHub Bridge com timeout de segurança ──────────
+  // ── Libera o botão imediatamente — leitura é pública ──────────
   const badge = document.getElementById('sp-badge');
   const btn   = document.getElementById('btn-entrar');
-  if (badge) { badge.style.display = 'inline-flex'; badge.className = 'sp-badge load'; badge.textContent = '⏳ Carregando...'; }
-  if (btn)   { btn.disabled = true; btn.textContent = 'Aguarde...'; }
-
-  let ghOk = false;
-  try {
-    if (window.SP_BRIDGE) {
-      // Timeout de 8s para não travar indefinidamente
-      const initPromise = window.SP_BRIDGE.init();
-      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(false), 8000));
-      ghOk = await Promise.race([initPromise, timeoutPromise]);
-    }
-  } catch(e) {
-    console.warn('[Login] SP_BRIDGE.init falhou:', e.message);
-  }
-
-  if (badge) {
-    badge.className    = ghOk ? 'sp-badge ok' : 'sp-badge warn';
-    badge.textContent  = ghOk ? '☁️ Dados sincronizados' : '⚠️ Sem conexão — login com dados locais';
-  }
   if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+
+  // SP_BRIDGE inicializa em background (só necessário para escrita)
+  if (window.SP_BRIDGE) {
+    window.SP_BRIDGE.init().then(ok => {
+      if (badge) {
+        badge.style.display = 'inline-flex';
+        badge.className    = ok ? 'sp-badge ok' : 'sp-badge warn';
+        badge.textContent  = ok ? '☁️ Conectado' : '⚠️ Somente leitura';
+      }
+    }).catch(() => {});
+  }
 
   // ── Token via URL ──────────────────────────────────────────────
   try {
