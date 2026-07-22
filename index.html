@@ -4613,40 +4613,45 @@ if (window._USER) {
   if (perfisGestor.includes(window._USER.perfil)) {
     window.location.replace('./gestor.html');
   } else {
-    // Inicializa UI imediatamente com dados do _USER
+    // Inicializa UI imediatamente
     initPerfil();
     initForm();
     calc();
 
-    // Sincroniza dados em background (não bloqueia UI)
-    spSyncAll().then(function(){
-      try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
-      renderHist();
-      renderBannerDelegacao();
-      renderNotificacoes();
-    });
+    // Carrega dados diretamente do GitHub Raw (sem token, sem CORS)
+    fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if (!data) return;
+        // Popula cookies com dados frescos do GitHub
+        if (data.orc_h2)         _ckSet('orc_h2',         JSON.stringify(data.orc_h2),         0.02);
+        if (data.orc_usuarios)   _ckSet('orc_usuarios',   JSON.stringify(data.orc_usuarios),   0.02);
+        if (data.orc_vinculos)   _ckSet('orc_vinculos',   JSON.stringify(data.orc_vinculos),   0.02);
+        if (data.orc_delegacoes) _ckSet('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
+        if (data.orc_reset_sol)  _ckSet('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
+        // Atualiza histórico e renderiza
+        try { hist = data.orc_h2 || []; } catch(e){ hist=[]; }
+        renderHist();
+        renderBannerDelegacao();
+        renderNotificacoes();
+      })
+      .catch(function(e){ console.warn('[index] Falha ao carregar GitHub:', e.message); });
 
-    // GitHub Bridge em background
+    // GitHub Bridge em background (para escrita)
     if (window.SP_BRIDGE) {
       window.SP_BRIDGE.init().then(function(ok) {
         if (ok) {
-          window.SP_BRIDGE.syncAll().then(function(){
-            try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
-            renderHist();
-            renderNotificacoes();
-            renderBannerDelegacao();
-            var spEl = document.getElementById('sp-status');
-            if (spEl) {
-              spEl.style.display = 'flex';
-              spEl.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span>' +
-                '<span style="font-size:10px;color:#16A34A;font-weight:700">GitHub</span>';
-            }
-          });
+          var spEl = document.getElementById('sp-status');
+          if (spEl) {
+            spEl.style.display = 'flex';
+            spEl.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span>' +
+              '<span style="font-size:10px;color:#16A34A;font-weight:700">GitHub</span>';
+          }
         }
       });
     }
 
-    // Carrega histórico inicial do cookie
+    // Histórico inicial do cookie (pode estar vazio na primeira carga)
     try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
     renderHist();
     renderBannerDelegacao();
