@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Login — Orçamento Merchandising</title>
+<script src="spbridge.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -25,6 +26,7 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 .btn-login{width:100%;background:linear-gradient(135deg,#3B6FE8 0%,#1A3AC8 100%);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;letter-spacing:.2px;font-family:'Nunito',inherit;box-shadow:0 6px 20px rgba(59,111,232,.4);transition:all .18s;}
 .btn-login:hover{background:linear-gradient(135deg,#2D5DD4 0%,#1230A8 100%);box-shadow:0 8px 28px rgba(59,111,232,.5);transform:translateY(-1px);}
 .btn-login:active{transform:translateY(0)}
+.btn-login:disabled{background:#94a3b8;box-shadow:none;transform:none;cursor:not-allowed}
 .btn-link{background:none;border:none;color:#3B6FE8;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',inherit;text-decoration:underline;padding:0;margin-top:14px;display:block;text-align:center;transition:color .15s;}
 .btn-link:hover{color:#1A3AC8;}
 .msg{border-radius:8px;padding:11px 14px;font-size:12.5px;font-weight:700;display:none;margin-top:12px;line-height:1.5;}
@@ -37,6 +39,11 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 .back-link{background:none;border:none;color:#6B7A99;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',inherit;display:flex;align-items:center;gap:5px;margin-bottom:18px;padding:0;transition:color .15s;}
 .back-link:hover{color:#3B6FE8;}
 .login-footer{text-align:center;margin-top:20px;font-size:11px;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.3px;}
+.sp-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;margin-bottom:12px}
+.sp-badge.ok{background:#ECFDF5;color:#065F46;border:1px solid rgba(0,168,107,.25)}
+.sp-badge.err{background:#FEF2F2;color:#991B1B;border:1px solid rgba(229,53,53,.2)}
+.sp-badge.warn{background:#FFF7ED;color:#92400E;border:1px solid rgba(245,158,11,.3)}
+.sp-badge.load{background:#EBF1FF;color:#1A3A8F;border:1px solid rgba(59,111,232,.2)}
 
 /* Reset view */
 #view-reset{display:none;}
@@ -44,8 +51,6 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 .step{flex:1;padding:8px;border-radius:8px;text-align:center;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:#F5F7FA;color:#A0ADBF;border:1.5px solid #E4E9F2;}
 .step.active{background:#EBF1FF;color:#3B6FE8;border-color:rgba(59,111,232,.3);}
 .step.done{background:#ECFDF5;color:#065F46;border-color:rgba(0,168,107,.25);}
-
-/* Solicitação pendente no admin */
 .reset-badge{display:inline-flex;align-items:center;gap:5px;background:#FFF7ED;color:#C2410C;border:1.5px solid #FED7AA;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;}
 </style>
 </head>
@@ -56,6 +61,9 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 
 <div class="login-wrap">
   <div class="login-card">
+
+    <!-- ── STATUS SP ── -->
+    <div id="sp-badge" class="sp-badge load" style="display:none">⏳ Conectando ao SharePoint...</div>
 
     <!-- ── VIEW LOGIN ── -->
     <div id="view-login">
@@ -72,7 +80,7 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password"
           onkeydown="if(event.key==='Enter')fazerLogin()">
       </div>
-      <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+      <button class="btn-login" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
       <div class="msg err" id="err-login"></div>
       <button class="btn-link" onclick="irParaReset()">Esqueci minha senha</button>
     </div>
@@ -91,7 +99,6 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         <div class="step" id="step3">3. Redefinir</div>
       </div>
 
-      <!-- Passo 1: digita e-mail -->
       <div id="reset-p1">
         <div class="field">
           <label>Seu e-mail</label>
@@ -102,17 +109,12 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         <div class="msg" id="msg-reset-p1"></div>
       </div>
 
-      <!-- Passo 2: instruções de envio -->
       <div id="reset-p2" style="display:none">
-
-        <!-- Opção A: notificar Admin via Outlook -->
         <div style="background:#EBF1FF;border:1.5px solid rgba(59,111,232,.2);border-radius:10px;padding:14px 16px;margin-bottom:14px">
           <p style="font-size:12px;font-weight:800;color:#1A3A8F;margin-bottom:4px">Opção 1 — Notificar o Administrador</p>
           <p style="font-size:11.5px;color:#3B6FE8;margin-bottom:10px;line-height:1.5">Envie um e-mail ao Admin. Ele redefinirá sua senha e te informará o código de 6 dígitos.</p>
           <button class="btn-login" style="padding:10px;font-size:13px" onclick="abrirOutlookReset()">✉️ Abrir Outlook Web</button>
         </div>
-
-        <!-- Opção B: inserir token -->
         <div style="background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:10px;padding:14px 16px">
           <p style="font-size:12px;font-weight:800;color:#0D1B4B;margin-bottom:4px">Opção 2 — Já tenho o código</p>
           <p style="font-size:11.5px;color:#6B7A99;margin-bottom:10px;line-height:1.5">Cole abaixo o código de 6 dígitos informado pelo Administrador.</p>
@@ -128,11 +130,8 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         </div>
       </div>
 
-      <!-- Passo 3: nova senha -->
       <div id="reset-p3" style="display:none">
-        <div class="msg ok" style="display:block;margin-bottom:16px">
-          ✅ Código válido! Defina sua nova senha.
-        </div>
+        <div class="msg ok" style="display:block;margin-bottom:16px">✅ Código válido! Defina sua nova senha.</div>
         <div class="field">
           <label>Nova senha</label>
           <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
@@ -149,47 +148,130 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 
   </div>
   <p class="login-footer">Orçamento Merchandising · Estúdios Globo</p>
-<div style="margin-top:12px;background:rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;max-width:420px;width:100%">
-  <p style="font-size:11px;color:rgba(255,255,255,.7);text-align:center;line-height:1.6;margin:0">
-    💡 <strong style="color:#fff">Para sincronizar dados:</strong> abra o 
-    <a href="https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos" target="_blank" 
-       style="color:#93C5FD;text-decoration:none;font-weight:700">SharePoint</a> 
-    em outra aba antes de fazer login.
-  </p>
-</div>
 </div>
 
 <script>
-// ── Utils ─────────────────────────────────────────────────────────
-function getUsuarios() {
-  const pad = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin'}];
-  return JSON.parse(localStorage.getItem('orc_usuarios') || JSON.stringify(pad));
+// ══════════════════════════════════════════════════════════════════
+//  STORAGE SEGURO — funciona no sandbox do SharePoint
+//  Usa cookies (SameSite=Lax) em vez de localStorage/sessionStorage
+// ══════════════════════════════════════════════════════════════════
+const STORE = {
+  set(key, value, days) {
+    try {
+      const expires = days
+        ? '; expires=' + new Date(Date.now() + days * 864e5).toUTCString()
+        : '';
+      document.cookie = encodeURIComponent(key) + '=' +
+        encodeURIComponent(typeof value === 'string' ? value : JSON.stringify(value)) +
+        expires + '; path=/; SameSite=Lax';
+    } catch(e) { /* silencioso */ }
+  },
+  get(key) {
+    try {
+      const name = encodeURIComponent(key) + '=';
+      const parts = document.cookie.split(';');
+      for (let c of parts) {
+        c = c.trim();
+        if (c.startsWith(name)) {
+          return decodeURIComponent(c.substring(name.length));
+        }
+      }
+    } catch(e) {}
+    return null;
+  },
+  remove(key) {
+    document.cookie = encodeURIComponent(key) + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════
+//  GITHUB BRIDGE — usa window.SP_BRIDGE (spbridge.js v3)
+//  Fallback: cookie local se o GitHub não responder
+// ══════════════════════════════════════════════════════════════════
+const PAD_USUARIOS = JSON.stringify([
+  { email:'admin@g.globo', senha:'Admin@2026', nome:'Administrador', perfil:'admin', ativo:true }
+]);
+
+async function getUsuarios() {
+  if (window.SP_BRIDGE) {
+    try {
+      const val = await window.SP_BRIDGE.get('orc_usuarios');
+      if (val) return JSON.parse(val);
+    } catch(e) {}
+  }
+  return JSON.parse(STORE.get('orc_usuarios') || PAD_USUARIOS);
 }
-function saveUsuarios(u) { localStorage.setItem('orc_usuarios', JSON.stringify(u)); }
-function getSolicitacoes() { return JSON.parse(localStorage.getItem('orc_reset_sol') || '[]'); }
-function saveSolicitacoes(s) { localStorage.setItem('orc_reset_sol', JSON.stringify(s)); }
+
+async function saveUsuarios(arr) {
+  const json = JSON.stringify(arr);
+  STORE.set('orc_usuarios', json, 0.02);
+  if (window.SP_BRIDGE) await window.SP_BRIDGE.set('orc_usuarios', json);
+}
+
+async function getSolicitacoes() {
+  if (window.SP_BRIDGE) {
+    try {
+      const val = await window.SP_BRIDGE.get('orc_reset_sol');
+      if (val) return JSON.parse(val);
+    } catch(e) {}
+  }
+  return JSON.parse(STORE.get('orc_reset_sol') || '[]');
+}
+
+async function saveSolicitacoes(arr) {
+  const json = JSON.stringify(arr);
+  STORE.set('orc_reset_sol', json, 0.02);
+  if (window.SP_BRIDGE) await window.SP_BRIDGE.set('orc_reset_sol', json);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  UI
+// ══════════════════════════════════════════════════════════════════
 function showMsg(id, tipo, txt) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.className = 'msg ' + tipo; el.style.display = 'block'; el.innerHTML = txt;
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────
-function fazerLogin() {
+// ── LOGIN ────────────────────────────────────────────────────────
+async function fazerLogin() {
   const email = document.getElementById('email').value.trim().toLowerCase();
   const senha  = document.getElementById('senha').value;
   const err    = document.getElementById('err-login');
+  const btn    = document.getElementById('btn-entrar');
   err.style.display = 'none';
-  if (!email || !senha) { err.textContent='Preencha e-mail e senha.'; err.style.display='block'; return; }
-  const user = getUsuarios().find(u => u.email.toLowerCase()===email && u.senha===senha && u.ativo!==false);
-  if (!user) { err.textContent='E-mail ou senha incorretos, ou usuário inativo.'; err.style.display='block'; return; }
-  const sess = {email:user.email, nome:user.nome, perfil:user.perfil, _ts:Date.now()};
-  sessionStorage.setItem('orc_user', JSON.stringify(sess));
-  try { localStorage.setItem('orc_user_fallback', JSON.stringify(sess)); } catch(e) {}
+  if (!email || !senha) { err.textContent = 'Preencha e-mail e senha.'; err.style.display = 'block'; return; }
+
+  btn.disabled = true; btn.textContent = 'Aguarde...';
+
+  // Tenta buscar usuários — sempre cai no cookie/padrão se o SP não responder
+  let usuarios = [];
+  try { usuarios = await getUsuarios(); } catch(e) { usuarios = []; }
+
+  // Se veio vazio (SP offline e sem cookie ainda), usa o padrão admin
+  if (!usuarios || !usuarios.length) {
+    usuarios = JSON.parse(PAD_USUARIOS);
+  }
+
+  const user = usuarios.find(u =>
+    u.email.toLowerCase() === email && u.senha === senha && u.ativo !== false
+  );
+
+  if (!user) {
+    err.textContent = 'E-mail ou senha incorretos, ou usuário inativo.';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Entrar';
+    return;
+  }
+
+  // Salva sessão em cookie (~8h)
+  const sess = { email: user.email, nome: user.nome, perfil: user.perfil, _ts: Date.now() };
+  STORE.set('orc_user', JSON.stringify(sess), 0.33);
   const gestores = ['gestor_cc','gestor_criador','observador'];
   window.location.replace(gestores.includes(user.perfil) ? 'gestor.html' : 'index.html');
 }
 
-// ── NAVEGAÇÃO RESET ───────────────────────────────────────────────
+// ── NAVEGAÇÃO RESET ──────────────────────────────────────────────
 function irParaReset() {
   document.getElementById('view-login').style.display = 'none';
   document.getElementById('view-reset').style.display = 'block';
@@ -197,13 +279,11 @@ function irParaReset() {
 function voltarLogin() {
   document.getElementById('view-reset').style.display = 'none';
   document.getElementById('view-login').style.display = 'block';
-  // Limpa campos
   ['reset-email','reset-token-input','nova-senha','nova-senha-conf'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
-  // Reset steps
   ['reset-p1','reset-p2','reset-p3'].forEach((id,i) => {
-    document.getElementById(id).style.display = i===0 ? 'block' : 'none';
+    document.getElementById(id).style.display = i === 0 ? 'block' : 'none';
   });
   setStep(1);
 }
@@ -214,145 +294,135 @@ function setStep(n) {
   });
 }
 
-// ── PASSO 1: Solicitar reset ──────────────────────────────────────
-let _resetEmail = '';
-let _resetToken = '';
+// ── RESET PASSO 1 ───────────────────────────────────────────────
+let _resetEmail = '', _resetToken = '';
 
-function solicitarReset() {
+async function solicitarReset() {
   const email = document.getElementById('reset-email').value.trim().toLowerCase();
   if (!email) { showMsg('msg-reset-p1','err','Informe seu e-mail.'); return; }
 
-  const usuarios = getUsuarios();
+  const usuarios = await getUsuarios();
   const user = usuarios.find(u => u.email.toLowerCase() === email);
-  if (!user) {
-    showMsg('msg-reset-p1','err','E-mail não encontrado no sistema.');
-    return;
-  }
-  if (user.ativo === false) {
-    showMsg('msg-reset-p1','err','Usuário inativo. Contate o Administrador.');
-    return;
-  }
+  if (!user) { showMsg('msg-reset-p1','err','E-mail não encontrado no sistema.'); return; }
+  if (user.ativo === false) { showMsg('msg-reset-p1','err','Usuário inativo. Contate o Administrador.'); return; }
 
-  // Gera token de 6 dígitos
   _resetToken = Math.floor(100000 + Math.random() * 900000).toString();
   _resetEmail = email;
 
-  // Registra solicitação no localStorage (Admin vê no painel)
-  const sols = getSolicitacoes();
+  const sols = await getSolicitacoes();
   const idx  = sols.findIndex(s => s.email === email);
-  const sol  = {
-    email, nome: user.nome,
-    token: _resetToken,
-    solicitadoEm: new Date().toLocaleString('pt-BR'),
-    status: 'pendente'
-  };
+  const sol  = { email, nome: user.nome, token: _resetToken, solicitadoEm: new Date().toLocaleString('pt-BR'), status: 'pendente' };
   if (idx >= 0) sols[idx] = sol; else sols.push(sol);
-  saveSolicitacoes(sols);
+  await saveSolicitacoes(sols);
 
-  // Avança para passo 2
   document.getElementById('reset-p1').style.display = 'none';
   document.getElementById('reset-p2').style.display = 'block';
   setStep(2);
 }
 
-// ── PASSO 2: Abrir Outlook com e-mail pré-formatado ───────────────
+// ── RESET PASSO 2 ───────────────────────────────────────────────
 function abrirOutlookReset() {
-  // Busca admin para pegar e-mail
-  const admin = getUsuarios().find(u => u.perfil === 'admin');
-  const adminEmail = admin ? admin.email : 'admin@g.globo';
-
   const assunto = encodeURIComponent('Solicitação de Redefinição de Senha — Orçamento Merchandising');
-  const owaDest = encodeURIComponent(adminEmail);
-  const owaUrl  = 'https://outlook.office.com/mail/deeplink/compose?to='+owaDest+'&subject='+assunto;
+  const owaUrl  = 'https://outlook.office.com/mail/deeplink/compose?subject=' + assunto;
   window.open(owaUrl, '_blank');
-
-  // Corpo para copiar
-  const corpo = `Olá,\n\nSolicito a redefinição de senha para o usuário:\n\nE-mail: ${_resetEmail}\nToken: ${_resetToken}\n\nPor favor, utilize o token acima para liberar a redefinição no painel Admin, ou informe-me o token para que eu possa redefinir minha senha diretamente.\n\nObrigado.`;
-
-  navigator.clipboard.writeText(corpo).catch(() => {});
-
-  // Cria overlay com corpo do e-mail para copiar
+  const corpo = `Olá,\n\nSolicito a redefinição de senha:\n\nE-mail: ${_resetEmail}\nToken: ${_resetToken}\n\nObrigado.`;
   const ov = document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;padding:20px';
-  ov.innerHTML=`<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;padding:20px';
+  ov.innerHTML = `<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
     <h3 style="font-size:14px;font-weight:800;color:#0D1B4B;margin-bottom:8px">✉️ Outlook aberto!</h3>
     <p style="font-size:12px;color:#6B7A99;margin-bottom:12px;line-height:1.5">Cole o texto abaixo no corpo do e-mail e envie ao Admin:</p>
     <textarea readonly style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:11.5px;font-family:Nunito,sans-serif;height:130px;resize:none;background:#F5F7FA;color:#0D1B4B">${corpo}</textarea>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="navigator.clipboard.writeText(document.querySelector('textarea').value).then(()=>{this.textContent='✅ Copiado!';this.style.background='#00A86B'})" style="flex:1;background:#3B6FE8;color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">📋 Copiar</button>
+      <button onclick="navigator.clipboard.writeText(this.closest('div').previousElementSibling.value).then(()=>{this.textContent='✅ Copiado!';this.style.background='#00A86B'})" style="flex:1;background:#3B6FE8;color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">📋 Copiar</button>
       <button onclick="this.closest('div').parentElement.remove()" style="background:#F5F7FA;color:#6B7A99;border:1.5px solid #E4E9F2;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">Fechar</button>
     </div>
   </div>`;
   document.body.appendChild(ov);
 }
 
-// ── PASSO 2: Validar token ────────────────────────────────────────
-function validarToken() {
+// ── RESET PASSO 2b ──────────────────────────────────────────────
+async function validarToken() {
   const inp = document.getElementById('reset-token-input').value.trim();
   if (!inp) { showMsg('msg-token','err','Informe o código.'); return; }
-
-  const sols = getSolicitacoes();
-  // Aceita token pendente OU já concluído pelo Admin (usuário ainda pode trocar)
-  const sol = sols.find(s => s.token === inp && (s.status === 'pendente' || s.status === 'concluido'));
-
-  if (!sol) {
-    showMsg('msg-token','err','Código inválido ou cancelado. Solicite uma nova redefinição.');
-    return;
-  }
-
-  _resetEmail = sol.email;
-  _resetToken = inp;
-
-  // Se Admin já resetou, avisa mas permite o usuário definir a própria senha
+  const sols = await getSolicitacoes();
+  const sol  = sols.find(s => s.token === inp && (s.status === 'pendente' || s.status === 'concluido'));
+  if (!sol) { showMsg('msg-token','err','Código inválido ou cancelado. Solicite uma nova redefinição.'); return; }
+  _resetEmail = sol.email; _resetToken = inp;
   document.getElementById('reset-p2').style.display = 'none';
   document.getElementById('reset-p3').style.display = 'block';
   setStep(3);
-
-  if (sol.status === 'concluido') {
-    showMsg('msg-nova-senha','info','ℹ️ O Admin já redefiniu sua senha. Você pode definir uma nova senha pessoal agora.');
-  }
+  if (sol.status === 'concluido') showMsg('msg-nova-senha','info','ℹ️ O Admin já redefiniu sua senha. Defina uma nova senha pessoal agora.');
 }
 
-// ── PASSO 3: Confirmar nova senha ─────────────────────────────────
-function confirmarNovaSenha() {
-  const nova  = document.getElementById('nova-senha').value;
-  const conf  = document.getElementById('nova-senha-conf').value;
+// ── RESET PASSO 3 ───────────────────────────────────────────────
+async function confirmarNovaSenha() {
+  const nova = document.getElementById('nova-senha').value;
+  const conf = document.getElementById('nova-senha-conf').value;
   if (!nova || nova.length < 6) { showMsg('msg-nova-senha','err','Senha deve ter no mínimo 6 caracteres.'); return; }
   if (nova !== conf)             { showMsg('msg-nova-senha','err','As senhas não coincidem.'); return; }
 
-  // Salva nova senha
-  const usuarios = getUsuarios();
+  const usuarios = await getUsuarios();
   const u = usuarios.find(x => x.email.toLowerCase() === _resetEmail.toLowerCase());
   if (!u) { showMsg('msg-nova-senha','err','Usuário não encontrado.'); return; }
   u.senha = nova;
-  saveUsuarios(usuarios);
+  await saveUsuarios(usuarios);
 
-  // Marca solicitação como concluída
-  const sols = getSolicitacoes();
+  const sols = await getSolicitacoes();
   const sol  = sols.find(s => s.token === _resetToken);
-  if (sol) { sol.status = 'concluido'; sol.concluidoEm = new Date().toLocaleString('pt-BR'); sol.token = ''; } // invalida token após uso
-  saveSolicitacoes(sols);
+  if (sol) { sol.status = 'concluido'; sol.concluidoEm = new Date().toLocaleString('pt-BR'); sol.token = ''; }
+  await saveSolicitacoes(sols);
 
-  showMsg('msg-nova-senha','ok','✅ Senha redefinida com sucesso! Redirecionando para o login...');
+  showMsg('msg-nova-senha','ok','✅ Senha redefinida com sucesso! Redirecionando...');
   setTimeout(() => voltarLogin(), 2200);
 }
 
-// ── AUTO-LOGIN ────────────────────────────────────────────────────
-const sessAtiva = JSON.parse(sessionStorage.getItem('orc_user')||localStorage.getItem('orc_user_fallback')||'null');
-if (sessAtiva && sessAtiva.email) {
-  const gestores = ['gestor_cc','gestor_criador','observador'];
-  window.location.replace(gestores.includes(sessAtiva.perfil) ? 'gestor.html' : 'index.html');
-}
+// ══════════════════════════════════════════════════════════════════
+//  INICIALIZAÇÃO
+// ══════════════════════════════════════════════════════════════════
 
-// ── TOKEN VIA URL (link direto) ───────────────────────────────────
-const urlToken = new URLSearchParams(window.location.search).get('token');
-if (urlToken) {
-  irParaReset();
-  document.getElementById('reset-token-input').value = urlToken;
-  document.getElementById('reset-p1').style.display = 'none';
-  document.getElementById('reset-p2').style.display = 'block';
-  setStep(2);
-}
+// Verifica sessão ativa (cookie)
+(async function iniciar() {
+  // Sessão já ativa?
+  try {
+    const raw = STORE.get('orc_user');
+    if (raw) {
+      const sess = JSON.parse(raw);
+      const age  = Date.now() - (sess._ts || 0);
+      if (sess.email && age < 8 * 3600 * 1000) {
+        const gestores = ['gestor_cc','gestor_criador','observador'];
+        window.location.replace(gestores.includes(sess.perfil) ? 'gestor.html' : 'index.html');
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Inicializa GitHub Bridge e atualiza badge
+  const badge = document.getElementById('sp-badge');
+  const btn   = document.getElementById('btn-entrar');
+  if (badge) { badge.style.display = 'inline-flex'; badge.className = 'sp-badge load'; badge.textContent = '⏳ Carregando dados...'; }
+  if (btn)   { btn.disabled = true; btn.textContent = 'Aguarde...'; }
+
+  let ghOk = false;
+  if (window.SP_BRIDGE) {
+    ghOk = await window.SP_BRIDGE.init();
+  }
+
+  if (badge) {
+    badge.className = ghOk ? 'sp-badge ok' : 'sp-badge warn';
+    badge.textContent = ghOk ? '☁️ Dados sincronizados' : '⚠️ Modo offline — dados em cache';
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+
+  // Token via URL (link direto do Admin)
+  const urlToken = new URLSearchParams(window.location.search).get('token');
+  if (urlToken) {
+    irParaReset();
+    document.getElementById('reset-token-input').value = urlToken;
+    document.getElementById('reset-p1').style.display = 'none';
+    document.getElementById('reset-p2').style.display = 'block';
+    setStep(2);
+  }
+})();
 </script>
 </body>
 </html>
