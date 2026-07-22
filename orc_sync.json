@@ -3,6 +3,63 @@
   "_exportadoPor": "admin@g.globo",
   "orc_h2": [
     {
+      "num": "ORC-042",
+      "tipoAcao": "AÇÃO PLENA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "É DE CASA 2026",
+      "dataG": "2026-07-07",
+      "dataE": "2026-07-17",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "SEARA",
+      "focal": "Thamires Oliveira",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "É DE CASA 2026",
+      "ppm": "1111",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "sla": "2",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 1233,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 2300,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 12121,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 3533,
+      "ct": 12121,
+      "ta": 15654,
+      "emails": [
+        "thamires.oliveira@g.globo"
+      ],
+      "dataEnvio": "22/07/2026, 15:46:22",
+      "aprovador": "thamires.oliveira@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
       "num": "ORC-041",
       "tipoAcao": "AÇÃO PLENA",
       "cc": "GL160602002 - Dados & Insights",
@@ -3186,6 +3243,6 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-22T18:35:39.212843",
-  "_atualizadoPor": "lenilson.reis_manpowerstaffing@prestador.globo"
+  "_atualizadoEm": "2026-07-22T18:46:25.525Z",
+  "_atualizadoPor": "sandro.teste@g.globo"
 }
