@@ -392,7 +392,13 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         <div class="field"><label>Data Gravação <span class="req">*</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
         <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
         <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente"></div>
-        <div class="field"><label>Ponto Focal Merchandising</label><input id="f_focal" placeholder="Responsável"></div>
+        <div class="field" style="position:relative">
+          <label>Ponto Focal Merchandising</label>
+          <input id="f_focal" placeholder="Buscar aprovador..." autocomplete="off"
+            oninput="sugerirFocal()" onblur="setTimeout(()=>document.getElementById('dd-focal').classList.remove('open'),200)"
+            style="width:100%;box-sizing:border-box">
+          <div id="dd-focal" class="email-dd" style="top:100%;z-index:999"></div>
+        </div>
         <div class="field"><label>Capítulo</label><input id="f_cap" placeholder="Ex: 67"></div>
         <div class="field"><label>Cena</label><input id="f_cena" placeholder="Ex: 38"></div>
         <div class="field s2"><label>Programa / Produção</label><input id="f_prog" placeholder="Nome do programa"></div>
@@ -1155,7 +1161,69 @@ function renderEmails(){
   }
 }
 
-// ── OBSERVADORES ─────────────────────────────────────────────────
+// ── PONTO FOCAL — dropdown de aprovadores ────────────────────────
+function sugerirFocal() {
+  const inp = document.getElementById('f_focal');
+  const dd  = document.getElementById('dd-focal');
+  if (!inp || !dd) return;
+  const q = (inp.value||'').toLowerCase().trim();
+
+  const cores = {admin:'#EA580C', aprovador:'#16A34A'};
+  const usuarios = JSON.parse(_ck('orc_usuarios')||'[]')
+    .filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'admin'))
+    .filter(u => !q || u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    .slice(0, 8);
+
+  if (!usuarios.length) { dd.classList.remove('open'); return; }
+
+  dd.innerHTML = usuarios.map(u => `
+    <div class="email-dd-item" style="cursor:pointer"
+      onmousedown="selecionarFocal('${u.email.replace(/'/g,"\\'")}','${u.nome.replace(/'/g,"\\'")}','${u.perfil}')">
+      <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'}">${iniciaisDe(u.nome)}</div>
+      <div class="info">
+        <span class="name">${destacar(u.nome, q)}
+          <span style="font-size:10px;background:${cores[u.perfil]||'#64748B'}22;color:${cores[u.perfil]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700">${u.perfil}</span>
+        </span>
+        <span class="addr">${destacar(u.email, q)}</span>
+      </div>
+    </div>`).join('');
+  dd.classList.add('open');
+}
+
+function selecionarFocal(email, nome, perfil) {
+  // Preenche o campo Ponto Focal com o nome
+  const inp = document.getElementById('f_focal');
+  if (inp) inp.value = nome;
+  document.getElementById('dd-focal')?.classList.remove('open');
+
+  // Adiciona como destinatário se ainda não estiver
+  if (!emails.includes(email)) {
+    emails.push(email);
+    addHist(email);
+    renderEmails();
+  }
+
+  // Seleciona como aprovador no select
+  setTimeout(function() {
+    const sel = document.getElementById('f_aprovador');
+    if (sel) {
+      // Verifica se a opção já existe no select
+      let optFound = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === email) { sel.value = email; optFound = true; break; }
+      }
+      // Se não encontrou (renderEmails ainda não rodou), força re-render e tenta novamente
+      if (!optFound) {
+        renderEmails();
+        setTimeout(function() {
+          for (var i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value === email) { sel.value = email; break; }
+          }
+        }, 100);
+      }
+    }
+  }, 50);
+}
 let obsHistorico = JSON.parse(_ck('orc_obs_hist')||'[]');
 
 function sugerirObs() {
