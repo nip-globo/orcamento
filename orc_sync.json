@@ -3,6 +3,70 @@
   "_exportadoPor": "admin@g.globo",
   "orc_h2": [
     {
+      "num": "ORC-039",
+      "tipoAcao": "VISU",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "MAIS VOCÊ 2026",
+      "dataG": "2026-07-06",
+      "dataE": "2026-07-16",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "VIVO",
+      "focal": "SANDRO",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "MAIS VOCÊ 2026",
+      "ppm": "123456",
+      "tac": "MERCHAN",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "sla": "1",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 322,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 4546,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Caracterização",
+          "tipo": "producao",
+          "valor": 332,
+          "desc": "",
+          "extra": true
+        },
+        "extra_3": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 5678,
+          "desc": "",
+          "extra": true
+        }
+      },
+      "ci": 0,
+      "tp": 5200,
+      "ct": 5678,
+      "ta": 10878,
+      "emails": [
+        "lenilson.reis_manpowerstaffing@prestador.globo"
+      ],
+      "dataEnvio": "22/07/2026, 01:45:48",
+      "aprovador": "lenilson.reis_manpowerstaffing@prestador.globo",
+      "criador": "sandro.teste@g.globo",
+      "status": "aguardando"
+    },
+    {
       "num": "ORC-038",
       "tipoAcao": "AÇÃO PLENA",
       "cc": "GL160602002 - Dados & Insights",
@@ -3004,5 +3068,7 @@
       "status": "pendente"
     }
   ],
-  "orc_c2": {}
+  "orc_c2": {},
+  "_atualizadoEm": "2026-07-22T04:45:54.076Z",
+  "_atualizadoPor": "sandro.teste@g.globo"
 }
