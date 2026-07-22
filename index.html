@@ -1531,10 +1531,10 @@ function copiarCorpo(){
     if (window.opener && window.opener._emailCorpoAtual) {
       raw = window.opener._emailCorpoAtual;
     } else {
-      raw = (_ck('orc_email_corpo') || '';
+      raw = _ck('orc_email_corpo') || '';
     }
   } catch(e) {
-    raw = (_ck('orc_email_corpo') || '';
+    raw = _ck('orc_email_corpo') || '';
   }
   if (!raw) { alert('Corpo indisponivel. Feche e reenvie o orçamento.'); return; }
   try {
@@ -3839,7 +3839,7 @@ async function migrarParaSP() {
   for (var i = 0; i < CHAVES.length; i++) {
     var { key, lista, titulo } = CHAVES[i];
     var valor = null;
-    try { valor = (_ck(key); } catch(e) {}
+    try { valor = _ck(key); } catch(e) {}
 
     if (!valor) {
       addLog('⚪ ' + key + ' — sem dados locais, ignorado');
@@ -4097,7 +4097,7 @@ async function syncManual() {
 
   var dados = { _exportadoEm: new Date().toISOString(), _exportadoPor: window._USER ? window._USER.email : '' };
   _SYNC_KEYS.forEach(function(k) {
-    try { var v = (_ck(k); if(v) dados[k] = JSON.parse(v); } catch(e) {}
+    try { var v = _ck(k); if(v) dados[k] = JSON.parse(v); } catch(e) {}
   });
   var json = JSON.stringify(dados, null, 2);
 
@@ -4489,7 +4489,7 @@ async function syncExportar() {
   try {
     const dados = {};
     _SYNC_KEYS.forEach(function(k) {
-      try { const v = (_ck(k); if (v) dados[k] = JSON.parse(v); } catch(e) {}
+      try { const v = _ck(k); if (v) dados[k] = JSON.parse(v); } catch(e) {}
     });
     dados._exportadoEm   = new Date().toISOString();
     dados._exportadoPor  = window._USER ? window._USER.email : 'desconhecido';
@@ -4576,7 +4576,7 @@ function _ativarBotaoSync() {
 function initSync() {
   if (!_syncSuportado()) return;
   var dirAnterior = null;
-  try { dirAnterior = (_ck('orc_sync_dir'); } catch(e) {}
+  try { dirAnterior = _ck('orc_sync_dir'); } catch(e) {}
   if (dirAnterior) {
     // Pasta foi configurada antes — mostra botão e avisa para reconectar
     _ativarBotaoSync();
