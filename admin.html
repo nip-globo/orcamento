@@ -334,7 +334,32 @@ const PERFIS_BADGES = {
 };
 const USUARIOS_DEFAULT = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin',ativo:true}];
 
-function getUsers(){ return JSON.parse(_ck('orc_usuarios')||JSON.stringify(USUARIOS_DEFAULT)); }
+// Cache em memória dos dados do GitHub
+var _ghDataAdmin = null;
+
+function getUsers(){ 
+  if (_ghDataAdmin && _ghDataAdmin.orc_usuarios && _ghDataAdmin.orc_usuarios.length) {
+    return _ghDataAdmin.orc_usuarios;
+  }
+  return JSON.parse(_ck('orc_usuarios')||JSON.stringify(USUARIOS_DEFAULT)); 
+}
+
+// Carrega dados do GitHub e re-renderiza
+function carregarGitHubAdmin() {
+  fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (!data) return;
+      _ghDataAdmin = data;
+      if (data.orc_usuarios) _ckSet('orc_usuarios', JSON.stringify(data.orc_usuarios), 0.02);
+      if (data.orc_vinculos) _ckSet('orc_vinculos', JSON.stringify(data.orc_vinculos), 0.02);
+      if (data.orc_reset_sol) _ckSet('orc_reset_sol', JSON.stringify(data.orc_reset_sol), 0.02);
+      if (data.orc_delegacoes) _ckSet('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
+      renderTudo();
+      console.log('[Admin] GitHub carregado —', (data.orc_usuarios||[]).length, 'usuários');
+    })
+    .catch(function(e){ console.warn('[Admin] Falha ao carregar GitHub:', e.message); });
+}
 
 // ── SP SYNC (admin) ───────────────────────────────────────────────
 const SP_SITE_A = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
@@ -375,9 +400,9 @@ async function spSaveAdmin(key,lista,titulo,value){
   }catch(e){}
 }
 
-function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_usuarios',j); }
+function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_usuarios',j); }
 function getVinculos(){ return JSON.parse(_ck('orc_vinculos')||'{}'); }
-function saveVinculos(v){ const j=JSON.stringify(v); _ckSet('orc_vinculos',j,1); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_vinculos',j); }
+function saveVinculos(v){ const j=JSON.stringify(v); _ckSet('orc_vinculos',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_vinculos',j); }
 
 // ── Tabs ──────────────────────────────────────────────────────────
 function showTab(id) {
@@ -554,18 +579,19 @@ function adicionarUsuario() {
 if (window.SP_BRIDGE) {
   window.SP_BRIDGE.init().then(function(ok) {
     if (ok) {
-      // Recarrega usuários do SP
       renderTudo();
       var hdr = document.querySelector('.hdr');
       if (hdr) {
         var spTag = document.createElement('span');
         spTag.style.cssText = 'font-size:10px;color:#16A34A;font-weight:700;padding:2px 8px;background:#ECFDF5;border-radius:10px;margin-left:8px';
-        spTag.textContent = '● SharePoint';
+        spTag.textContent = '● GitHub';
         hdr.appendChild(spTag);
       }
     }
   });
 }
+// Carrega dados frescos do GitHub em background
+carregarGitHubAdmin();
   ['n_nome','n_email','n_senha'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('campos-extra').style.display='none';
   show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
