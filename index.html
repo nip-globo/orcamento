@@ -301,35 +301,39 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
-// Verificação de sessão antes de renderizar qualquer coisa
+// Verificação de sessão via cookie (SP-safe — sem localStorage/sessionStorage)
 (function(){
-  try {
-    let u = null;
-    const s = sessionStorage.getItem('orc_user');
-    if (s) { u = JSON.parse(s); }
-    // Fallback: localStorage (só usa se recente — menos de 8h)
-    if (!u || !u.email) {
-      const fb = localStorage.getItem('orc_user_fallback');
-      if (fb) {
-        const parsed = JSON.parse(fb);
-        const age = Date.now() - (parsed._ts || 0);
-        if (parsed && parsed.email && age < 8 * 3600 * 1000) {
-          u = parsed;
-          sessionStorage.setItem('orc_user', JSON.stringify(u));
-        } else {
-          localStorage.removeItem('orc_user_fallback'); // expirado, limpa
+  function getCookie(key) {
+    try {
+      // Tenta com e sem encodeURIComponent na chave
+      var searches = [encodeURIComponent(key) + '=', key + '='];
+      var parts = document.cookie.split(';');
+      for (var s = 0; s < searches.length; s++) {
+        var name = searches[s];
+        for (var i = 0; i < parts.length; i++) {
+          var c = parts[i].trim();
+          if (c.indexOf(name) === 0) {
+            try { return decodeURIComponent(c.substring(name.length)); } catch(e) { return c.substring(name.length); }
+          }
         }
       }
+    } catch(e) {}
+    return null;
+  }
+  try {
+    var raw = getCookie('orc_user');
+    if (raw) {
+      var u = JSON.parse(raw);
+      var age = Date.now() - (u._ts || 0);
+      if (u && u.email && u.perfil && age < 8 * 3600 * 1000) {
+        window._USER = u;
+        var perfisGestor = ['gestor_cc','gestor_criador','observador'];
+        if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
+        return; // sessão OK — carrega o sistema
+      }
     }
-    if (u && u.email && u.perfil) {
-      window._USER = u;
-      // Gestores vão direto para o painel próprio
-      const perfisGestor = ['gestor_cc','gestor_criador','observador'];
-      if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
-      return; // sessão OK, continua carregando o site
-    }
-  } catch(e){}
-  // Sem sessão válida: redireciona para login.html
+  } catch(e) { console.error('[Sessão] Erro:', e.message); }
+  // Sem sessão válida
   window.location.replace('./login.html');
 })();
 </script>
@@ -682,16 +686,16 @@ function getExtras() {
 // ── ESTADO ────────────────────────────────────────────────────────
 let emails=[];
 let observadores=[];
-let hist=JSON.parse(localStorage.getItem('orc_h2')||'[]');
+let hist=JSON.parse((_ck('orc_h2')||'[]');
 // Corrige entradas com número corrompido (ex: ORC-NAN) geradas por bug anterior
 (function(){
   let dirty=false;
   hist.forEach(function(o){
     if(o.num&&/NAN/i.test(o.num)){ o.num='ORC-???'; dirty=true; }
   });
-  if(dirty) localStorage.setItem('orc_h2',JSON.stringify(hist));
+  if(dirty) _ckSet('orc_h2',JSON.stringify(hist));
 })();
-let cfg =JSON.parse(localStorage.getItem('orc_c2')||'{}');
+let cfg =JSON.parse((_ck('orc_c2')||'{}');
 let spConectado=false;
 
 const fBRL=v=>'R$\u00a0'+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -914,11 +918,11 @@ function destacar(texto, termo) {
 }
 
 // Histórico local de e-mails usados
-function getHist() { return JSON.parse(localStorage.getItem('email_hist') || '[]'); }
+function getHist() { return JSON.parse((_ck('email_hist') || '[]'); }
 function addHist(em) {
   const h = getHist().filter(e => e !== em);
   h.unshift(em);
-  localStorage.setItem('email_hist', JSON.stringify(h.slice(0, 20)));
+  _ckSet('email_hist', JSON.stringify(h.slice(0, 20)));
 }
 
 function sugerirEmail() {
@@ -1077,7 +1081,7 @@ function renderEmails(){
 }
 
 // ── OBSERVADORES ─────────────────────────────────────────────────
-let obsHistorico = JSON.parse(localStorage.getItem('orc_obs_hist')||'[]');
+let obsHistorico = JSON.parse((_ck('orc_obs_hist')||'[]');
 
 function sugerirObs() {
   const inp = document.getElementById('obsInput');
@@ -1086,7 +1090,7 @@ function sugerirObs() {
   if (!q || q.length < 2) { dd.classList.remove('open'); return; }
 
   // Busca no diretório OWA se disponível
-  const usuarios = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+  const usuarios = JSON.parse((_ck('orc_usuarios')||'[]');
   const filtrados = [...new Set([
     ...obsHistorico,
     ...usuarios.filter(u=>u.perfil==='observador').map(u=>u.email)
@@ -1132,7 +1136,7 @@ function addObs() {
   if (!observadores.includes(em)) observadores.push(em);
   if (!obsHistorico.includes(em)) {
     obsHistorico.push(em);
-    localStorage.setItem('orc_obs_hist', JSON.stringify(obsHistorico.slice(-50)));
+    _ckSet('orc_obs_hist', JSON.stringify(obsHistorico.slice(-50)));
   }
   inp.value = '';
   renderObs();
@@ -1161,7 +1165,7 @@ document.addEventListener('click', e => {
 // ── CONFIG ────────────────────────────────────────────────────────
 function salvarCfg(){
   cfg={site:sv('cfg_site'),lista:sv('cfg_lista')};
-  localStorage.setItem('orc_c2',JSON.stringify(cfg));
+  _ckSet('orc_c2',JSON.stringify(cfg));
   alert('✅ Configuração salva!');
 }
 
@@ -1527,10 +1531,10 @@ function copiarCorpo(){
     if (window.opener && window.opener._emailCorpoAtual) {
       raw = window.opener._emailCorpoAtual;
     } else {
-      raw = localStorage.getItem('orc_email_corpo') || '';
+      raw = (_ck('orc_email_corpo') || '';
     }
   } catch(e) {
-    raw = localStorage.getItem('orc_email_corpo') || '';
+    raw = (_ck('orc_email_corpo') || '';
   }
   if (!raw) { alert('Corpo indisponivel. Feche e reenvie o orçamento.'); return; }
   try {
@@ -1562,7 +1566,7 @@ function gerarCorpoHTMLEmail(o){
   function esc(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function fmtBRL(v){ return 'R$ '+(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
   const contas = Object.values(o.contas||{}).filter(c=>c.valor>0);
-  const users  = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+  const users  = JSON.parse((_ck('orc_usuarios')||'[]');
   function nomeU(e){ const u=users.find(x=>x.email===e); return u?u.nome:e; }
   const nomeAprov   = nomeU(o.aprovador);
   const nomeCriador = nomeU(o.criador||window._USER?.email||'');
@@ -1978,7 +1982,7 @@ async function enviar(){
     hist.unshift(o);
   }
   const _hj1=JSON.stringify(hist);
-  localStorage.setItem('orc_h2',_hj1);
+  _ckSet('orc_h2',_hj1);
   if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_h2',_hj1);
   else if(_spReady) spSave('orc_h2',_hj1);
   if(_syncAtivo&&_syncDirHandle) syncExportar();
@@ -2007,7 +2011,7 @@ function renderHist(){
 
   // Filtra por perfil
   let lista = hist;
-  const vinculos = JSON.parse(localStorage.getItem('orc_vinculos')||'{}');
+  const vinculos = JSON.parse((_ck('orc_vinculos')||'{}');
   // Delegação — verifica se usuário é delegante (bloqueado) ou delegado
   const _delAtiva = getDelegacaoAtiva(user?.email || '');
   const _bloqueado = estaBloqueado(user?.email || '');
@@ -2032,7 +2036,7 @@ function renderHist(){
     }
   } else if (user?.perfil === 'gestor_cc') {
     // Vê orçamentos do seu CC
-    const users = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+    const users = JSON.parse((_ck('orc_usuarios')||'[]');
     const myUser = users.find(u=>u.email===user.email);
     const meuCC  = myUser?.ccVinculado||'';
     if (meuCC) {
@@ -2256,7 +2260,7 @@ function exportarTodos(){
   if(!hist.length){alert('Nenhum registro.');return;}
 
   // Lookup nome por e-mail
-  const _usersExp = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+  const _usersExp = JSON.parse((_ck('orc_usuarios')||'[]');
   const _nomeExp  = email => { const u=_usersExp.find(x=>x.email===email); return u?u.nome:(email||'—'); };
 
   const wb = XLSX.utils.book_new();
@@ -2833,7 +2837,7 @@ function salvarRascunho() {
     hist.unshift(o);
   }
   const _hj2=JSON.stringify(hist);
-  localStorage.setItem('orc_h2',_hj2);
+  _ckSet('orc_h2',_hj2);
   if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_h2',_hj2);
   else if(_spReady) spSave('orc_h2',_hj2);
   _histPage = 0;
@@ -2970,7 +2974,7 @@ function marcarCiente(idx) {
   o.cienteEm = new Date().toLocaleString('pt-BR');
   o.cientePor = window._USER?.nome || '';
   const _hjson3=JSON.stringify(hist);
-  localStorage.setItem('orc_h2',_hjson3);
+  _ckSet('orc_h2',_hjson3);
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
@@ -3003,13 +3007,15 @@ function validarDatas() {
 }
 
 function logout() {
-  sessionStorage.removeItem('orc_user');
-  localStorage.removeItem('orc_user_fallback');
+  if (window.SP_BRIDGE) window.SP_BRIDGE.clearSession();
+  else document.cookie = encodeURIComponent('orc_user') +
+    '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
   window.location.replace('./login.html');
 }
 
 function getUsuariosPorPerfil(perfis) {
-  const todos = JSON.parse(localStorage.getItem('orc_usuarios')||
+  const raw   = window.SP_BRIDGE ? window.SP_BRIDGE.cookie.get('orc_usuarios') : null;
+  const todos = JSON.parse(raw ||
     '[{"email":"admin@g.globo","nome":"Administrador","perfil":"admin","ativo":true}]');
   return todos.filter(u => perfis.includes(u.perfil) && u.ativo !== false);
 }
@@ -3101,7 +3107,7 @@ function confirmarAcaoAprovacao(idx, novoStatus, obs) {
   });
 
   const _hjson3=JSON.stringify(hist);
-  localStorage.setItem('orc_h2',_hjson3);
+  _ckSet('orc_h2',_hjson3);
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
@@ -3182,7 +3188,7 @@ var _rsel = {};
 function getListaRel() {
   var user = window._USER;
   if (!user) return [];
-  var all = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+  var all = JSON.parse((_ck('orc_h2') || '[]');
   if (user.perfil === 'criador')   return all.filter(function(o){ return o.criador === user.email; });
   if (user.perfil === 'aprovador') return all.filter(function(o){ return o.aprovador === user.email; });
   return all; // admin vê tudo
@@ -3192,7 +3198,7 @@ function renderRelatoriosIndex() {
   var wrap = document.getElementById('rel-conteudo');
   if (!wrap) return;
   var lista = getListaRel();
-  var users = JSON.parse(localStorage.getItem('orc_usuarios') || '[]');
+  var users = JSON.parse((_ck('orc_usuarios') || '[]');
 
   function nomePessoa(e) { var u=users.find(function(x){return x.email===e;}); return u?u.nome+' ('+e+')':e; }
   function uniq(arr) { return arr.filter(function(v,i,a){return v&&a.indexOf(v)===i;}).sort(); }
@@ -3408,7 +3414,7 @@ function escHist(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt
 function exportFiltradoR(tipo) {
   var f = filtrarR(getListaRel());
   if(!f.length){alert('Nenhum resultado com os filtros aplicados.');return;}
-  var _users=JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+  var _users=JSON.parse((_ck('orc_usuarios')||'[]');
   function _nomeEmail(email){ var u=_users.find(function(x){return x.email===email;}); return u?u.nome:(email||'—'); }
   var cols=['Nº Orç.','Data Envio','Cliente','Projeto','Cap/Cena','Tipo Ação','CC Merchan',
     'Data Grav.','Data Exib.','Programa',
@@ -3492,11 +3498,11 @@ function exportPDFR(tipo) {
 
 // ── DELEGAÇÃO ────────────────────────────────────────────────────
 function getDelegacoes() {
-  return JSON.parse(localStorage.getItem('orc_delegacoes') || '[]');
+  return JSON.parse((_ck('orc_delegacoes') || '[]');
 }
 function saveDelegacoes(d) {
   const json=JSON.stringify(d);
-  localStorage.setItem('orc_delegacoes',json);
+  _ckSet('orc_delegacoes',json);
   if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_delegacoes',json);
   else if(_spReady) spSave('orc_delegacoes',json);
 }
@@ -3532,7 +3538,7 @@ function renderBannerDelegacao() {
   var el   = document.getElementById('banner-delegacao');
   if (!user || !el) return;
 
-  var users = JSON.parse(localStorage.getItem('orc_usuarios') || '[]');
+  var users = JSON.parse((_ck('orc_usuarios') || '[]');
   function nomeU(e) { var u=users.find(function(x){return x.email===e;}); return u?u.nome:e; }
 
   var hoje = new Date(); hoje.setHours(0,0,0,0);
@@ -3609,7 +3615,7 @@ function cancelarDelegacao(id) {
 function abrirModalDelegacao() {
   const user  = window._USER;
   if (!user) return;
-  const users = JSON.parse(localStorage.getItem('orc_usuarios') || '[]');
+  const users = JSON.parse((_ck('orc_usuarios') || '[]');
 
   // Filtra possíveis delegados (mesmo perfil, diferente do usuário)
   const candidatos = users.filter(function(u) {
@@ -3833,7 +3839,7 @@ async function migrarParaSP() {
   for (var i = 0; i < CHAVES.length; i++) {
     var { key, lista, titulo } = CHAVES[i];
     var valor = null;
-    try { valor = localStorage.getItem(key); } catch(e) {}
+    try { valor = (_ck(key); } catch(e) {}
 
     if (!valor) {
       addLog('⚪ ' + key + ' — sem dados locais, ignorado');
@@ -3989,11 +3995,12 @@ async function _spSet(lista, titulo, valor) {
   } catch(e) { return false; }
 }
 
-// ── API PÚBLICA: substitui localStorage para chaves críticas ──────
+// ── API PÚBLICA: substitui localStorage por cookie (SP-safe) ────
+function _ck(key) { return window.SP_BRIDGE ? window.SP_BRIDGE.cookie.get(key) : null; }
+function _ckSet(key, val) { if (window.SP_BRIDGE) window.SP_BRIDGE.cookie.set(key, val, 1); }
+
 async function spSave(key, value) {
-  // Salva sempre no localStorage (cache/fallback)
-  try { localStorage.setItem(key, value); } catch(e) {}
-  // Salva no SharePoint se disponível
+  _ckSet(key, value); // cookie como cache
   if (_spReady && SP_KEYS_IDX[key]) {
     const { lista, titulo } = SP_KEYS_IDX[key];
     await _spSet(lista, titulo, value);
@@ -4005,19 +4012,17 @@ async function spLoad(key) {
     const { lista, titulo } = SP_KEYS_IDX[key];
     const item = await _spGet(lista, titulo);
     if (item && item.valor) {
-      // Atualiza cache local
-      try { localStorage.setItem(key, item.valor); } catch(e) {}
+      _ckSet(key, item.valor);
       return item.valor;
     }
   }
-  // Fallback para localStorage
-  try { return localStorage.getItem(key); } catch(e) { return null; }
+  return _ck(key);
 }
 
-// Sincroniza todas as chaves do SP para localStorage ao iniciar
+// Sincroniza todas as chaves do SP para cookie ao iniciar
 async function spSyncAll() {
   if (!await _spCheck()) {
-    console.warn('[SP] SharePoint indisponível — usando localStorage local');
+    console.warn('[SP] SharePoint indisponível — usando dados em cookie');
     _showSpStatus(false);
     return;
   }
@@ -4025,9 +4030,7 @@ async function spSyncAll() {
   for (const key of Object.keys(SP_KEYS_IDX)) {
     const { lista, titulo } = SP_KEYS_IDX[key];
     const item = await _spGet(lista, titulo);
-    if (item && item.valor) {
-      try { localStorage.setItem(key, item.valor); } catch(e) {}
-    }
+    if (item && item.valor) _ckSet(key, item.valor);
   }
   console.log('[SP] Sincronização completa');
 }
@@ -4074,9 +4077,9 @@ async function syncImportarAuto() {
     var dados = await r.json();
     if (!dados._exportadoEm) return false;
     _SYNC_KEYS.forEach(function(k) {
-      if (dados[k]) try { localStorage.setItem(k, JSON.stringify(dados[k])); } catch(e) {}
+      if (dados[k]) try { _ckSet(k, JSON.stringify(dados[k])); } catch(e) {}
     });
-    hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+    hist = JSON.parse((_ck('orc_h2') || '[]');
     var dt = new Date(dados._exportadoEm).toLocaleString('pt-BR');
     console.log('[Sync] Importado automaticamente. Ultimo export: ' + dt + ' por ' + (dados._exportadoPor||'?'));
     _setSyncStatus('ok', dt);
@@ -4094,7 +4097,7 @@ async function syncManual() {
 
   var dados = { _exportadoEm: new Date().toISOString(), _exportadoPor: window._USER ? window._USER.email : '' };
   _SYNC_KEYS.forEach(function(k) {
-    try { var v = localStorage.getItem(k); if(v) dados[k] = JSON.parse(v); } catch(e) {}
+    try { var v = (_ck(k); if(v) dados[k] = JSON.parse(v); } catch(e) {}
   });
   var json = JSON.stringify(dados, null, 2);
 
@@ -4305,11 +4308,9 @@ async function _spSet(lista, titulo, valor) {
   } catch(e) { return false; }
 }
 
-// ── API PÚBLICA: substitui localStorage para chaves críticas ──────
+// ── API PÚBLICA: substitui localStorage por cookie (SP-safe) ─────
 async function spSave(key, value) {
-  // Salva sempre no localStorage (cache/fallback)
-  try { localStorage.setItem(key, value); } catch(e) {}
-  // Salva no SharePoint se disponível
+  if (window.SP_BRIDGE) window.SP_BRIDGE.cookie.set(key, value, 1);
   if (_spReady && SP_KEYS[key]) {
     const { lista, titulo } = SP_KEYS[key];
     await _spSet(lista, titulo, value);
@@ -4321,19 +4322,17 @@ async function spLoad(key) {
     const { lista, titulo } = SP_KEYS[key];
     const item = await _spGet(lista, titulo);
     if (item && item.valor) {
-      // Atualiza cache local
-      try { localStorage.setItem(key, item.valor); } catch(e) {}
+      if (window.SP_BRIDGE) window.SP_BRIDGE.cookie.set(key, item.valor, 1);
       return item.valor;
     }
   }
-  // Fallback para localStorage
-  try { return localStorage.getItem(key); } catch(e) { return null; }
+  return window.SP_BRIDGE ? window.SP_BRIDGE.cookie.get(key) : null;
 }
 
-// Sincroniza todas as chaves do SP para localStorage ao iniciar
+// Sincroniza todas as chaves do SP para cookie ao iniciar
 async function spSyncAll() {
   if (!await _spCheck()) {
-    console.warn('[SP] SharePoint indisponível — usando localStorage local');
+    console.warn('[SP] SharePoint indisponível — usando dados em cookie');
     _showSpStatus(false);
     return;
   }
@@ -4341,9 +4340,7 @@ async function spSyncAll() {
   for (const key of Object.keys(SP_KEYS)) {
     const { lista, titulo } = SP_KEYS[key];
     const item = await _spGet(lista, titulo);
-    if (item && item.valor) {
-      try { localStorage.setItem(key, item.valor); } catch(e) {}
-    }
+    if (item && item.valor && window.SP_BRIDGE) window.SP_BRIDGE.cookie.set(key, item.valor, 1);
   }
   console.log('[SP] Sincronização completa');
 }
@@ -4476,7 +4473,7 @@ async function syncConfigurar() {
     _syncDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
     _syncAtivo = true;
     // Salva nome da pasta para exibição
-    try { localStorage.setItem('orc_sync_dir', _syncDirHandle.name); } catch(e) {}
+    try { _ckSet('orc_sync_dir', _syncDirHandle.name); } catch(e) {}
     _atualizarStatusSync();
     _ativarBotaoSync();
     // Importa automaticamente após conectar
@@ -4492,7 +4489,7 @@ async function syncExportar() {
   try {
     const dados = {};
     _SYNC_KEYS.forEach(function(k) {
-      try { const v = localStorage.getItem(k); if (v) dados[k] = JSON.parse(v); } catch(e) {}
+      try { const v = (_ck(k); if (v) dados[k] = JSON.parse(v); } catch(e) {}
     });
     dados._exportadoEm   = new Date().toISOString();
     dados._exportadoPor  = window._USER ? window._USER.email : 'desconhecido';
@@ -4529,12 +4526,12 @@ async function syncImportar() {
     var importados = 0;
     _SYNC_KEYS.forEach(function(k) {
       if (dados[k]) {
-        try { localStorage.setItem(k, JSON.stringify(dados[k])); importados++; } catch(e) {}
+        try { _ckSet(k, JSON.stringify(dados[k])); importados++; } catch(e) {}
       }
     });
 
     // Recarrega dados na memória
-    hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+    hist = JSON.parse((_ck('orc_h2') || '[]');
     renderHist();
     renderNotificacoes();
 
@@ -4549,7 +4546,7 @@ async function syncImportar() {
 function syncDesconectar() {
   _syncDirHandle = null;
   _syncAtivo = false;
-  try { localStorage.removeItem('orc_sync_dir'); } catch(e) {}
+  try { void 0; } catch(e) {}
   _atualizarStatusSync();
   var btn = document.getElementById('btn-sync');
   if (btn) btn.style.display = 'none';
@@ -4579,7 +4576,7 @@ function _ativarBotaoSync() {
 function initSync() {
   if (!_syncSuportado()) return;
   var dirAnterior = null;
-  try { dirAnterior = localStorage.getItem('orc_sync_dir'); } catch(e) {}
+  try { dirAnterior = (_ck('orc_sync_dir'); } catch(e) {}
   if (dirAnterior) {
     // Pasta foi configurada antes — mostra botão e avisa para reconectar
     _ativarBotaoSync();
@@ -4598,7 +4595,7 @@ if (window._USER) {
   } else {
     // Sincroniza com SharePoint (async, não bloqueia UI)
     spSyncAll().then(function(){
-      hist = JSON.parse(localStorage.getItem('orc_h2')||'[]');
+      hist = JSON.parse((_ck('orc_h2')||'[]');
       renderHist();
       renderBannerDelegacao();
       renderNotificacoes();
@@ -4608,7 +4605,7 @@ if (window._USER) {
       window.SP_BRIDGE.init().then(function(ok) {
         if (ok) {
           // Recarrega dados do SP
-          hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+          hist = JSON.parse((_ck('orc_h2') || '[]');
           renderHist();
           renderNotificacoes();
           renderBannerDelegacao();
@@ -4623,7 +4620,7 @@ if (window._USER) {
       });
     }
     syncImportarAuto().then(function() {
-  hist = JSON.parse(localStorage.getItem('orc_h2') || '[]');
+  hist = JSON.parse((_ck('orc_h2') || '[]');
   initPerfil();
   initForm();
   renderHist();
@@ -4732,7 +4729,7 @@ function abrirModalPerfil() {
     if (['criador','aprovador'].includes(user.perfil)) {
       const bloqueado = estaBloqueado(user.email);
       const delAtiva  = getDelegacaoAtiva(user.email);
-      const users2    = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+      const users2    = JSON.parse((_ck('orc_usuarios')||'[]');
       function nomeU2(e){ var u=users2.find(function(x){return x.email===e;}); return u?u.nome:e; }
       let delHtml = '<div style="border-top:1px solid var(--cinza-bd);padding-top:16px;margin-bottom:18px">';
       delHtml += '<h3 style="font-size:12px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">🔁 Delegação de Poderes</h3>';
@@ -4800,7 +4797,7 @@ function salvarNovaSenha() {
 
   // Verifica senha atual
   const pad   = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin',ativo:true}];
-  const users = JSON.parse(localStorage.getItem('orc_usuarios') || JSON.stringify(pad));
+  const users = JSON.parse((_ck('orc_usuarios') || JSON.stringify(pad));
   const idx   = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
 
   if (idx === -1) {
@@ -4822,7 +4819,7 @@ function salvarNovaSenha() {
   // Salva nova senha
   users[idx].senha = nova;
   const _ujson = JSON.stringify(users);
-  localStorage.setItem('orc_usuarios', _ujson);
+  _ckSet('orc_usuarios', _ujson);
   if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_usuarios',_ujson);
   else if(_spReady) spSave('orc_usuarios', _ujson);
 
