@@ -382,46 +382,72 @@ async function confirmarNovaSenha() {
 
 // Verifica sessão ativa (cookie)
 (async function iniciar() {
-  // Sessão já ativa?
+  // ── Flag anti-loop: se já redirecionou uma vez, não redireciona de novo ──
+  if (sessionStorage && sessionStorage.getItem('_login_redirecting')) {
+    sessionStorage.removeItem('_login_redirecting');
+    return; // já está redirecionando — não faz nada
+  }
+
+  // ── Sessão ativa? ──────────────────────────────────────────────
   try {
     const raw = STORE.get('orc_user');
     if (raw) {
       const sess = JSON.parse(raw);
       const age  = Date.now() - (sess._ts || 0);
-      if (sess.email && age < 8 * 3600 * 1000) {
+      if (sess.email && sess.perfil && age < 8 * 3600 * 1000) {
         const gestores = ['gestor_cc','gestor_criador','observador'];
-        window.location.replace(gestores.includes(sess.perfil) ? 'gestor.html' : 'index.html');
+        const destino  = gestores.includes(sess.perfil) ? 'gestor.html' : 'index.html';
+        // Evita redirecionar para a própria página de login
+        if (!window.location.href.endsWith(destino)) {
+          try { sessionStorage.setItem('_login_redirecting', '1'); } catch(e){}
+          window.location.replace(destino);
+        }
         return;
+      } else {
+        // Cookie expirado — limpa para não causar loop
+        STORE.remove && STORE.remove('orc_user');
       }
     }
-  } catch(e) {}
+  } catch(e) {
+    // Cookie corrompido — limpa
+    try { document.cookie = encodeURIComponent('orc_user') + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax'; } catch(e2){}
+  }
 
-  // Inicializa GitHub Bridge e atualiza badge
+  // ── Inicializa GitHub Bridge com timeout de segurança ──────────
   const badge = document.getElementById('sp-badge');
   const btn   = document.getElementById('btn-entrar');
-  if (badge) { badge.style.display = 'inline-flex'; badge.className = 'sp-badge load'; badge.textContent = '⏳ Carregando dados...'; }
+  if (badge) { badge.style.display = 'inline-flex'; badge.className = 'sp-badge load'; badge.textContent = '⏳ Carregando...'; }
   if (btn)   { btn.disabled = true; btn.textContent = 'Aguarde...'; }
 
   let ghOk = false;
-  if (window.SP_BRIDGE) {
-    ghOk = await window.SP_BRIDGE.init();
+  try {
+    if (window.SP_BRIDGE) {
+      // Timeout de 8s para não travar indefinidamente
+      const initPromise = window.SP_BRIDGE.init();
+      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(false), 8000));
+      ghOk = await Promise.race([initPromise, timeoutPromise]);
+    }
+  } catch(e) {
+    console.warn('[Login] SP_BRIDGE.init falhou:', e.message);
   }
 
   if (badge) {
-    badge.className = ghOk ? 'sp-badge ok' : 'sp-badge warn';
-    badge.textContent = ghOk ? '☁️ Dados sincronizados' : '⚠️ Modo offline — dados em cache';
+    badge.className    = ghOk ? 'sp-badge ok' : 'sp-badge warn';
+    badge.textContent  = ghOk ? '☁️ Dados sincronizados' : '⚠️ Sem conexão — login com dados locais';
   }
   if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
 
-  // Token via URL (link direto do Admin)
-  const urlToken = new URLSearchParams(window.location.search).get('token');
-  if (urlToken) {
-    irParaReset();
-    document.getElementById('reset-token-input').value = urlToken;
-    document.getElementById('reset-p1').style.display = 'none';
-    document.getElementById('reset-p2').style.display = 'block';
-    setStep(2);
-  }
+  // ── Token via URL ──────────────────────────────────────────────
+  try {
+    const urlToken = new URLSearchParams(window.location.search).get('token');
+    if (urlToken) {
+      irParaReset();
+      document.getElementById('reset-token-input').value = urlToken;
+      document.getElementById('reset-p1').style.display = 'none';
+      document.getElementById('reset-p2').style.display = 'block';
+      setStep(2);
+    }
+  } catch(e) {}
 })();
 </script>
 </body>
