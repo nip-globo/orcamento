@@ -951,28 +951,48 @@ function sugerirEmail() {
   const dd   = document.getElementById('dd-email');
   const term = inp.value.trim();
 
-  if (!term || term.length < 2) { dd.classList.remove('open'); return; }
+  if (!term || term.length < 1) { dd.classList.remove('open'); return; }
 
   ddEmailIdx = -1;
-
-  // Mostra loading
-  dd.innerHTML = '<div class="email-dd-empty">🔍 Buscando no diretório Globo... <span style="font-size:10px;color:#94A3B8">(abra o Outlook Web no Chrome para melhores resultados)</span></div>';
   dd.classList.add('open');
 
-  // Debounce 350ms
+  // Usuários cadastrados no sistema (busca imediata, sem delay)
+  const usuariosSistema = JSON.parse(_ck('orc_usuarios') || '[]')
+    .filter(u => u.ativo !== false)
+    .filter(u => {
+      const t = term.toLowerCase();
+      return u.nome.toLowerCase().includes(t) || u.email.toLowerCase().includes(t);
+    })
+    .slice(0, 5);
+
+  if (usuariosSistema.length) {
+    const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
+    dd.innerHTML = usuariosSistema.map((u, i) => `
+      <div class="email-dd-item" data-email="${u.email}"
+        onmousedown="selecionarEmail('${u.email.replace(/'/g,"\\'")}')"
+        onmouseover="ativarDDItem(${i})" style="cursor:pointer">
+        <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'}">${iniciaisDe(u.nome)}</div>
+        <div class="info">
+          <span class="name">${destacar(u.nome, term)} <span style="font-size:10px;background:${cores[u.perfil]||'#64748B'}22;color:${cores[u.perfil]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700">${u.perfil}</span></span>
+          <span class="addr">${destacar(u.email, term)}</span>
+        </div>
+      </div>`).join('');
+    dd.classList.add('open');
+  } else {
+    dd.innerHTML = '<div class="email-dd-empty">🔍 Buscando...</div>';
+  }
+
+  // Debounce para busca no diretório Globo
   clearTimeout(buscaTimer);
   buscaTimer = setTimeout(async () => {
-    // Histórico local primeiro
-    const hist    = getHist().filter(e => e.toLowerCase().includes(term.toLowerCase())).slice(0, 3);
-    const pessoas = await buscarPessoas(term);
+    const histEmails = getHist().filter(e => e.toLowerCase().includes(term.toLowerCase())).slice(0, 3);
+    const pessoas    = await buscarPessoas(term);
 
-    if (!pessoas.length && !hist.length) {
-      // Fallback: sugere e-mail com domínio @g.globo
+    if (!pessoas.length && !histEmails.length && !usuariosSistema.length) {
       const sug = term.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .replace(/\s+/g,'.').replace(/[^a-z0-9.@]/g,'');
       const emailSug = sug.includes('@') ? sug : sug + '@g.globo';
-
       dd.innerHTML = `
         <div class="email-dd-item" data-email="${emailSug}"
           onmousedown="selecionarEmail('${emailSug.replace(/'/g,"\'")}')"
@@ -980,29 +1000,34 @@ function sugerirEmail() {
           <div class="avatar" style="background:#64748B">?</div>
           <div class="info">
             <span class="name">✉️ ${emailSug}</span>
-            <span class="addr">Digitar manualmente</span>
+            <span class="addr">Adicionar manualmente</span>
           </div>
-        </div>
-        <div class="email-dd-empty" style="border-top:1px solid #F1F5F9">
-          Não encontrado no diretório — verifique o e-mail
         </div>`;
       dd.classList.add('open');
       return;
     }
 
+    // Mescla: sistema + histórico + diretório (sem duplicatas)
+    const emailsSistema = usuariosSistema.map(u => u.email);
     const items = [
-      ...hist.map(e => ({ nome: e.split('@')[0], email: e, cargo: 'Usado recentemente', tipo: 'hist' })),
-      ...pessoas.map(p => ({ ...p, tipo: 'pessoa' })),
+      ...usuariosSistema.map(u => ({ nome: u.nome, email: u.email, cargo: u.perfil, tipo: 'sistema' })),
+      ...histEmails.filter(e => !emailsSistema.includes(e)).map(e => ({ nome: e.split('@')[0], email: e, cargo: 'Usado recentemente', tipo: 'hist' })),
+      ...pessoas.filter(p => !emailsSistema.includes(p.email)).map(p => ({ ...p, tipo: 'pessoa' })),
     ].slice(0, 8);
 
+    const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
     dd.innerHTML = items.map((p, i) => `
       <div class="email-dd-item" data-email="${p.email}"
         onmousedown="selecionarEmail('${p.email.replace(/'/g,"\'")}')"
-        onmouseover="ativarDDItem(${i})">
-        <div class="avatar" style="background:${p.tipo==='hist'?'#64748B':'#1B2A4A'}">${iniciaisDe(p.nome)}</div>
+        onmouseover="ativarDDItem(${i})" style="cursor:pointer">
+        <div class="avatar" style="background:${p.tipo==='sistema'?(cores[p.cargo]||'#1B2A4A'):p.tipo==='hist'?'#64748B':'#1B2A4A'}">${iniciaisDe(p.nome)}</div>
         <div class="info">
-          <span class="name">${p.tipo==='hist'?'🕐':''} ${destacar(p.nome || p.email, term)}</span>
-          <span class="addr">${destacar(p.email, term)}${p.cargo?' · '+p.cargo:''}</span>
+          <span class="name">${p.tipo==='hist'?'🕐':p.tipo==='sistema'?'👤':''} ${destacar(p.nome||p.email, term)}${p.tipo==='sistema'?` <span style="font-size:10px;background:${cores[p.cargo]||'#64748B'}22;color:${cores[p.cargo]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700">${p.cargo}</span>`:''}</span>
+          <span class="addr">${destacar(p.email, term)}${p.cargo&&p.tipo!=='sistema'?' · '+p.cargo:''}</span>
+        </div>
+      </div>`).join('');
+    dd.classList.add('open');
+  }, 300);
         </div>
       </div>`).join('');
     dd.classList.add('open');
@@ -1108,25 +1133,26 @@ function sugerirObs() {
   const inp = document.getElementById('obsInput');
   const dd  = document.getElementById('dd-obs');
   const q   = (inp.value||'').toLowerCase().trim();
-  if (!q || q.length < 2) { dd.classList.remove('open'); return; }
+  if (!q || q.length < 1) { dd.classList.remove('open'); return; }
 
-  // Busca no diretório OWA se disponível
-  const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
-  const filtrados = [...new Set([
-    ...obsHistorico,
-    ...usuarios.filter(u=>u.perfil==='observador').map(u=>u.email)
-  ])].filter(e => e.toLowerCase().includes(q)).slice(0,6);
+  const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
+  const usuarios = JSON.parse(_ck('orc_usuarios')||'[]').filter(u => u.ativo !== false);
 
-  let itens = filtrados.map(e => {
-    const u = usuarios.find(x=>x.email===e);
-    return `<div class="email-dd-item" onclick="selecionarObs('${e}')">
-      <div class="avatar">${(u?.nome||e)[0].toUpperCase()}</div>
-      <div class="info"><span class="name">${u?.nome||e}</span><span class="addr">${e}</span></div>
-    </div>`;
-  }).join('');
+  // Busca em todos os usuários do sistema
+  const filtrados = usuarios.filter(u =>
+    u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+  ).slice(0, 8);
 
-  if (!itens) { dd.classList.remove('open'); return; }
-  dd.innerHTML = itens;
+  if (!filtrados.length) { dd.classList.remove('open'); return; }
+
+  dd.innerHTML = filtrados.map(u => `
+    <div class="email-dd-item" onclick="selecionarObs('${u.email}')" style="cursor:pointer">
+      <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'}">${iniciaisDe(u.nome)}</div>
+      <div class="info">
+        <span class="name">${destacar(u.nome, q)} <span style="font-size:10px;background:${cores[u.perfil]||'#64748B'}22;color:${cores[u.perfil]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700">${u.perfil}</span></span>
+        <span class="addr">${destacar(u.email, q)}</span>
+      </div>
+    </div>`).join('');
   dd.classList.add('open');
 }
 
@@ -4669,53 +4695,53 @@ if (window._USER) {
 }
 </script>
 <!-- Modal Meu Perfil -->
-<div id="modal-perfil" onclick="if(event.target===this)fecharModalPerfil()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;align-items:center;justify-content:center;font-family:'Nunito',system-ui,sans-serif">
-  <div style="background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);width:100%;max-width:400px;overflow:hidden;position:relative">
+<div id="modal-perfil" onclick="if(event.target===this)fecharModalPerfil()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;align-items:center;justify-content:center;font-family:'Nunito',system-ui,sans-serif;padding:16px">
+  <div style="background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);width:100%;max-width:400px;max-height:90vh;overflow-y:auto;overflow-x:hidden;position:relative;display:flex;flex-direction:column">
 
     <!-- Header do modal -->
-    <div id="mp-header" style="background:linear-gradient(135deg,var(--azul),var(--azul-esc));padding:28px 28px 60px;text-align:center;position:relative">
+    <div id="mp-header" style="background:linear-gradient(135deg,var(--azul),var(--azul-esc));padding:24px 24px 50px;text-align:center;position:relative;flex-shrink:0">
       <button onclick="fecharModalPerfil()" style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;color:#fff;line-height:1;display:flex;align-items:center;justify-content:center">×</button>
-      <div id="mp-avatar" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;margin:0 auto 10px;letter-spacing:1px"></div>
-      <div id="mp-nome" style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px"></div>
+      <div id="mp-avatar" style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;margin:0 auto 8px;letter-spacing:1px"></div>
+      <div id="mp-nome" style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px"></div>
       <div id="mp-perfil-badge" style="display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px"></div>
     </div>
 
     <!-- Info cards -->
-    <div style="margin:-30px 20px 0;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0">
-      <div style="background:#fff;border:1.5px solid var(--cinza-bd);border-radius:12px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+    <div style="margin:-26px 16px 0;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0">
+      <div style="background:#fff;border:1.5px solid var(--cinza-bd);border-radius:12px;padding:10px 12px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
         <div style="font-size:9px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">E-mail</div>
-        <div id="mp-email" style="font-size:11.5px;font-weight:700;color:var(--preto);word-break:break-all"></div>
+        <div id="mp-email" style="font-size:11px;font-weight:700;color:var(--preto);word-break:break-all"></div>
       </div>
-      <div style="background:#fff;border:1.5px solid var(--cinza-bd);border-radius:12px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+      <div style="background:#fff;border:1.5px solid var(--cinza-bd);border-radius:12px;padding:10px 12px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
         <div style="font-size:9px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Perfil</div>
-        <div id="mp-perfil-txt" style="font-size:11.5px;font-weight:700;color:var(--preto)"></div>
+        <div id="mp-perfil-txt" style="font-size:11px;font-weight:700;color:var(--preto)"></div>
       </div>
     </div>
 
-    <!-- Alterar senha -->
-    <div style="padding:20px 24px 24px;margin-top:14px">
-      <div style="border-top:1px solid var(--cinza-bd);padding-top:18px">
+    <!-- Corpo scrollável -->
+    <div style="padding:16px 20px 20px;margin-top:12px;flex:1">
+      <div style="border-top:1px solid var(--cinza-bd);padding-top:14px">
         <div id="mig-perfil-wrap"></div>
         <div id="del-perfil-wrap"></div>
-        <h3 style="font-size:12px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px">🔑 Alterar Senha</h3>
-        <div style="display:flex;flex-direction:column;gap:12px">
+        <h3 style="font-size:11px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">🔑 Alterar Senha</h3>
+        <div style="display:flex;flex-direction:column;gap:10px">
           <div>
-            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px">Senha Atual</label>
-            <input type="password" id="ms-atual" placeholder="••••••••" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:10px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'">
+            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:4px">Senha Atual</label>
+            <input type="password" id="ms-atual" placeholder="••••••••" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'">
           </div>
           <div>
-            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px">Nova Senha</label>
-            <input type="password" id="ms-nova" placeholder="Mínimo 6 caracteres" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:10px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'">
+            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:4px">Nova Senha</label>
+            <input type="password" id="ms-nova" placeholder="Mínimo 6 caracteres" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'">
           </div>
           <div>
-            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px">Confirmar Nova Senha</label>
-            <input type="password" id="ms-confirm" placeholder="Repita a nova senha" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:10px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'" onkeydown="if(event.key==='Enter')salvarNovaSenha()">
+            <label style="font-size:10px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:4px">Confirmar Nova Senha</label>
+            <input type="password" id="ms-confirm" placeholder="Repita a nova senha" style="width:100%;border:1.5px solid var(--cinza-bd);border-radius:8px;padding:9px 12px;font-size:13px;font-family:Nunito,inherit;box-sizing:border-box;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#3B6FE8'" onblur="this.style.borderColor='var(--cinza-bd)'" onkeydown="if(event.key==='Enter')salvarNovaSenha()">
           </div>
         </div>
         <div id="ms-err" style="background:#FEF2F2;color:#991B1B;border:1.5px solid rgba(229,53,53,.2);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700;margin-top:10px;display:none"></div>
         <div id="ms-ok"  style="background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700;margin-top:10px;display:none"></div>
-        <button onclick="salvarNovaSenha()" style="width:100%;background:linear-gradient(135deg,#3B6FE8,#1A3AC8);color:#fff;border:none;border-radius:10px;padding:12px;font-size:13.5px;font-weight:800;cursor:pointer;margin-top:14px;font-family:Nunito,inherit;box-shadow:0 4px 14px rgba(59,111,232,.35);transition:all .15s" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
-          Salvar Nova Senha
+        <button onclick="salvarNovaSenha()" style="width:100%;background:linear-gradient(135deg,#3B6FE8,#1A3AC8);color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:800;cursor:pointer;margin-top:12px;font-family:Nunito,inherit;box-shadow:0 4px 14px rgba(59,111,232,.35)">
+          💾 Salvar Nova Senha
         </button>
       </div>
     </div>
