@@ -301,7 +301,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
-// Cache-bust 20260722145503 — Verificação de sessão via cookie — build 20260722022157 (SP-safe — sem localStorage/sessionStorage)
+// Verificação de sessão via cookie — build 20260722022157 (SP-safe — sem localStorage/sessionStorage)
 (function(){
   function getCookie(key) {
     try {
@@ -388,12 +388,14 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
   <div class="card">
     <div class="card-header"><span>🎬</span><h2>Dados da Gravação Estúdios</h2></div>
     <div class="card-body">
-      <div class="grid-4">
+      <div class="grid-3">
         <div class="field"><label>Data Gravação <span class="req">*</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
         <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
         <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
         <div class="field" style="position:relative">
-          <label>Ponto Focal Merch.</label>
+          <label>Ponto Focal Merchandising</label>
           <input id="f_focal" placeholder="Buscar aprovador..." autocomplete="off"
             oninput="sugerirFocal()" onblur="setTimeout(()=>document.getElementById('dd-focal').classList.remove('open'),200)"
             style="width:100%;box-sizing:border-box;text-transform:none;min-width:0">
@@ -401,12 +403,16 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         </div>
         <div class="field"><label>Capítulo</label><input id="f_cap" placeholder="Ex: 67"></div>
         <div class="field"><label>Cena</label><input id="f_cena" placeholder="Ex: 38"></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
         <div class="field s2"><label>Programa / Produção</label><input id="f_prog" placeholder="Nome do programa"></div>
         <div class="field"><label>Projeto PPM (Estúdios)</label><input id="f_ppm" placeholder="Código PPM"></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
         <div class="field"><label>Tipo de Ação Comercial</label><input id="f_tac" placeholder="Ex: MERCHAN, VISU"></div>
         <div class="field"><label style="white-space:nowrap">SLA — Prazo de execução (dias)</label>
-          <input type="number" id="f_sla" min="1" max="365" placeholder="Nº de dias">
-        </div>
+          <input type="number" id="f_sla" min="1" max="365" placeholder="Nº de dias"></div>
+      </div>
       </div>
     </div>
   </div>
