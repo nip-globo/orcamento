@@ -2137,7 +2137,8 @@ async function enviar(){
   }
   const _hj1=JSON.stringify(hist);
   _ckSet('orc_h2',_hj1);
-  if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_h2',_hj1);
+  // Sempre tenta salvar no GitHub (SP_BRIDGE.set verifica o token internamente)
+  if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_h2',_hj1);
   else if(_spReady) spSave('orc_h2',_hj1);
   if(_syncAtivo&&_syncDirHandle) syncExportar();
   _histPage = 0;
@@ -2992,7 +2993,7 @@ function salvarRascunho() {
   }
   const _hj2=JSON.stringify(hist);
   _ckSet('orc_h2',_hj2);
-  if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_h2',_hj2);
+  if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_h2',_hj2);
   else if(_spReady) spSave('orc_h2',_hj2);
   _histPage = 0;
   renderHist();
