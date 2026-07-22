@@ -99,6 +99,7 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
   <div class="tab" onclick="showTab('vinculos')">🔗 Vínculos</div>
   <div class="tab" onclick="showTab('resets')">🔑 Redefinições <span id="cnt-resets" class="tab-count" style="display:none;background:#EA580C">0</span></div>
   <div class="tab" onclick="showTab('delegacoes')">🔁 Delegações <span id="cnt-del" class="tab-count" style="display:none;background:#7C3AED">0</span></div>
+  <div class="tab" onclick="showTab('config')">⚙️ Configurações</div>
 </div>
 
 <div class="container">
@@ -202,6 +203,65 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
   </div>
 </div>
 
+<!-- ABA: Configurações -->
+<div id="tab-config" style="display:none">
+  <div class="card">
+    <div class="card-header"><h2>⚙️ Configurações do Sistema</h2></div>
+    <div class="card-body">
+
+      <!-- Token GitHub -->
+      <div style="background:#EBF1FF;border:1.5px solid rgba(59,111,232,.2);border-radius:12px;padding:18px 20px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">🔑</span>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:#0D1B4B">Personal Access Token do GitHub</div>
+            <div style="font-size:12px;color:#6B7A99;margin-top:2px">Necessário para salvar dados no repositório e compartilhar com todos os usuários</div>
+          </div>
+          <span id="cfg-token-badge" style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700"></span>
+        </div>
+
+        <div class="field" style="margin-bottom:10px">
+          <label>Token (github_pat_...)</label>
+          <input type="password" id="cfg-token-input" placeholder="github_pat_11XXXXX..."
+            style="font-family:monospace;font-size:12px;letter-spacing:.5px"
+            autocomplete="off">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="salvarToken()" style="flex:1;background:linear-gradient(135deg,#3B6FE8,#1A3AC8);color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',inherit">
+            💾 Salvar token neste navegador
+          </button>
+          <button onclick="testarToken()" style="background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;color:#0D1B4B;font-family:'Nunito',inherit">
+            🧪 Testar
+          </button>
+          <button onclick="removerToken()" style="background:#FEF2F2;border:1.5px solid rgba(220,38,38,.2);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;color:#991B1B;font-family:'Nunito',inherit">
+            🗑️
+          </button>
+        </div>
+        <div id="cfg-token-msg" style="display:none;margin-top:10px;border-radius:8px;padding:10px 14px;font-size:12.5px;font-weight:700;line-height:1.5"></div>
+        <div style="margin-top:12px;background:rgba(255,255,255,.7);border-radius:8px;padding:12px 14px;font-size:12px;color:#6B7A99;line-height:1.7">
+          <strong style="color:#0D1B4B">Como gerar o token:</strong><br>
+          1. Acesse <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:#3B6FE8;font-weight:700">github.com/settings/tokens</a> → Fine-grained tokens<br>
+          2. Clique em <strong>Generate new token</strong><br>
+          3. Repository access → <strong>nip-globo/orcamento</strong><br>
+          4. Permissions → Contents → <strong>Read and write</strong><br>
+          5. Copie o token gerado e cole acima<br>
+          <span style="color:#EA580C;font-weight:700">⚠️ O token fica salvo apenas neste navegador. Cada admin precisa configurar o seu.</span>
+        </div>
+      </div>
+
+      <!-- Status do sistema -->
+      <div style="background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:12px;padding:18px 20px">
+        <div style="font-size:14px;font-weight:800;color:#0D1B4B;margin-bottom:12px">📊 Status do Sistema</div>
+        <div id="cfg-status" style="font-size:13px;color:#6B7A99;line-height:1.8">Carregando...</div>
+        <button onclick="carregarStatus()" style="margin-top:12px;background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;color:#0D1B4B;font-family:'Nunito',inherit">
+          🔄 Atualizar status
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- ABA: Delegações -->
 <div id="tab-delegacoes" style="display:none">
   <div class="card">
@@ -247,12 +307,21 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
 <script src="bases.js"></script>
 <script src="spbridge.js"></script>
 <script>
-// ── Sessão ────────────────────────────────────────────────────────
-const sess = JSON.parse(sessionStorage.getItem('orc_user')||'null');
-if (!sess || sess.perfil !== 'admin') window.location.href = 'index.html';
-document.getElementById('userInfo').textContent = sess?.nome + ' · Admin';
+// ── Cookie helper (SP-safe) ───────────────────────────────────────
+function _ck(key){ try{ var n=encodeURIComponent(key)+'=',p=document.cookie.split(';'); for(var c of p){c=c.trim();if(c.startsWith(n))return decodeURIComponent(c.substring(n.length));} }catch(e){} return null; }
+function _ckSet(key,val,days){ try{ var exp=days?'; expires='+new Date(Date.now()+days*864e5).toUTCString():''; document.cookie=encodeURIComponent(key)+'='+encodeURIComponent(val)+exp+'; path=/; SameSite=Lax'; }catch(e){} }
 
-function logout(){ sessionStorage.removeItem('orc_user'); window.location.href='login.html'; }
+// ── Sessão via cookie ─────────────────────────────────────────────
+var _sessRaw = _ck('orc_user');
+var sess = null;
+try { if(_sessRaw){ var _s=JSON.parse(_sessRaw); if(_s&&_s.email&&(Date.now()-(_s._ts||0))<8*3600*1000) sess=_s; } } catch(e){}
+if (!sess || sess.perfil !== 'admin') { window.location.href = 'login.html'; }
+else { document.getElementById('userInfo').textContent = (sess.nome||'Admin') + ' · Admin'; }
+
+function logout(){
+  document.cookie = encodeURIComponent('orc_user') + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  window.location.href = 'login.html';
+}
 
 // ── Dados ─────────────────────────────────────────────────────────
 const PERFIS_LABELS = {
@@ -265,7 +334,7 @@ const PERFIS_BADGES = {
 };
 const USUARIOS_DEFAULT = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin',ativo:true}];
 
-function getUsers(){ return JSON.parse(localStorage.getItem('orc_usuarios')||JSON.stringify(USUARIOS_DEFAULT)); }
+function getUsers(){ return JSON.parse(_ck('orc_usuarios')||JSON.stringify(USUARIOS_DEFAULT)); }
 
 // ── SP SYNC (admin) ───────────────────────────────────────────────
 const SP_SITE_A = 'https://tvglobocorp.sharepoint.com/sites/PlanejamentoeGestodeProdutos';
@@ -299,35 +368,136 @@ async function _spSetA(lista,titulo,valor){
   }catch(e){}
 }
 async function spSaveAdmin(key,lista,titulo,value){
-  try{localStorage.setItem(key,value);}catch(e){}
+  _ckSet(key, value, 1); // cookie como cache
   try{
     const r=await fetch(SP_SITE_A+'/_api/contextinfo',{method:'POST',credentials:'include',headers:{'Accept':'application/json;odata=verbose'}});
     _spReadyA=r.ok; if(_spReadyA) _spSetA(lista,titulo,value);
   }catch(e){}
 }
 
-function saveUsers(u){ const j=JSON.stringify(u); localStorage.setItem('orc_usuarios',j); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_usuarios',j); else spSaveAdmin('orc_usuarios','OrcUsuarios','orc_usuarios',j); }
-function getVinculos(){ return JSON.parse(localStorage.getItem('orc_vinculos')||'{}'); }
-function saveVinculos(v){ localStorage.setItem('orc_vinculos',JSON.stringify(v)); }
+function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_usuarios',j); }
+function getVinculos(){ return JSON.parse(_ck('orc_vinculos')||'{}'); }
+function saveVinculos(v){ const j=JSON.stringify(v); _ckSet('orc_vinculos',j,1); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_vinculos',j); }
 
 // ── Tabs ──────────────────────────────────────────────────────────
 function showTab(id) {
-  var tabs = ['usuarios','pendentes','vinculos','resets','delegacoes'];
+  var tabs = ['usuarios','pendentes','vinculos','resets','delegacoes','config'];
   tabs.forEach(function(t){
     var el = document.getElementById('tab-'+t);
     if(el) el.style.display = t===id?'block':'none';
   });
-  document.querySelectorAll('.tab').forEach(function(el,i){
-    el.classList.toggle('active', el.onclick && el.onclick.toString().includes("'"+tabs[i]+"'") || el.getAttribute('onclick') === "showTab('"+tabs[i]+"')");
-  });
-  // Simpler active toggle
   document.querySelectorAll('.tab').forEach(function(el){
     var match = el.getAttribute('onclick') === "showTab('"+id+"')";
     el.classList.toggle('active', match);
   });
-  if(id==='vinculos') renderVinculos();
-  if(id==='resets') renderResets();
+  if(id==='vinculos')   renderVinculos();
+  if(id==='resets')     renderResets();
   if(id==='delegacoes') renderDelegacoes();
+  if(id==='config')     iniciarConfig();
+}
+
+// ── Configurações: Token GitHub ───────────────────────────────────
+function iniciarConfig() {
+  // Mostra token mascarado se existir
+  var tok = _ck('gh_token');
+  var badge = document.getElementById('cfg-token-badge');
+  var input = document.getElementById('cfg-token-input');
+  if (tok) {
+    badge.style.background = '#ECFDF5'; badge.style.color = '#065F46';
+    badge.style.border = '1px solid rgba(0,168,107,.25)';
+    badge.textContent = '✅ Token configurado';
+    input.placeholder = tok.substring(0,20) + '...';
+  } else {
+    badge.style.background = '#FEF2F2'; badge.style.color = '#991B1B';
+    badge.style.border = '1px solid rgba(220,38,38,.2)';
+    badge.textContent = '⚠️ Sem token';
+  }
+  carregarStatus();
+}
+
+function salvarToken() {
+  var tok = document.getElementById('cfg-token-input').value.trim();
+  if (!tok) { showCfgMsg('err','Cole o token no campo acima.'); return; }
+  if (!tok.startsWith('github_pat_') && !tok.startsWith('ghp_')) {
+    showCfgMsg('err','Token inválido. Deve começar com github_pat_ ou ghp_'); return;
+  }
+  // Salva no cookie por 365 dias
+  _ckSet('gh_token', tok, 365);
+  // Atualiza SP_BRIDGE se disponível
+  if (window.SP_BRIDGE && window.SP_BRIDGE.setToken) window.SP_BRIDGE.setToken(tok);
+  document.getElementById('cfg-token-input').value = '';
+  showCfgMsg('ok','✅ Token salvo neste navegador! Testando conexão...');
+  setTimeout(testarToken, 800);
+}
+
+async function testarToken() {
+  var tok = _ck('gh_token');
+  if (!tok) { showCfgMsg('err','Nenhum token configurado.'); return; }
+  showCfgMsg('info','⏳ Testando conexão com GitHub...');
+  try {
+    var r = await fetch('https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json', {
+      headers: { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (r.ok) {
+      var d = await r.json();
+      showCfgMsg('ok','✅ Conexão OK! Arquivo orc_sync.json encontrado (' + Math.round(d.size/1024) + ' KB). Dados serão compartilhados entre todos os usuários.');
+      iniciarConfig();
+    } else if (r.status === 401) {
+      showCfgMsg('err','❌ Token inválido ou expirado. Gere um novo token no GitHub.');
+    } else if (r.status === 403) {
+      showCfgMsg('err','❌ Token sem permissão de leitura no repositório. Verifique as permissões (Contents: Read & Write).');
+    } else {
+      showCfgMsg('err','❌ Erro ' + r.status + '. Verifique o token e tente novamente.');
+    }
+  } catch(e) {
+    showCfgMsg('err','❌ Erro de conexão: ' + e.message);
+  }
+}
+
+function removerToken() {
+  if (!confirm('Remover o token deste navegador? Você ainda poderá ler dados, mas não poderá salvar.')) return;
+  document.cookie = encodeURIComponent('gh_token') + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  if (window.SP_BRIDGE && window.SP_BRIDGE.setToken) window.SP_BRIDGE.setToken('');
+  showCfgMsg('ok','Token removido deste navegador.');
+  iniciarConfig();
+}
+
+async function carregarStatus() {
+  var el = document.getElementById('cfg-status');
+  if (!el) return;
+  var tok = _ck('gh_token');
+  var users = getUsers();
+  var html = '';
+  html += '<div>👥 <strong>' + users.length + '</strong> usuário(s) cadastrado(s)</div>';
+  html += '<div>🔑 Token: <strong>' + (tok ? '✅ Configurado neste navegador' : '⚠️ Não configurado') + '</strong></div>';
+  html += '<div>🌐 Backend: <strong>GitHub — nip-globo/orcamento/orc_sync.json</strong></div>';
+  // Testa leitura pública
+  try {
+    var r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    if (r.ok) {
+      var d = await r.json();
+      var orc = d.orc_h2 || [];
+      html += '<div>📋 <strong>' + orc.length + '</strong> orçamento(s) no repositório</div>';
+      html += '<div>🕐 Última atualização: <strong>' + (d._atualizadoEm ? new Date(d._atualizadoEm).toLocaleString('pt-BR') : d._exportadoEm ? new Date(d._exportadoEm).toLocaleString('pt-BR') : '—') + '</strong></div>';
+      html += '<div style="color:#065F46;font-weight:700;margin-top:4px">✅ Leitura pública funcionando</div>';
+    } else {
+      html += '<div style="color:#991B1B">❌ Erro ao ler orc_sync.json (' + r.status + ')</div>';
+    }
+  } catch(e) {
+    html += '<div style="color:#991B1B">❌ Sem conexão com GitHub</div>';
+  }
+  el.innerHTML = html;
+}
+
+function showCfgMsg(tipo, txt) {
+  var el = document.getElementById('cfg-token-msg');
+  if (!el) return;
+  var cores = { ok:'background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25)',
+                err:'background:#FEF2F2;color:#991B1B;border:1.5px solid rgba(220,38,38,.2)',
+                info:'background:#EBF1FF;color:#1A3A8F;border:1.5px solid rgba(59,111,232,.2)' };
+  el.style.cssText = cores[tipo] || cores.info;
+  el.style.display = 'block';
+  el.textContent   = txt;
 }
 
 // ── Campos extra no form ──────────────────────────────────────────
@@ -541,8 +711,8 @@ function resetarSenha(email) {
 
 // ── Utils ─────────────────────────────────────────────────────────
 function show(el,tipo,msg){ el.className='sbox '+tipo; el.style.display='block'; el.textContent=msg; }
-function getSolicitacoes() { return JSON.parse(localStorage.getItem('orc_reset_sol')||'[]'); }
-function saveSolicitacoes(s) { const j=JSON.stringify(s); localStorage.setItem('orc_reset_sol',j); spSaveAdmin('orc_reset_sol','OrcConfig','orc_reset_sol',j); }
+function getSolicitacoes() { return JSON.parse(_ck('orc_reset_sol')||'[]'); }
+function saveSolicitacoes(s) { const j=JSON.stringify(s); _ckSet('orc_reset_sol',j,1); spSaveAdmin('orc_reset_sol','OrcConfig','orc_reset_sol',j); }
 
 function renderResets() {
   const sols = getSolicitacoes();
@@ -619,8 +789,8 @@ function cancelarReset(token) {
   renderResets();
 }
 
-function getDels()  { return JSON.parse(localStorage.getItem('orc_delegacoes')||'[]'); }
-function saveDels(d){ const j=JSON.stringify(d); localStorage.setItem('orc_delegacoes',j); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_delegacoes',j); else spSaveAdmin('orc_delegacoes','OrcConfig','orc_delegacoes',j); }
+function getDels()  { return JSON.parse(_ck('orc_delegacoes')||'[]'); }
+function saveDels(d){ const j=JSON.stringify(d); _ckSet('orc_delegacoes',j,1); if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_delegacoes',j); else spSaveAdmin('orc_delegacoes','OrcConfig','orc_delegacoes',j); }
 
 function renderDelegacoes() {
   var ds  = getDels();
