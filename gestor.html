@@ -202,21 +202,33 @@ body{font-family:Nunito,system-ui,sans-serif;background:#F1F5F9;color:#1e293b;mi
 <script src="bases.js"></script>
 <script src="xlsx.min.js"></script>
 <script>
-// ── SESSÃO ────────────────────────────────────────────────────────
-var SESS = null;
-try { SESS = JSON.parse(sessionStorage.getItem('orc_user') || 'null'); } catch(e){}
-if (!SESS || !SESS.email) {
+// ── SESSÃO via cookie (SP-safe) ───────────────────────────────────
+function _getCookie(key) {
   try {
-    var _fb = JSON.parse(localStorage.getItem('orc_user_fallback') || 'null');
-    if (_fb && _fb.email && (Date.now() - (_fb._ts||0)) < 8*3600*1000) { SESS = _fb; }
-    else if (_fb) { localStorage.removeItem('orc_user_fallback'); }
-  } catch(e){}
+    var name = encodeURIComponent(key) + '=';
+    var parts = document.cookie.split(';');
+    for (var i = 0; i < parts.length; i++) {
+      var c = parts[i].trim();
+      if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length));
+    }
+  } catch(e) {}
+  return null;
+}
+function _setCookie(key, val, days) {
+  try {
+    var exp = days ? '; expires=' + new Date(Date.now() + days*864e5).toUTCString() : '';
+    document.cookie = encodeURIComponent(key) + '=' + encodeURIComponent(val) + exp + '; path=/; SameSite=Lax';
+  } catch(e) {}
 }
 
-// Restaura sessionStorage a partir do fallback se necessário
-if (SESS && SESS.email) {
-  try { sessionStorage.setItem('orc_user', JSON.stringify(SESS)); } catch(e){}
-}
+var SESS = null;
+try {
+  var _raw = _getCookie('orc_user');
+  if (_raw) {
+    var _parsed = JSON.parse(_raw);
+    if (_parsed && _parsed.email && (Date.now() - (_parsed._ts||0)) < 8*3600*1000) SESS = _parsed;
+  }
+} catch(e) {}
 
 if (!SESS || !SESS.email) {
   window.location.replace('./login.html');
@@ -246,6 +258,8 @@ function iniciar() {
     var avatarSm = document.getElementById('mp-avatar-sm');
     if (avatarSm) avatarSm.textContent = NOME.split(' ').map(function(n){return n[0];}).slice(0,2).join('').toUpperCase();
     buildTabs();
+    // Carrega dados do GitHub em background e re-renderiza
+    carregarGitHub();
   } catch(err) {
     var wrap = document.getElementById('mainWrap');
     if (wrap) wrap.innerHTML = '<div class="card"><div class="cb" style="padding:20px;color:#B91C1C">Erro ao carregar o painel: ' + String(err) + '<br><br><a href="./gestor.html" style="color:#2563EB">Tentar novamente</a></div></div>';
@@ -255,11 +269,49 @@ function iniciar() {
 
 // ── DADOS ─────────────────────────────────────────────────────────
 var DEF = '[{"email":"admin@g.globo","senha":"Admin@2026","nome":"Administrador","perfil":"admin","ativo":true}]';
-function getUsers()    { try { return JSON.parse(localStorage.getItem('orc_usuarios') || DEF); } catch(e){ return []; } }
-function saveUsers(u)  { localStorage.setItem('orc_usuarios', JSON.stringify(u)); }
-function getHist()     { try { return JSON.parse(localStorage.getItem('orc_h2') || '[]'); } catch(e){ return []; } }
-function getVincs()    { try { return JSON.parse(localStorage.getItem('orc_vinculos') || '{}'); } catch(e){ return {}; } }
-function saveVincs(v)  { localStorage.setItem('orc_vinculos', JSON.stringify(v)); }
+
+// Cache em memória — populado pelo fetch do GitHub
+var _ghData = null;
+
+function getUsers()    { 
+  if (_ghData && _ghData.orc_usuarios) return _ghData.orc_usuarios;
+  try { return JSON.parse(_getCookie('orc_usuarios') || DEF); } catch(e){ return []; } 
+}
+function saveUsers(u)  { _setCookie('orc_usuarios', JSON.stringify(u), 1); }
+function getHist()     { 
+  if (_ghData && _ghData.orc_h2) return _ghData.orc_h2;
+  try { return JSON.parse(_getCookie('orc_h2') || '[]'); } catch(e){ return []; } 
+}
+function getVincs()    { 
+  if (_ghData && _ghData.orc_vinculos) return _ghData.orc_vinculos;
+  try { return JSON.parse(_getCookie('orc_vinculos') || '{}'); } catch(e){ return {}; } 
+}
+function saveVincs(v)  { _setCookie('orc_vinculos', JSON.stringify(v), 1); }
+
+// Carrega dados do GitHub Raw e re-renderiza
+function carregarGitHub() {
+  fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (!data) return;
+      _ghData = data;
+      // Popula cookies como cache
+      if (data.orc_h2)         _setCookie('orc_h2',         JSON.stringify(data.orc_h2),       0.02);
+      if (data.orc_usuarios)   _setCookie('orc_usuarios',   JSON.stringify(data.orc_usuarios), 0.02);
+      if (data.orc_vinculos)   _setCookie('orc_vinculos',   JSON.stringify(data.orc_vinculos), 0.02);
+      if (data.orc_delegacoes) _setCookie('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
+      // Re-renderiza a aba atual com dados frescos
+      var tabAtiva = document.querySelector('.tab.active');
+      if (tabAtiva) {
+        var id = tabAtiva.id.replace('tab-','');
+        showTab(id);
+      }
+      // Atualiza contador de pendentes nas tabs
+      buildTabs();
+      console.log('[Gestor] GitHub carregado —', (data.orc_h2||[]).length, 'orçamentos');
+    })
+    .catch(function(e){ console.warn('[Gestor] Falha ao carregar GitHub:', e.message); });
+}
 
 function fBRL(v) { return 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
 function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -770,7 +822,7 @@ function updatePrev() {
 // ── EXPORTAR ──────────────────────────────────────────────────────
 function exportarExcel(lista, nome) {
   if (!lista || !lista.length) { alert('Nenhum orçamento para exportar.'); return; }
-  var users = JSON.parse(localStorage.getItem('orc_usuarios')||'[]');
+  var users = JSON.parse(_getCookie('orc_usuarios')||'[]');
   function nomeEmail(email) {
     var u = users.find(function(x){ return x.email===email; });
     return u ? u.nome : (email||'—');
@@ -944,8 +996,8 @@ function showMsg(el,txt,cor){if(el){el.textContent=txt;el.style.color=cor;el.sty
 
 // ── UTILS ─────────────────────────────────────────────────────────
 function logout() {
-  try{sessionStorage.removeItem('orc_user');}catch(e){}
-  try{localStorage.removeItem('orc_user_fallback');}catch(e){}
+  document.cookie = encodeURIComponent('orc_user') +
+    '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
   window.location.replace('./login.html');
 }
 function showSbox(el,tipo,msg){if(el){el.className='sbox '+tipo;el.style.display='block';el.textContent=msg;}}
