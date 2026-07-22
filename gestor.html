@@ -350,7 +350,11 @@ function getLista() {
     var meus = vincs[EMAIL] || [];
     return hist.filter(function(o){ return meus.includes(o.criador); });
   }
-  return hist; // observador vê tudo
+  if (PERFIL === 'observador') {
+    // Observador vê APENAS orçamentos em que foi incluído como observador
+    return hist.filter(function(o){ return (o.observadores||[]).includes(EMAIL); });
+  }
+  return hist;
 }
 
 // ── TABS ──────────────────────────────────────────────────────────
