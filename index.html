@@ -397,7 +397,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           <input id="f_focal" placeholder="Buscar aprovador..." autocomplete="off"
             oninput="sugerirFocal()" onblur="setTimeout(()=>document.getElementById('dd-focal').classList.remove('open'),200)"
             style="width:100%;box-sizing:border-box">
-          <div id="dd-focal" class="email-dd" style="top:100%;z-index:999"></div>
+          <div id="dd-focal" class="email-dd" style="top:calc(100% + 2px);left:0;right:0;min-width:0;width:100%;z-index:9999;position:absolute"></div>
         </div>
         <div class="field"><label>Capítulo</label><input id="f_cap" placeholder="Ex: 67"></div>
         <div class="field"><label>Cena</label><input id="f_cena" placeholder="Ex: 38"></div>
@@ -1177,14 +1177,15 @@ function sugerirFocal() {
   if (!usuarios.length) { dd.classList.remove('open'); return; }
 
   dd.innerHTML = usuarios.map(u => `
-    <div class="email-dd-item" style="cursor:pointer"
+    <div class="email-dd-item" style="cursor:pointer;overflow:hidden"
       onmousedown="selecionarFocal('${u.email.replace(/'/g,"\\'")}','${u.nome.replace(/'/g,"\\'")}','${u.perfil}')">
-      <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'}">${iniciaisDe(u.nome)}</div>
-      <div class="info">
-        <span class="name">${destacar(u.nome, q)}
-          <span style="font-size:10px;background:${cores[u.perfil]||'#64748B'}22;color:${cores[u.perfil]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700">${u.perfil}</span>
+      <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'};flex-shrink:0">${iniciaisDe(u.nome)}</div>
+      <div class="info" style="overflow:hidden;min-width:0">
+        <span class="name" style="display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          <span style="overflow:hidden;text-overflow:ellipsis">${destacar(u.nome, q)}</span>
+          <span style="font-size:10px;background:${cores[u.perfil]||'#64748B'}22;color:${cores[u.perfil]||'#64748B'};border-radius:4px;padding:1px 5px;font-weight:700;flex-shrink:0">${u.perfil}</span>
         </span>
-        <span class="addr">${destacar(u.email, q)}</span>
+        <span class="addr" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${destacar(u.email, q)}</span>
       </div>
     </div>`).join('');
   dd.classList.add('open');
