@@ -3139,6 +3139,15 @@
       "pendente": false,
       "ccVinculado": "",
       "criadoEm": "20/07/2026, 17:12:50"
+    },
+    {
+      "email": "thamires.oliveira@g.globo",
+      "nome": "Thamires Oliveira",
+      "senha": "123456",
+      "perfil": "aprovador",
+      "ativo": true,
+      "pendente": false,
+      "criadoEm": "22/07/2026, 18:35:39"
     }
   ],
   "orc_vinculos": {
@@ -3177,6 +3186,6 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-22T18:22:43.935Z",
+  "_atualizadoEm": "2026-07-22T18:35:39.212843",
   "_atualizadoPor": "lenilson.reis_manpowerstaffing@prestador.globo"
 }
