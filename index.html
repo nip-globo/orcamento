@@ -537,13 +537,17 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         mantenha o <strong>Outlook Web</strong> aberto em outra aba do mesmo Chrome.<br>
         Caso contrário, o e-mail é adicionado com domínio <strong>@g.globo</strong> automaticamente.
       </div>
-      <div style="margin-top:14px;border-top:1px solid #F1F5F9;padding-top:12px">
-        <label style="font-size:10px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px">Aprovador <span style="color:#EF4444">*</span></label>
-        <select id="f_aprovador" style="width:100%;border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:Nunito,inherit;background:#F8FAFC">
-          <option value="">— Adicione destinatários para selecionar —</option>
-        </select>
-        <p style="font-size:11px;color:#94A3B8;margin-top:5px">Adicione os destinatários acima e selecione quem irá aprovar</p>
-      </div>
+    </div>
+  </div>
+
+  <!-- Aprovador -->
+  <div class="card">
+    <div class="card-header"><span>✅</span><h2>Aprovador <span class="req">*</span></h2></div>
+    <div class="card-body">
+      <select id="f_aprovador" style="width:100%;border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:Nunito,inherit;background:#F8FAFC">
+        <option value="">— Adicione destinatários para selecionar —</option>
+      </select>
+      <p style="font-size:11px;color:#94A3B8;margin-top:5px">Adicione os destinatários acima e selecione quem irá aprovar</p>
     </div>
   </div>
 
@@ -1111,14 +1115,25 @@ document.addEventListener('click', e => {
 function renderEmails(){
   document.getElementById('eTags').innerHTML=
     emails.map(e=>`<div class="etag">${e}<button onclick="removeEmail('${e}')">×</button></div>`).join('');
-  // Atualiza select de aprovador com os destinatários atuais
+  // Atualiza select de aprovador — filtra apenas aprovadores e admins do sistema
   const sel = document.getElementById('f_aprovador');
   if (!sel) return;
   const atual = sel.value;
-  sel.innerHTML = '<option value="">Selecione entre os destinatários...</option>' +
-    emails.map(e => `<option value="${e}"${e===atual?' selected':''}>${e}</option>`).join('');
-  // Mantém seleção anterior se ainda está na lista
-  if (atual && emails.includes(atual)) sel.value = atual;
+  const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
+  // Filtra destinatários que têm perfil aprovador ou admin
+  const aprovaveisDestino = emails.filter(e => {
+    const u = usuarios.find(x => x.email === e);
+    return !u || u.perfil === 'aprovador' || u.perfil === 'admin';
+  });
+  // Se nenhum destinatário tem perfil aprovador, mostra todos
+  const lista = aprovaveisDestino.length ? aprovaveisDestino : emails;
+  sel.innerHTML = '<option value="">Selecione o aprovador...</option>' +
+    lista.map(e => {
+      const u = usuarios.find(x => x.email === e);
+      const label = u ? `${u.nome} (${u.perfil})` : e;
+      return `<option value="${e}"${e===atual?' selected':''}>${label}</option>`;
+    }).join('');
+  if (atual && lista.includes(atual)) sel.value = atual;
 }
 
 // ── OBSERVADORES ─────────────────────────────────────────────────
