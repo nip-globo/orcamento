@@ -1161,22 +1161,75 @@ function renderEmails(){
   }
 }
 
+// ── FILTRO APROVADORES POR CC ─────────────────────────────────────
+function getVinculosAprov() {
+  try { return JSON.parse(_ck('orc_vinculos_aprov')||'{}'); } catch(e){ return {}; }
+}
+
+function getAprovadoresPorCC(ccSelecionado) {
+  if (!ccSelecionado) return [];
+  const vinc  = getVinculosAprov();
+  const users = JSON.parse(_ck('orc_usuarios')||'[]');
+  // Aprovadores com CC vinculado que bate com o CC selecionado
+  const comVinculo = users.filter(u =>
+    u.ativo !== false &&
+    (u.perfil === 'aprovador' || u.perfil === 'admin') &&
+    vinc[u.email] === ccSelecionado
+  );
+  // Se nenhum aprovador vinculado ao CC, retorna todos os aprovadores (fallback)
+  if (!comVinculo.length) {
+    return users.filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'admin'));
+  }
+  return comVinculo;
+}
+
+function atualizarAprovadoresPorCC(cc) {
+  // Atualiza o campo Ponto Focal com aviso se necessário
+  const aprovs = getAprovadoresPorCC(cc);
+  const vinc   = getVinculosAprov();
+  const temVinculo = Object.values(vinc).includes(cc);
+  const aviso  = document.getElementById('aviso-aprovador-cc');
+  if (!aviso) {
+    const p = document.createElement('p');
+    p.id = 'aviso-aprovador-cc';
+    p.style.cssText = 'font-size:11px;margin-top:4px;padding:5px 8px;border-radius:6px;font-weight:700';
+    const focal = document.getElementById('f_focal');
+    if (focal && focal.parentNode) focal.parentNode.appendChild(p);
+  }
+  const el = document.getElementById('aviso-aprovador-cc');
+  if (el) {
+    if (temVinculo && aprovs.length) {
+      el.style.cssText = 'font-size:11px;margin-top:4px;padding:5px 8px;border-radius:6px;font-weight:700;background:#ECFDF5;color:#065F46;display:block';
+      el.textContent = `✅ ${aprovs.length} aprovador(es) disponível(eis) para este CC`;
+    } else if (!temVinculo) {
+      el.style.cssText = 'font-size:11px;margin-top:4px;padding:5px 8px;border-radius:6px;font-weight:700;background:#FFF7ED;color:#92400E;display:block';
+      el.textContent = '⚠️ Nenhum aprovador vinculado a este CC — todos os aprovadores disponíveis';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+}
+
 // ── PONTO FOCAL — dropdown de aprovadores ────────────────────────
 function sugerirFocal() {
   const inp = document.getElementById('f_focal');
   const dd  = document.getElementById('dd-focal');
   if (!inp || !dd) return;
-  const q = (inp.value||'').toLowerCase().trim();
+  const q  = (inp.value||'').toLowerCase().trim();
+  const cc = (document.getElementById('f_cc')?.value||'').trim();
 
   const cores = {admin:'#EA580C', aprovador:'#16A34A'};
-  const usuarios = JSON.parse(_ck('orc_usuarios')||'[]')
-    .filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'admin'))
-    .filter(u => !q || u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
-    .slice(0, 8);
+  // Filtra por CC se houver vínculo configurado
+  const usuarios = cc ? getAprovadoresPorCC(cc) : JSON.parse(_ck('orc_usuarios')||'[]')
+    .filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'admin'));
 
-  if (!usuarios.length) { dd.classList.remove('open'); return; }
+  const filtrados = q ? usuarios.filter(u =>
+    u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+  ) : usuarios;
 
-  dd.innerHTML = usuarios.map(u => `
+  if (!filtrados.length) { dd.classList.remove('open'); return; }
+
+  dd.innerHTML = filtrados.slice(0,8).map(u => `
     <div class="email-dd-item" style="cursor:pointer;overflow:hidden"
       onmousedown="selecionarFocal('${u.email.replace(/'/g,"\\'")}','${u.nome.replace(/'/g,"\\'")}','${u.perfil}')">
       <div class="avatar" style="background:${cores[u.perfil]||'#1B2A4A'};flex-shrink:0">${iniciaisDe(u.nome)}</div>
@@ -1430,6 +1483,13 @@ function validar(o){
     const aprovUser = usuarios.find(u => u.email === aprovEmail);
     if (aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin') {
       return `"${aprovUser.nome}" tem perfil "${aprovUser.perfil}" e não pode ser aprovador. Selecione um usuário com perfil Aprovador ou Admin.`;
+    }
+    // Valida vínculo de CC
+    const vinc   = getVinculosAprov();
+    const ccForm = (document.getElementById('f_cc')?.value||'').trim();
+    const ccAprov = vinc[aprovEmail];
+    if (ccAprov && ccForm && ccAprov !== ccForm) {
+      return `O aprovador "${aprovUser?.nome||aprovEmail}" está vinculado ao CC "${ccAprov}" e não pode aprovar orçamentos do CC "${ccForm}". Selecione um aprovador vinculado a este Centro de Custo.`;
     }
   }
   if(o.ta<=0)     return'Informe ao menos uma conta com valor.';
@@ -2586,6 +2646,18 @@ function filtrarCC() {
 function selecionarCC(nome) {
   document.getElementById('f_cc').value = nome;
   fecharDD('dd_cc');
+  // Limpa focal e aprovador se o CC mudou — evita aprovador inválido
+  const focal = document.getElementById('f_focal');
+  if (focal) focal.value = '';
+  const selAprov = document.getElementById('f_aprovador');
+  if (selAprov) { selAprov.innerHTML = '<option value="">Selecione o aprovador...</option>'; }
+  // Limpa destinatários que eram aprovadores vinculados ao CC anterior
+  emails = emails.filter(e => {
+    const u = JSON.parse(_ck('orc_usuarios')||'[]').find(x=>x.email===e);
+    return !u || u.perfil !== 'aprovador';
+  });
+  renderEmails();
+  atualizarAprovadoresPorCC(nome);
 }
 
 function filtrarLista(inputId, ddId, lista) {
@@ -4758,11 +4830,12 @@ if (window._USER) {
       .then(function(data){
         if (!data) return;
         // Popula cookies com dados frescos do GitHub
-        if (data.orc_h2)         _ckSet('orc_h2',         JSON.stringify(data.orc_h2),         0.02);
-        if (data.orc_usuarios)   _ckSet('orc_usuarios',   JSON.stringify(data.orc_usuarios),   0.02);
-        if (data.orc_vinculos)   _ckSet('orc_vinculos',   JSON.stringify(data.orc_vinculos),   0.02);
-        if (data.orc_delegacoes) _ckSet('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
-        if (data.orc_reset_sol)  _ckSet('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
+        if (data.orc_h2)              _ckSet('orc_h2',              JSON.stringify(data.orc_h2),              0.02);
+        if (data.orc_usuarios)        _ckSet('orc_usuarios',        JSON.stringify(data.orc_usuarios),        0.02);
+        if (data.orc_vinculos)        _ckSet('orc_vinculos',        JSON.stringify(data.orc_vinculos),        0.02);
+        if (data.orc_vinculos_aprov)  _ckSet('orc_vinculos_aprov',  JSON.stringify(data.orc_vinculos_aprov),  0.02);
+        if (data.orc_delegacoes)      _ckSet('orc_delegacoes',      JSON.stringify(data.orc_delegacoes),      0.02);
+        if (data.orc_reset_sol)       _ckSet('orc_reset_sol',       JSON.stringify(data.orc_reset_sol),       0.02);
         // Atualiza histórico e renderiza
         try { hist = data.orc_h2 || []; } catch(e){ hist=[]; }
         // Atualiza numeração com base no histórico real
