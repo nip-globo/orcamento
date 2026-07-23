@@ -403,17 +403,25 @@ function getUsers(){
 }
 
 // Carrega dados do GitHub e re-renderiza
+var _ghLastSave = 0; // timestamp do último save para evitar sobrescrita
+
 function carregarGitHubAdmin() {
   fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(data){
       if (!data) return;
+      // Não sobrescreve se acabou de salvar (nos últimos 10s)
+      var ageSave = Date.now() - _ghLastSave;
+      if (ageSave < 10000) {
+        console.log('[Admin] GitHub carregado mas ignorado — save recente (' + Math.round(ageSave/1000) + 's atrás)');
+        return;
+      }
       _ghDataAdmin = data;
-      if (data.orc_usuarios)      _ckSet('orc_usuarios',      JSON.stringify(data.orc_usuarios),      0.02);
-      if (data.orc_vinculos)      _ckSet('orc_vinculos',      JSON.stringify(data.orc_vinculos),      0.02);
+      if (data.orc_usuarios)       _ckSet('orc_usuarios',       JSON.stringify(data.orc_usuarios),       0.02);
+      if (data.orc_vinculos)       _ckSet('orc_vinculos',       JSON.stringify(data.orc_vinculos),       0.02);
       if (data.orc_vinculos_aprov) _ckSet('orc_vinculos_aprov', JSON.stringify(data.orc_vinculos_aprov), 0.02);
-      if (data.orc_reset_sol)     _ckSet('orc_reset_sol',     JSON.stringify(data.orc_reset_sol),     0.02);
-      if (data.orc_delegacoes)    _ckSet('orc_delegacoes',    JSON.stringify(data.orc_delegacoes),    0.02);
+      if (data.orc_reset_sol)      _ckSet('orc_reset_sol',      JSON.stringify(data.orc_reset_sol),      0.02);
+      if (data.orc_delegacoes)     _ckSet('orc_delegacoes',     JSON.stringify(data.orc_delegacoes),     0.02);
       renderTudo();
       console.log('[Admin] GitHub carregado —', (data.orc_usuarios||[]).length, 'usuários');
     })
@@ -459,7 +467,21 @@ async function spSaveAdmin(key,lista,titulo,value){
   }catch(e){}
 }
 
-function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_usuarios',j); if(_ghDataAdmin) _ghDataAdmin.orc_usuarios=u; }
+function saveUsers(u){ 
+  const j=JSON.stringify(u); 
+  _ckSet('orc_usuarios',j,1); 
+  if(_ghDataAdmin) _ghDataAdmin.orc_usuarios=u;
+  _ghLastSave = Date.now(); // marca timestamp para evitar sobrescrita do fetch
+  if(window.SP_BRIDGE) {
+    if(window.SP_BRIDGE.ready) {
+      window.SP_BRIDGE.set('orc_usuarios',j);
+    } else {
+      window.SP_BRIDGE.init().then(function(ok){ 
+        if(ok) window.SP_BRIDGE.set('orc_usuarios',j); 
+      });
+    }
+  }
+}
 function getVinculos(){ return JSON.parse(_ck('orc_vinculos')||'{}'); }
 function saveVinculos(v){ const j=JSON.stringify(v); _ckSet('orc_vinculos',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_vinculos',j); }
 
