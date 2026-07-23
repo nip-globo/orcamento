@@ -294,7 +294,20 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 .rel-card{background:#F8FAFC;border:1px solid var(--cinza-bd);border-radius:8px;padding:14px}
 
 </style>
-<script src="bases.js"></script>
+<script>
+// Carrega bases.js dinamicamente para garantir versão mais recente (sem cache)
+(function() {
+  var s = document.createElement('script');
+  s.src = 'bases.js?t=' + Date.now();
+  s.onerror = function() {
+    // Fallback: tenta sem cache-bust
+    var s2 = document.createElement('script');
+    s2.src = 'bases.js';
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s);
+})();
+</script>
 <script src="spbridge.js"></script>
 
 <script src="xlsx.min.js"></script>
