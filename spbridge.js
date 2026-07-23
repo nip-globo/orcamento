@@ -162,7 +162,7 @@
     async syncAll() {
       const data = await ghRead();
       if (!data) return;
-      for (const k of ['orc_h2','orc_usuarios','orc_vinculos','orc_delegacoes','orc_reset_sol','orc_c2']) {
+      for (const k of ['orc_h2','orc_usuarios','orc_vinculos','orc_vinculos_aprov','orc_delegacoes','orc_reset_sol','orc_c2']) {
         if (data[k] !== undefined) COOKIE.set(k, JSON.stringify(data[k]), 0.02);
       }
     },
