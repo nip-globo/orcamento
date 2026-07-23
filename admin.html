@@ -181,6 +181,29 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
     <div class="card-body" style="padding:0"><div id="lista-gestores-cc" style="padding:8px 0"></div></div>
   </div>
 
+  <!-- Aprovador → CC -->
+  <div class="card">
+    <div class="card-header"><h2>✅ Aprovadores — Centro de Custo vinculado</h2></div>
+    <div class="card-body">
+      <p style="font-size:12.5px;color:#64748B;margin-bottom:14px;line-height:1.6">Cada aprovador pode ser vinculado a um Centro de Custo. Ele só poderá aprovar orçamentos desse CC.</p>
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="field"><label>Aprovador</label>
+          <select id="v_aprovador" onchange="carregarCCAprovador()">
+            <option value="">Selecione o aprovador...</option>
+          </select>
+        </div>
+        <div class="field"><label>Centro de Custo</label>
+          <select id="v_cc_aprovador">
+            <option value="">Selecione o CC...</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-add" onclick="vincularAprovadorCC()">+ Vincular</button>
+      <div id="vinculos-aprovadores" style="margin-top:12px"></div>
+      <div class="sbox" id="sbox-vinculos-aprov"></div>
+    </div>
+  </div>
+
   <!-- Gestor Criador → Criadores -->
   <div class="card">
     <div class="card-header"><h2>👥 Gestores de Criadores — Vínculos</h2></div>
@@ -386,10 +409,11 @@ function carregarGitHubAdmin() {
     .then(function(data){
       if (!data) return;
       _ghDataAdmin = data;
-      if (data.orc_usuarios) _ckSet('orc_usuarios', JSON.stringify(data.orc_usuarios), 0.02);
-      if (data.orc_vinculos) _ckSet('orc_vinculos', JSON.stringify(data.orc_vinculos), 0.02);
-      if (data.orc_reset_sol) _ckSet('orc_reset_sol', JSON.stringify(data.orc_reset_sol), 0.02);
-      if (data.orc_delegacoes) _ckSet('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
+      if (data.orc_usuarios)      _ckSet('orc_usuarios',      JSON.stringify(data.orc_usuarios),      0.02);
+      if (data.orc_vinculos)      _ckSet('orc_vinculos',      JSON.stringify(data.orc_vinculos),      0.02);
+      if (data.orc_vinculos_aprov) _ckSet('orc_vinculos_aprov', JSON.stringify(data.orc_vinculos_aprov), 0.02);
+      if (data.orc_reset_sol)     _ckSet('orc_reset_sol',     JSON.stringify(data.orc_reset_sol),     0.02);
+      if (data.orc_delegacoes)    _ckSet('orc_delegacoes',    JSON.stringify(data.orc_delegacoes),    0.02);
       renderTudo();
       console.log('[Admin] GitHub carregado —', (data.orc_usuarios||[]).length, 'usuários');
     })
@@ -687,6 +711,8 @@ function renderPendentes() {
 
 // ── Render vínculos ───────────────────────────────────────────────
 function renderVinculos() {
+  const BASE_CC_LISTA = typeof BASE_CC !== 'undefined' ? BASE_CC.map(b=>b.nome||b) : [];
+
   // Gestores CC
   const gestoresCC = getUsers().filter(u=>u.perfil==='gestor_cc'&&u.ativo!==false);
   const elCC = document.getElementById('lista-gestores-cc');
@@ -702,6 +728,20 @@ function renderVinculos() {
       </div>`).join('');
   }
 
+  // Aprovadores → CC
+  const aprovadores = getUsers().filter(u=>u.perfil==='aprovador'&&u.ativo!==false);
+  const selAprov = document.getElementById('v_aprovador');
+  const selCCAprov = document.getElementById('v_cc_aprovador');
+  if (selAprov) {
+    selAprov.innerHTML = '<option value="">Selecione o aprovador...</option>' +
+      aprovadores.map(a=>`<option value="${a.email}">${a.nome} (${a.email})</option>`).join('');
+  }
+  if (selCCAprov) {
+    selCCAprov.innerHTML = '<option value="">Selecione o CC...</option>' +
+      BASE_CC_LISTA.map(cc=>`<option value="${cc}">${cc}</option>`).join('');
+  }
+  carregarVinculosAprovadores();
+
   // Gestores Criadores
   const gestoresCr = getUsers().filter(u=>u.perfil==='gestor_criador'&&u.ativo!==false);
   const criadores  = getUsers().filter(u=>u.perfil==='criador'&&u.ativo!==false);
@@ -711,6 +751,67 @@ function renderVinculos() {
     gestoresCr.map(g=>`<option value="${g.email}">${g.nome}</option>`).join('');
   selC.innerHTML = '<option value="">Selecione o criador...</option>' +
     criadores.map(c=>`<option value="${c.email}">${c.nome} (${c.email})</option>`).join('');
+}
+
+// ── Vínculo Aprovador → CC ────────────────────────────────────────
+function getVinculosAprov() {
+  try { return JSON.parse(_ck('orc_vinculos_aprov')||'{}'); } catch(e){ return {}; }
+}
+function saveVinculosAprov(v) {
+  const j = JSON.stringify(v);
+  _ckSet('orc_vinculos_aprov', j, 1);
+  if (window.SP_BRIDGE) window.SP_BRIDGE.set('orc_vinculos_aprov', j);
+}
+
+function carregarCCAprovador() {
+  const email = document.getElementById('v_aprovador')?.value;
+  if (!email) return;
+  const vinc = getVinculosAprov();
+  const cc   = vinc[email] || '';
+  const sel  = document.getElementById('v_cc_aprovador');
+  if (sel && cc) sel.value = cc;
+  carregarVinculosAprovadores();
+}
+
+function carregarVinculosAprovadores() {
+  const el    = document.getElementById('vinculos-aprovadores');
+  if (!el) return;
+  const vinc  = getVinculosAprov();
+  const users = getUsers();
+  const aprovs = users.filter(u=>u.perfil==='aprovador'&&u.ativo!==false);
+  if (!aprovs.length) { el.innerHTML=''; return; }
+  const rows = aprovs.map(a => {
+    const cc = vinc[a.email];
+    return `<div class="vinculo-row">
+      <span style="font-size:12.5px;flex:1"><strong>${a.nome}</strong> <span style="color:#64748B;font-size:11px">${a.email}</span></span>
+      ${cc
+        ? `<span style="font-size:11px;color:#1B2A4A;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cc}</span>
+           <button class="btn-acao btn-excluir" onclick="desvincularAprovadorCC('${a.email}')" style="margin-left:8px">Desvincular</button>`
+        : `<span style="font-size:11px;color:#94A3B8">Sem CC vinculado</span>`
+      }
+    </div>`;
+  }).join('');
+  el.innerHTML = rows;
+}
+
+function vincularAprovadorCC() {
+  const email = document.getElementById('v_aprovador')?.value;
+  const cc    = document.getElementById('v_cc_aprovador')?.value;
+  const sbox  = document.getElementById('sbox-vinculos-aprov');
+  if (!email||!cc) { show(sbox,'err','Selecione o aprovador e o CC.'); return; }
+  const vinc = getVinculosAprov();
+  vinc[email] = cc;
+  saveVinculosAprov(vinc);
+  carregarVinculosAprovadores();
+  show(sbox,'ok','✅ Aprovador vinculado ao CC com sucesso!');
+}
+
+function desvincularAprovadorCC(email) {
+  if (!confirm('Desvincular este aprovador do CC?')) return;
+  const vinc = getVinculosAprov();
+  delete vinc[email];
+  saveVinculosAprov(vinc);
+  carregarVinculosAprovadores();
 }
 
 function carregarVinculosCriadores() {
