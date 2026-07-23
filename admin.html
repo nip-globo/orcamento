@@ -459,7 +459,7 @@ async function spSaveAdmin(key,lista,titulo,value){
   }catch(e){}
 }
 
-function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_usuarios',j); }
+function saveUsers(u){ const j=JSON.stringify(u); _ckSet('orc_usuarios',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_usuarios',j); if(_ghDataAdmin) _ghDataAdmin.orc_usuarios=u; }
 function getVinculos(){ return JSON.parse(_ck('orc_vinculos')||'{}'); }
 function saveVinculos(v){ const j=JSON.stringify(v); _ckSet('orc_vinculos',j,1); if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_vinculos',j); }
 
