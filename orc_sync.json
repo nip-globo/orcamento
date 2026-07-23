@@ -3214,7 +3214,7 @@
       "ativo": true,
       "pendente": false,
       "ccVinculado": "GL160603001 - Dramaturgia e Gestão de Elenco",
-      "criadoEm": "23/07/2026, 20:23:05"
+      "criadoEm": "23/07/2026, 20:23:22"
     }
   ],
   "orc_vinculos": {
@@ -3253,7 +3253,7 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-23T23:23:06.020Z",
+  "_atualizadoEm": "2026-07-23T23:23:22.109Z",
   "_atualizadoPor": "admin@g.globo",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights",
