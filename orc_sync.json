@@ -3205,16 +3205,6 @@
       "ativo": true,
       "pendente": false,
       "criadoEm": "22/07/2026, 18:35:39"
-    },
-    {
-      "email": "adriana.bahia@g.globo",
-      "senha": "123456",
-      "nome": "Adriana Bahia",
-      "perfil": "gestor_cc",
-      "ativo": true,
-      "pendente": false,
-      "ccVinculado": "GL160603001 - Dramaturgia e Gestão de Elenco",
-      "criadoEm": "23/07/2026, 20:50:52"
     }
   ],
   "orc_vinculos": {
@@ -3253,7 +3243,7 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-23T23:50:52.998Z",
+  "_atualizadoEm": "2026-07-23T23:51:05.173Z",
   "_atualizadoPor": "admin@g.globo",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights",
