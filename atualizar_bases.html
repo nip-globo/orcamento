@@ -82,8 +82,8 @@
 
   <div class="info-card">
     💡 <strong>Cada base é independente</strong> — atualize apenas o que precisar.<br>
-    Selecione o arquivo Excel, confira a prévia e clique em <strong>"💾 Salvar esta base"</strong>.<br>
-    Selecione a pasta do site quando solicitado. Depois pressione <strong>F5</strong> no site.
+    Selecione o arquivo Excel, confira a prévia e clique em <strong>"💾 Salvar esta base"</strong> para publicar direto no GitHub.<br>
+    ⚠️ O token do GitHub precisa estar configurado em <strong>Admin → ⚙️ Configurações</strong>. As mudanças ficam disponíveis em 1-2 minutos.
   </div>
 
   <!-- BASE 1: Centro de Custo -->
@@ -168,7 +168,7 @@
 <script>
 // ── Estado por base ───────────────────────────────────────────────
 const parsed = { cc:null, pp:null, fin:null, contas:null };
-let dirHandle = null;
+let dirHandle = null; // mantido por compatibilidade
 
 // ── Conecta botões ────────────────────────────────────────────────
 ['cc','pp','fin','contas'].forEach(k => {
@@ -262,26 +262,41 @@ function mostrarPreview(key, items, fname) {
 async function salvarBase(key) {
   const btn  = document.getElementById(`salvar-${key}`);
   const sbox = document.getElementById(`sbox-${key}`);
-  btn.disabled = true; btn.textContent = '⏳ Salvando...';
+  btn.disabled = true; btn.textContent = '⏳ Publicando...';
+  sbox.style.display = 'none';
+
+  // Lê token do cookie
+  function getCookie(k) {
+    try {
+      var n = encodeURIComponent(k) + '=';
+      for (var c of document.cookie.split(';')) {
+        c = c.trim();
+        if (c.startsWith(n)) return decodeURIComponent(c.substring(n.length));
+      }
+    } catch(e) {}
+    return null;
+  }
+  const token = getCookie('gh_token');
+  if (!token) {
+    sbox.className = 'sbox-base err'; sbox.style.display = 'block';
+    sbox.innerHTML = '❌ Token do GitHub não configurado. Acesse <strong>Admin → ⚙️ Configurações</strong> e salve o token primeiro.';
+    btn.disabled = false; btn.textContent = '💾 Salvar esta base';
+    return;
+  }
 
   try {
-    // Seleciona pasta se ainda não selecionada (reutiliza se já selecionada)
-    if (!dirHandle) {
-      dirHandle = await window.showDirectoryPicker({mode:'readwrite'});
-    }
-
-    // Lê o bases.js atual da pasta
-    let basesAtual = '';
-    try {
-      const fh = await dirHandle.getFileHandle('bases.js');
-      const f  = await fh.getFile();
-      basesAtual = await f.text();
-    } catch(e) { basesAtual = ''; }
+    // Lê bases.js atual do GitHub
+    const ghApi = 'https://api.github.com/repos/nip-globo/orcamento/contents/bases.js';
+    const r = await fetch(ghApi, {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!r.ok) throw new Error('Erro ao ler bases.js do GitHub (' + r.status + ')');
+    const meta = await r.json();
+    let basesAtual = atob(meta.content.replace(/\n/g, ''));
+    const sha = meta.sha;
 
     // Gera o novo bloco JS para esta base
     const novoBloco = gerarBlocoJs(key, parsed[key]);
-
-    // Substitui ou adiciona o bloco no bases.js
     const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS'}[key];
     const regex   = new RegExp(`const ${varName}\\s*=\\s*\\[[\\s\\S]*?\\];`, 'm');
 
@@ -294,33 +309,37 @@ async function salvarBase(key) {
 
     // Atualiza comentário de data
     novoConteudo = novoConteudo.replace(
-      /\/\/ bases\.js — Atualizado em .*/,
-      `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}`
+      /\/\/ Gerado automaticamente.*\n/,
+      `// Gerado automaticamente — NIP | Produção Integrada — Atualizado em ${new Date().toLocaleString('pt-BR')}\n`
     );
-    if (!novoConteudo.includes('// bases.js')) {
-      novoConteudo = `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}\n\n` + novoConteudo;
-    }
 
-    // Grava o arquivo
-    const fileHandle = await dirHandle.getFileHandle('bases.js', {create:true});
-    const writable   = await fileHandle.createWritable();
-    await writable.write(novoConteudo);
-    await writable.close();
+    // Publica no GitHub
+    const content = btoa(unescape(encodeURIComponent(novoConteudo)));
+    const w = await fetch(ghApi, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `feat: atualiza ${varName} — ${new Date().toLocaleString('pt-BR')}`,
+        content, sha, branch: 'main'
+      })
+    });
+    if (!w.ok) {
+      const err = await w.json().catch(() => ({}));
+      throw new Error(err.message || 'Erro ao publicar (' + w.status + ')');
+    }
 
     sbox.className = 'sbox-base ok'; sbox.style.display = 'block';
-    sbox.innerHTML = `✅ <strong>${varName}</strong> atualizada! Pressione <strong>F5</strong> no site.`;
-    btn.textContent = '✅ Salvo!';
+    sbox.innerHTML = `✅ <strong>${varName}</strong> publicada no GitHub com sucesso! As mudanças estarão disponíveis em 1-2 minutos.`;
+    btn.textContent = '✅ Publicado!';
 
   } catch(err) {
-    if (err.name === 'AbortError') {
-      dirHandle = null; // reset para próxima tentativa
-      // Download manual como fallback
-      baixarBasesJs(key);
-    } else {
-      sbox.className = 'sbox-base err'; sbox.style.display = 'block';
-      sbox.textContent = `❌ Erro: ${err.message}`;
-      btn.disabled = false; btn.textContent = '💾 Salvar esta base';
-    }
+    sbox.className = 'sbox-base err'; sbox.style.display = 'block';
+    sbox.textContent = `❌ Erro: ${err.message}`;
+    btn.disabled = false; btn.textContent = '💾 Salvar esta base';
   }
 }
 
