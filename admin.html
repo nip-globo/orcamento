@@ -266,6 +266,22 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
           ✏️ Atualizar Bases de Dados
         </a>
       </div>
+
+      <!-- Backup -->
+      <div style="background:#F5F7FA;border:1.5px solid #E4E9F2;border-radius:12px;padding:18px 20px;margin-top:16px">
+        <div style="font-size:14px;font-weight:800;color:#0D1B4B;margin-bottom:6px">💾 Backup do Sistema</div>
+        <p style="font-size:12.5px;color:#6B7A99;margin-bottom:14px;line-height:1.6">Gera um arquivo ZIP com todos os dados e configurações atuais do sistema.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="gerarBackupDados()" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#16A34A,#065F46);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',inherit;box-shadow:0 4px 14px rgba(22,163,74,.3)">
+            💾 Baixar dados (JSON)
+          </button>
+          <a id="btn-backup-github" href="https://github.com/nip-globo/orcamento/archive/refs/heads/main.zip" target="_blank"
+            style="display:inline-flex;align-items:center;gap:8px;background:#1B2A4A;color:#fff;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:800;text-decoration:none;font-family:'Nunito',inherit;box-shadow:0 4px 14px rgba(0,0,0,.2)">
+            ⬇️ Baixar código (GitHub)
+          </a>
+        </div>
+        <div id="backup-msg" style="display:none;margin-top:10px;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700"></div>
+      </div>
       </div>
 
     </div>
@@ -524,7 +540,47 @@ async function carregarStatus() {
   el.innerHTML = html;
 }
 
-function showCfgMsg(tipo, txt) {
+// ── BACKUP ────────────────────────────────────────────────────────
+async function gerarBackupDados() {
+  var msg = document.getElementById('backup-msg');
+  if (msg) { msg.style.display='block'; msg.style.background='#EBF1FF'; msg.style.color='#1A3A8F'; msg.textContent='⏳ Gerando backup...'; }
+
+  try {
+    // Lê orc_sync.json diretamente do GitHub
+    var r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    if (!r.ok) throw new Error('Falha ao ler dados do GitHub');
+    var data = await r.json();
+
+    // Adiciona metadados do backup
+    var backup = {
+      _backup: {
+        geradoEm: new Date().toLocaleString('pt-BR'),
+        geradoPor: (window._USER && window._USER.email) || 'admin',
+        versao: '1.0',
+        totalOrcamentos: (data.orc_h2 || []).length,
+        totalUsuarios: (data.orc_usuarios || []).length
+      },
+      ...data
+    };
+
+    // Gera e baixa o JSON
+    var json = JSON.stringify(backup, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url  = URL.createObjectURL(blob);
+    var ts   = new Date().toISOString().replace(/[:.]/g,'-').substring(0,16);
+    var a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'backup_orcamento_' + ts + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    if (msg) { msg.style.background='#ECFDF5'; msg.style.color='#065F46'; msg.textContent='✅ Backup gerado com sucesso! Arquivo salvo na pasta de downloads.'; }
+  } catch(e) {
+    if (msg) { msg.style.background='#FEF2F2'; msg.style.color='#991B1B'; msg.textContent='❌ Erro ao gerar backup: ' + e.message; }
+  }
+}
   var el = document.getElementById('cfg-token-msg');
   if (!el) return;
   var cores = { ok:'background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25)',
