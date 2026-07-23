@@ -634,14 +634,20 @@ function adicionarUsuario() {
   users.push(novoUser);
   saveUsers(users);
   renderTudo();
-// Inicializa SP Bridge no admin
+  ['n_nome','n_email','n_senha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('campos-extra').style.display='none';
+  show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
+}
+
+// ── Inicialização do SP Bridge no admin ───────────────────────────
 if (window.SP_BRIDGE) {
   window.SP_BRIDGE.init().then(function(ok) {
     if (ok) {
       renderTudo();
       var hdr = document.querySelector('.hdr');
-      if (hdr) {
+      if (hdr && !hdr.querySelector('.gh-tag')) {
         var spTag = document.createElement('span');
+        spTag.className = 'gh-tag';
         spTag.style.cssText = 'font-size:10px;color:#16A34A;font-weight:700;padding:2px 8px;background:#ECFDF5;border-radius:10px;margin-left:8px';
         spTag.textContent = '● GitHub';
         hdr.appendChild(spTag);
@@ -651,10 +657,6 @@ if (window.SP_BRIDGE) {
 }
 // Carrega dados frescos do GitHub em background
 carregarGitHubAdmin();
-  ['n_nome','n_email','n_senha'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('campos-extra').style.display='none';
-  show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
-}
 
 // ── Render usuários ───────────────────────────────────────────────
 function renderUsuarios() {
