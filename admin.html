@@ -147,7 +147,16 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
   </div>
 
   <div class="card">
-    <div class="card-header"><h2>👥 Usuários Ativos</h2></div>
+    <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <h2>👥 Usuários Ativos</h2>
+      <div style="position:relative">
+        <input id="busca-usuario" type="text" placeholder="🔍 Buscar por nome, e-mail ou perfil..."
+          oninput="renderUsuarios()"
+          style="border:1.5px solid #E4E9F2;border-radius:8px;padding:7px 12px 7px 14px;font-size:13px;font-family:'Nunito',inherit;width:260px;outline:none;background:#F8FAFC;color:#0D1B4B"
+          onfocus="this.style.borderColor='#3B6FE8';this.style.background='#fff'"
+          onblur="this.style.borderColor='#E4E9F2';this.style.background='#F8FAFC'">
+      </div>
+    </div>
     <div class="card-body" style="padding:0">
       <div id="lista-usuarios"><div class="empty">Carregando...</div></div>
     </div>
@@ -625,9 +634,16 @@ carregarGitHubAdmin();
 
 // ── Render usuários ───────────────────────────────────────────────
 function renderUsuarios() {
-  const users  = getUsers().filter(u=>!u.pendente);
-  const el     = document.getElementById('lista-usuarios');
-  if (!users.length){ el.innerHTML='<div class="empty">Nenhum usuário.</div>'; return; }
+  var busca = (document.getElementById('busca-usuario')?.value || '').toLowerCase().trim();
+  var todos  = getUsers().filter(u=>!u.pendente);
+  var users  = busca ? todos.filter(u =>
+    (u.nome||'').toLowerCase().includes(busca) ||
+    (u.email||'').toLowerCase().includes(busca) ||
+    (PERFIS_LABELS[u.perfil]||u.perfil||'').toLowerCase().includes(busca)
+  ) : todos;
+  const el = document.getElementById('lista-usuarios');
+  if (!todos.length){ el.innerHTML='<div class="empty">Nenhum usuário.</div>'; return; }
+  if (!users.length){ el.innerHTML='<div class="empty">Nenhum usuário encontrado para "<strong>'+busca+'</strong>".</div>'; return; }
   el.innerHTML = `<table class="utable"><thead><tr>
     <th>Nome</th><th>E-mail</th><th>Perfil</th><th>CC / Info</th><th>Status</th><th>Criado em</th><th>Ações</th>
   </tr></thead><tbody>${users.map(u=>`<tr>
