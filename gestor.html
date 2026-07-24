@@ -289,13 +289,11 @@ function getVincs()    {
 function saveVincs(v)  { _setCookie('orc_vinculos', JSON.stringify(v), 1); }
 
 function getSolicitacoesAcesso() {
+  // Sempre usa _ghData carregado do GitHub — nunca o cookie (pode estar desatualizado)
   if (_ghData && _ghData.orc_reset_sol) {
-    return (_ghData.orc_reset_sol).filter(function(s){ return s.tipo === 'solicitacao_acesso'; });
+    return _ghData.orc_reset_sol.filter(function(s){ return s.tipo === 'solicitacao_acesso'; });
   }
-  try {
-    var all = JSON.parse(_getCookie('orc_reset_sol') || '[]');
-    return all.filter(function(s){ return s.tipo === 'solicitacao_acesso'; });
-  } catch(e){ return []; }
+  return [];
 }
 
 // Funções compartilhadas para aprovar/rejeitar solicitações de acesso
@@ -369,6 +367,8 @@ async function aprovarSolicitacaoAcesso(email) {
     if (typeof renderTudo === 'function')  renderTudo();
     if (typeof buildTabs  === 'function')  buildTabs();
     if (typeof showTab    === 'function')  showTab('pendentes');
+    // Recarrega do GitHub após 3s para garantir dados frescos
+    setTimeout(function(){ if(typeof carregarGitHub==='function') carregarGitHub(); if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
     alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '!\nSenha inicial: 123456');
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
@@ -391,6 +391,7 @@ async function rejeitarSolicitacaoAcesso(email) {
     if (typeof renderTudo === 'function') renderTudo();
     if (typeof buildTabs  === 'function') buildTabs();
     if (typeof showTab    === 'function') showTab('pendentes');
+    setTimeout(function(){ if(typeof carregarGitHub==='function') carregarGitHub(); if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
