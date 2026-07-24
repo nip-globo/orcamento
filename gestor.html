@@ -408,13 +408,18 @@ function carregarGitHub() {
       if (data.orc_usuarios)   _setCookie('orc_usuarios',   JSON.stringify(data.orc_usuarios), 0.02);
       if (data.orc_vinculos)   _setCookie('orc_vinculos',   JSON.stringify(data.orc_vinculos), 0.02);
       if (data.orc_delegacoes) _setCookie('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
-      // Re-renderiza a aba atual com dados frescos
+      if (data.orc_reset_sol)  _setCookie('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
+      // Re-renderiza a aba atual com dados frescos (sem chamar carregarGitHub de novo)
       var tabAtiva = document.querySelector('.tab.active');
       if (tabAtiva) {
         var id = tabAtiva.id.replace('tab-','');
-        showTab(id);
+        var wrap = document.getElementById('tab-content');
+        if (id === 'pendentes' && wrap) {
+          wrap.innerHTML = renderPendentes(); // renderiza direto sem chamar showTab
+        } else {
+          showTab(id);
+        }
       }
-      // Atualiza contador de pendentes nas tabs
       buildTabs();
       console.log('[Gestor] GitHub carregado —', (data.orc_h2||[]).length, 'orçamentos');
     })
