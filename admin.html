@@ -774,201 +774,103 @@ function renderPendentes() {
   el.innerHTML = htmlSols + htmlPend;
 }
 
-// ── Aprovar/Rejeitar solicitação de acesso — v20260724031950 ────────────────────────
+// Funções compartilhadas para aprovar/rejeitar solicitações de acesso
+// Salva direto no GitHub via API — não depende do SP_BRIDGE
+
+async function _ghSolGet() {
+  function getCookie(k) {
+    try {
+      var n = encodeURIComponent(k) + '=';
+      for (var c of document.cookie.split(';')) {
+        c = c.trim();
+        if (c.startsWith(n)) return decodeURIComponent(c.substring(n.length));
+      }
+    } catch(e) {}
+    return null;
+  }
+  const token = getCookie('gh_token');
+  if (!token) throw new Error('Token do GitHub não configurado. Acesse Admin → Configurações.');
+  const r = await fetch('https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json', {
+    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) throw new Error('Erro ao ler dados: ' + r.status);
+  const meta = await r.json();
+  const sha  = meta.sha;
+  const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+  return { token, sha, data };
+}
+
+async function _ghSolSave(token, sha, data) {
+  const jsonStr = JSON.stringify(data, null, 2).replace(/[\u0080-\uFFFF]/g, function(c) {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+  });
+  const r = await fetch('https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: 'fix: atualiza solicitação de acesso', content: btoa(jsonStr), sha, branch: 'main' })
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.message || 'Erro ao salvar: ' + r.status); }
+  return true;
+}
+
 async function aprovarSolicitacaoAcesso(email) {
   if (!confirm('Aprovar solicitação de ' + email + '?')) return;
-  const sols  = getSolicitacoes();
-  const sol   = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
-  if (!sol) { alert('Solicitação não encontrada.'); return; }
-  const users = getUsers();
-  if (users.find(function(u){ return u.email===email; })) { alert('Usuário já cadastrado.'); return; }
-  const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
-  users.push({ email:sol.email, nome:sol.nome, senha:'123456', perfil:sol.perfil,
-    ativo:true, pendente:false, criadoEm:new Date().toLocaleString('pt-BR'),
-    aprovadoPor:'admin', aprovadoEm:new Date().toLocaleString('pt-BR') });
-  sol.status='aprovado'; sol.aprovadoPor='admin'; sol.aprovadoEm=new Date().toLocaleString('pt-BR');
-  saveUsers(users);
-  saveSolicitacoes(sols);
-  renderTudo();
-  alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '! Senha inicial: 123456');
+  try {
+    const { token, sha, data } = await _ghSolGet();
+    const sols = data.orc_reset_sol || [];
+    const sol  = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
+    if (!sol) { alert('Solicitação não encontrada.'); return; }
+    const usuarios = data.orc_usuarios || [];
+    if (usuarios.find(u => u.email === email)) { alert('Usuário já cadastrado.'); return; }
+    const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+    usuarios.push({ email: sol.email, nome: sol.nome, senha: '123456', perfil: sol.perfil,
+      ativo: true, pendente: false, criadoEm: new Date().toLocaleString('pt-BR'),
+      aprovadoPor: (window._USER?.email || window.EMAIL || 'admin'),
+      aprovadoEm: new Date().toLocaleString('pt-BR') });
+    sol.status = 'aprovado';
+    sol.aprovadoPor = (window._USER?.email || window.EMAIL || 'admin');
+    sol.aprovadoEm = new Date().toLocaleString('pt-BR');
+    data.orc_usuarios  = usuarios;
+    data.orc_reset_sol = sols;
+    data._atualizadoEm = new Date().toISOString();
+    await _ghSolSave(token, sha, data);
+    // Atualiza cache local
+    if (window._ghData)      { window._ghData.orc_usuarios = usuarios; window._ghData.orc_reset_sol = sols; }
+    if (window._ghDataAdmin) { window._ghDataAdmin.orc_usuarios = usuarios; window._ghDataAdmin.orc_reset_sol = sols; }
+    // Re-renderiza
+    if (typeof renderTudo === 'function')  renderTudo();
+    if (typeof buildTabs  === 'function')  buildTabs();
+    if (typeof showTab    === 'function')  showTab('pendentes');
+    alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '!\nSenha inicial: 123456');
+  } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
-function rejeitarSolicitacaoAcesso(email) {
+async function rejeitarSolicitacaoAcesso(email) {
   if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
-  const sols = getSolicitacoes();
-  const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
-  if (sol) { sol.status='rejeitado'; sol.rejeitadoPor='admin'; sol.rejeitadoEm=new Date().toLocaleString('pt-BR'); }
-  saveSolicitacoes(sols);
-  renderTudo();
+  try {
+    const { token, sha, data } = await _ghSolGet();
+    const sols = data.orc_reset_sol || [];
+    const sol  = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
+    if (!sol) { alert('Solicitação não encontrada.'); return; }
+    sol.status = 'rejeitado';
+    sol.rejeitadoPor = (window._USER?.email || window.EMAIL || 'admin');
+    sol.rejeitadoEm  = new Date().toLocaleString('pt-BR');
+    data.orc_reset_sol = sols;
+    data._atualizadoEm = new Date().toISOString();
+    await _ghSolSave(token, sha, data);
+    if (window._ghData)      window._ghData.orc_reset_sol = sols;
+    if (window._ghDataAdmin) window._ghDataAdmin.orc_reset_sol = sols;
+    if (typeof renderTudo === 'function') renderTudo();
+    if (typeof buildTabs  === 'function') buildTabs();
+    if (typeof showTab    === 'function') showTab('pendentes');
+  } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
-// ── Render vínculos ───────────────────────────────────────────────
-function renderVinculos() {
-  const BASE_CC_LISTA = typeof BASE_CC !== 'undefined' ? BASE_CC.map(b=>b.nome||b) : [];
 
-  // Gestores CC — lista da BASE_CC com gestor correspondente
-  const elCC = document.getElementById('lista-gestores-cc');
-  const baseCCLista = typeof BASE_CC !== 'undefined' ? BASE_CC : [];
-  if (!baseCCLista.length) {
-    elCC.innerHTML='<div class="empty">Base de CC não carregada.</div>';
-  } else {
-    // Agrupa por gestor para exibição limpa
-    const porGestor = {};
-    baseCCLista.forEach(function(c) {
-      const nome  = c.nome || c;
-      const gest  = c.gestor || '(sem gestor)';
-      if (!porGestor[gest]) porGestor[gest] = [];
-      porGestor[gest].push(nome);
-    });
-    elCC.innerHTML = Object.keys(porGestor).sort().map(function(gest) {
-      const ccs = porGestor[gest];
-      return `<div style="padding:12px 18px;border-bottom:1px solid #F1F5F9">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <span style="font-size:13px;font-weight:800;color:#1B2A4A">👤 ${gest}</span>
-          <span style="font-size:11px;background:#EBF1FF;color:#2563EB;border-radius:10px;padding:1px 8px;font-weight:700">${ccs.length} CC${ccs.length>1?'s':''}</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px">
-          ${ccs.map(cc=>`<span style="font-size:11.5px;color:#475569;padding-left:8px;border-left:2px solid #E2E8F0">${cc}</span>`).join('')}
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  // Aprovadores → CC
-  const aprovadores = getUsers().filter(u=>u.perfil==='aprovador'&&u.ativo!==false);
-  const selAprov = document.getElementById('v_aprovador');
-  const selCCAprov = document.getElementById('v_cc_aprovador');
-  if (selAprov) {
-    selAprov.innerHTML = '<option value="">Selecione o aprovador...</option>' +
-      aprovadores.map(a=>`<option value="${a.email}">${a.nome} (${a.email})</option>`).join('');
-  }
-  if (selCCAprov) {
-    selCCAprov.innerHTML = '<option value="">Selecione o CC...</option>' +
-      BASE_CC_LISTA.map(cc=>`<option value="${cc}">${cc}</option>`).join('');
-  }
-  carregarVinculosAprovadores();
-
-  // Gestores Criadores
-  const gestoresCr = getUsers().filter(u=>u.perfil==='gestor_criador'&&u.ativo!==false);
-  const criadores  = getUsers().filter(u=>u.perfil==='criador'&&u.ativo!==false);
-  const selG = document.getElementById('v_gestor');
-  const selC = document.getElementById('v_criador');
-  selG.innerHTML = '<option value="">Selecione o gestor...</option>' +
-    gestoresCr.map(g=>`<option value="${g.email}">${g.nome}</option>`).join('');
-  selC.innerHTML = '<option value="">Selecione o criador...</option>' +
-    criadores.map(c=>`<option value="${c.email}">${c.nome} (${c.email})</option>`).join('');
-}
-
-// ── Vínculo Aprovador → CC ────────────────────────────────────────
-function getVinculosAprov() {
-  try { return JSON.parse(_ck('orc_vinculos_aprov')||'{}'); } catch(e){ return {}; }
-}
-function saveVinculosAprov(v) {
-  const j = JSON.stringify(v);
-  _ckSet('orc_vinculos_aprov', j, 1);
-  if (window.SP_BRIDGE) window.SP_BRIDGE.set('orc_vinculos_aprov', j);
-}
-
-function carregarCCAprovador() {
-  const email = document.getElementById('v_aprovador')?.value;
-  if (!email) return;
-  const vinc = getVinculosAprov();
-  const cc   = vinc[email] || '';
-  const sel  = document.getElementById('v_cc_aprovador');
-  if (sel && cc) sel.value = cc;
-  carregarVinculosAprovadores();
-}
-
-function carregarVinculosAprovadores() {
-  const el    = document.getElementById('vinculos-aprovadores');
-  if (!el) return;
-  const vinc  = getVinculosAprov();
-  const users = getUsers();
-  const aprovs = users.filter(u=>u.perfil==='aprovador'&&u.ativo!==false);
-  if (!aprovs.length) { el.innerHTML=''; return; }
-  const rows = aprovs.map(a => {
-    const cc = vinc[a.email];
-    return `<div class="vinculo-row">
-      <span style="font-size:12.5px;flex:1"><strong>${a.nome}</strong> <span style="color:#64748B;font-size:11px">${a.email}</span></span>
-      ${cc
-        ? `<span style="font-size:11px;color:#1B2A4A;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cc}</span>
-           <button class="btn-acao btn-excluir" onclick="desvincularAprovadorCC('${a.email}')" style="margin-left:8px">Desvincular</button>`
-        : `<span style="font-size:11px;color:#94A3B8">Sem CC vinculado</span>`
-      }
-    </div>`;
-  }).join('');
-  el.innerHTML = rows;
-}
-
-function vincularAprovadorCC() {
-  const email = document.getElementById('v_aprovador')?.value;
-  const cc    = document.getElementById('v_cc_aprovador')?.value;
-  const sbox  = document.getElementById('sbox-vinculos-aprov');
-  if (!email||!cc) { show(sbox,'err','Selecione o aprovador e o CC.'); return; }
-  const vinc = getVinculosAprov();
-  vinc[email] = cc;
-  saveVinculosAprov(vinc);
-  carregarVinculosAprovadores();
-  show(sbox,'ok','✅ Aprovador vinculado ao CC com sucesso!');
-}
-
-function desvincularAprovadorCC(email) {
-  if (!confirm('Desvincular este aprovador do CC?')) return;
-  const vinc = getVinculosAprov();
-  delete vinc[email];
-  saveVinculosAprov(vinc);
-  carregarVinculosAprovadores();
-}
-
-function carregarVinculosCriadores() {
-  const gestor = document.getElementById('v_gestor').value;
-  const el     = document.getElementById('vinculos-criadores');
-  if (!gestor) { el.innerHTML=''; return; }
-  const vinculos  = getVinculos();
-  const lista     = vinculos[gestor] || [];
-  const users     = getUsers();
-  if (!lista.length) { el.innerHTML='<div style="color:#94A3B8;font-size:12px;padding:8px 0">Nenhum criador vinculado.</div>'; return; }
-  el.innerHTML = lista.map(email=>{
-    const u = users.find(x=>x.email===email);
-    return `<div class="vinculo-row">
-      <span style="font-size:12.5px;flex:1"><strong>${u?.nome||email}</strong> <span style="color:#64748B;font-size:11px">${email}</span></span>
-      <button class="btn-acao btn-excluir" onclick="desvincularCriador('${gestor}','${email}')">Desvincular</button>
-    </div>`;
-  }).join('');
-}
-
-function vincularCriador() {
-  const gestor  = document.getElementById('v_gestor').value;
-  const criador = document.getElementById('v_criador').value;
-  const sbox    = document.getElementById('sbox-vinculos');
-  if (!gestor||!criador){ show(sbox,'err','Selecione o gestor e o criador.'); return; }
-  const vinculos = getVinculos();
-  if (!vinculos[gestor]) vinculos[gestor]=[];
-  if (vinculos[gestor].includes(criador)){ show(sbox,'err','Já vinculado.'); return; }
-  vinculos[gestor].push(criador);
-  saveVinculos(vinculos);
-  carregarVinculosCriadores();
-  show(sbox,'ok','✅ Criador vinculado com sucesso!');
-}
-
-function desvincularCriador(gestor, criador) {
-  if (!confirm('Desvincular este criador?')) return;
-  const vinculos = getVinculos();
-  vinculos[gestor] = (vinculos[gestor]||[]).filter(e=>e!==criador);
-  saveVinculos(vinculos);
-  carregarVinculosCriadores();
-}
-
-// ── Ações de usuário ──────────────────────────────────────────────
-function toggleAtivo(email) {
-  const users=getUsers(); const u=users.find(x=>x.email===email);
-  if(u) u.ativo=!u.ativo; saveUsers(users); renderTudo();
-}
-function excluir(email) {
-  if(email==='admin@g.globo'){alert('Admin principal não pode ser excluído.');return;}
-  if(!confirm(`Excluir ${email}?`))return;
-  saveUsers(getUsers().filter(u=>u.email!==email)); renderTudo();
-}
 function aprovarUser(email) {
   const users=getUsers(); const u=users.find(x=>x.email===email);
   if(u){ u.pendente=false; u.ativo=true; } saveUsers(users); renderTudo();
