@@ -369,7 +369,13 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     <div class="card-body">
       <div class="grid-3">
         <div class="field"><label>Nº Orçamento</label><input id="f_num" readonly></div>
-        <div class="field"><label>Tipo de Ação <span class="req">*</span></label><input id="f_tipoAcao" placeholder="Ex: VISU C/INT, MERCHAN"></div>
+        <div class="field" style="position:relative">
+          <label>Tipo de Ação <span class="req">*</span></label>
+          <input id="f_tipoAcao" placeholder="Ex: VISU C/INT, MERCHAN" autocomplete="off"
+            oninput="sugerirFormato()" onblur="setTimeout(()=>{var d=document.getElementById('dd-formato');if(d)d.classList.remove('open');},200)"
+            style="width:100%;box-sizing:border-box;text-transform:uppercase">
+          <div id="dd-formato" class="dropdown" style="position:absolute;top:100%;left:0;right:0;z-index:999;max-height:220px;overflow-y:auto"></div>
+        </div>
         <div class="field s3" style="position:relative">
           <label>Nome do Projeto (Programa) <span class="req">*</span></label>
           <div style="position:relative;display:flex;align-items:center">
@@ -2620,6 +2626,31 @@ function limpar(confirm=true){
 }
 
 // ── DROPDOWNS DE BUSCA ───────────────────────────────────────────
+// ── TIPO DE AÇÃO — dropdown de BASE_FORMATOS ──────────────────────
+function sugerirFormato() {
+  const inp  = document.getElementById('f_tipoAcao');
+  const dd   = document.getElementById('dd-formato');
+  if (!inp || !dd) return;
+  const term = (inp.value||'').toLowerCase().trim();
+  const lista = typeof BASE_FORMATOS !== 'undefined' ? BASE_FORMATOS : [];
+  if (!lista.length) { dd.classList.remove('open'); return; }
+  const filtrados = term
+    ? lista.filter(f => f.toLowerCase().includes(term))
+    : lista;
+  if (!filtrados.length) { dd.classList.remove('open'); return; }
+  dd.innerHTML = filtrados.map(f =>
+    '<div class="dd-item" onmousedown="selecionarFormato(\''+f.replace(/'/g,"\\'")+'\')" style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #F1F5F9;font-weight:600">'+f+'</div>'
+  ).join('');
+  dd.classList.add('open');
+}
+
+function selecionarFormato(val) {
+  const inp = document.getElementById('f_tipoAcao');
+  if (inp) inp.value = val;
+  const dd = document.getElementById('dd-formato');
+  if (dd) dd.classList.remove('open');
+}
+
 function filtrarCC() {
   const inp  = document.getElementById('f_cc');
   const dd   = document.getElementById('dd_cc');
