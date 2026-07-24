@@ -661,7 +661,7 @@ function adicionarUsuario() {
   show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
 }
 
-// ── Inicialização do SP Bridge no admin ───────────────────────────
+// ── Inicialização do SP Bridge no admin — 20260724001803 ───────────────────────────
 if (window.SP_BRIDGE) {
   window.SP_BRIDGE.init().then(function(ok) {
     if (ok) {
