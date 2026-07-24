@@ -288,6 +288,77 @@ function getVincs()    {
 }
 function saveVincs(v)  { _setCookie('orc_vinculos', JSON.stringify(v), 1); }
 
+function getSolicitacoesAcesso() {
+  if (_ghData && _ghData.orc_reset_sol) {
+    return (_ghData.orc_reset_sol).filter(function(s){ return s.tipo === 'solicitacao_acesso'; });
+  }
+  try {
+    var all = JSON.parse(_getCookie('orc_reset_sol') || '[]');
+    return all.filter(function(s){ return s.tipo === 'solicitacao_acesso'; });
+  } catch(e){ return []; }
+}
+
+async function aprovarSolicitacaoAcesso(email) {
+  if (!confirm('Aprovar solicitação de acesso de ' + email + '?')) return;
+  // Lê dados do GitHub
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    const data = await r.json();
+    const sols = data.orc_reset_sol || [];
+    const sol  = sols.find(function(s){ return s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente'; });
+    if (!sol) { alert('Solicitação não encontrada.'); return; }
+
+    // Cria o usuário
+    const usuarios = data.orc_usuarios || [];
+    if (usuarios.find(function(u){ return u.email === email; })) {
+      alert('Usuário já cadastrado.'); return;
+    }
+    usuarios.push({
+      email: sol.email, nome: sol.nome, senha: '123456',
+      perfil: sol.perfil, ativo: true, pendente: false,
+      criadoEm: new Date().toLocaleString('pt-BR'),
+      aprovadoPor: EMAIL, aprovadoEm: new Date().toLocaleString('pt-BR')
+    });
+
+    // Marca solicitação como aprovada
+    sol.status = 'aprovado';
+    sol.aprovadoPor = EMAIL;
+    sol.aprovadoEm = new Date().toLocaleString('pt-BR');
+    data.orc_usuarios = usuarios;
+    data.orc_reset_sol = sols;
+    data._atualizadoEm = new Date().toISOString();
+
+    // Salva via SP_BRIDGE
+    if (window.SP_BRIDGE) {
+      await window.SP_BRIDGE.set('orc_usuarios', JSON.stringify(usuarios));
+      await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
+    }
+    // Atualiza cache local
+    if (_ghData) { _ghData.orc_usuarios = usuarios; _ghData.orc_reset_sol = sols; }
+
+    // Re-renderiza
+    showTab(document.querySelector('.tab.active')?.getAttribute('onclick')?.match(/'(\w+)'/)?.[1] || 'pendentes');
+    alert('✅ Usuário ' + sol.nome + ' aprovado com sucesso! Senha inicial: 123456');
+  } catch(e) {
+    alert('Erro ao aprovar: ' + e.message);
+  }
+}
+
+async function rejeitarSolicitacaoAcesso(email) {
+  if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    const data = await r.json();
+    const sols = data.orc_reset_sol || [];
+    const sol  = sols.find(function(s){ return s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente'; });
+    if (sol) { sol.status = 'rejeitado'; sol.rejeitadoPor = EMAIL; sol.rejeitadoEm = new Date().toLocaleString('pt-BR'); }
+    data.orc_reset_sol = sols;
+    if (window.SP_BRIDGE) await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
+    if (_ghData) _ghData.orc_reset_sol = sols;
+    showTab('pendentes');
+  } catch(e) { alert('Erro: ' + e.message); }
+}
+
 // Carrega dados do GitHub Raw e re-renderiza
 function carregarGitHub() {
   fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
@@ -366,7 +437,10 @@ function buildTabs() {
   var tabs = PERFIL==='gestor_cc' ? TABS_CC : PERFIL==='gestor_criador' ? TABS_GC : TABS_OBS;
   var bar  = document.getElementById('tabBar');
   bar.innerHTML = tabs.map(function(t,i){
-    var cnt = t.id==='pendentes' ? getLista().filter(function(o){return o.status==='aguardando';}).length : 0;
+    var cnt = t.id==='pendentes' ? 
+      getLista().filter(function(o){return o.status==='aguardando';}).length +
+      getSolicitacoesAcesso().filter(function(s){return s.status==='pendente' && s.gestor===EMAIL;}).length
+      : 0;
     return '<div class="tab' + (i===0?' active':'') + '" id="tab-' + t.id + '" onclick="showTab(\'' + t.id + '\')">' +
       esc(t.label) + (cnt ? '<span class="tcnt">'+cnt+'</span>' : '') + '</div>';
   }).join('');
@@ -392,12 +466,45 @@ function renderPendentes() {
   var pend   = lista.filter(function(o){ return o.status === 'aguardando'; });
   var users  = getUsers();
 
+  // Solicitações de acesso pendentes destinadas a este gestor
+  var solsPend = getSolicitacoesAcesso().filter(function(s){
+    return s.status === 'pendente' && s.gestor === EMAIL;
+  });
+
   function nomeUser(email) {
     var u = users.find(function(x){ return x.email===email; });
     return u ? u.nome : email;
   }
 
-  if (!pend.length) return '<div class="card"><div class="cb" style="padding:20px;text-align:center"><span style="font-size:28px">✅</span><br><span style="color:#15803D;font-weight:700;font-size:13px">Nenhum orçamento pendente no seu CC!</span></div></div>';
+  var perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+
+  // Seção de solicitações de acesso
+  var htmlSols = '';
+  if (solsPend.length) {
+    var rowsSols = solsPend.map(function(s) {
+      return '<tr style="background:#FFF7ED">' +
+        '<td><span style="background:#FEF3C7;color:#92400E;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">🆕 Acesso</span></td>' +
+        '<td><strong>'+esc(s.nome)+'</strong><br><span style="font-size:11px;color:#64748B">'+esc(s.email)+'</span></td>' +
+        '<td><span style="background:#EFF6FF;color:#2563EB;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700">'+esc(perfisLabel[s.perfil]||s.perfil)+'</span></td>' +
+        '<td style="font-size:11px;color:#64748B">'+esc(s.justif||'—')+'</td>' +
+        '<td style="font-size:11px;color:#94A3B8">'+esc(s.solicitadoEm||'—')+'</td>' +
+        '<td style="white-space:nowrap">' +
+          '<button onclick="aprovarSolicitacaoAcesso(\''+esc(s.email)+'\')" style="background:#16A34A;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px">✅ Aprovar</button>' +
+          '<button onclick="rejeitarSolicitacaoAcesso(\''+esc(s.email)+'\')" style="background:#DC2626;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">❌ Rejeitar</button>' +
+        '</td>' +
+        '</tr>';
+    }).join('');
+
+    htmlSols = '<div class="card" style="margin-bottom:16px">' +
+      '<div class="ch"><h2>🆕 Solicitações de Acesso Pendentes ('+solsPend.length+')</h2></div>' +
+      '<div style="padding:0"><table class="utable"><thead><tr>' +
+      '<th>Tipo</th><th>Solicitante</th><th>Perfil</th><th>Justificativa</th><th>Solicitado em</th><th>Ações</th>' +
+      '</tr></thead><tbody>' + rowsSols + '</tbody></table></div></div>';
+  }
+
+  if (!pend.length && !solsPend.length) return htmlSols + '<div class="card"><div class="cb" style="padding:20px;text-align:center"><span style="font-size:28px">✅</span><br><span style="color:#15803D;font-weight:700;font-size:13px">Nenhum pendente no seu CC!</span></div></div>';
+
+  if (!pend.length) return htmlSols;
 
   var rows = pend.map(function(o, i) {
     return '<tr>' +
@@ -413,7 +520,8 @@ function renderPendentes() {
 
   var total = pend.reduce(function(s,o){ return s + (o.ta||0); }, 0);
 
-  return '<div class="card"><div class="ch"><h2>⏳ Orçamentos Pendentes no seu CC ('+pend.length+')</h2>' +
+  return htmlSols +
+    '<div class="card"><div class="ch"><h2>⏳ Orçamentos Pendentes no seu CC ('+pend.length+')</h2>' +
     '<span style="color:#FCD34D;font-size:13px;font-weight:700">'+fBRL(total)+'</span></div>' +
     '<div style="padding:0"><table class="utable"><thead><tr>' +
     '<th>Nº</th><th>Cliente / Projeto</th><th>Criador</th><th>Aprovador Designado</th><th>Data Grav.</th><th>Valor</th><th>Enviado em</th>' +
