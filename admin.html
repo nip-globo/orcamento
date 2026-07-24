@@ -907,6 +907,23 @@ async function rejeitarSolicitacaoAcesso(email) {
 }
 
 
+function toggleAtivo(email) {
+  var users = getUsers();
+  var u = users.find(function(x){ return x.email===email; });
+  if (!u) return;
+  if (u.email === 'admin@g.globo') { alert('O Admin principal não pode ser desativado.'); return; }
+  u.ativo = u.ativo === false ? true : false;
+  saveUsers(users);
+  renderTudo();
+}
+
+function excluir(email) {
+  if (email === 'admin@g.globo') { alert('Admin principal não pode ser excluído.'); return; }
+  if (!confirm('Excluir ' + email + '? Esta ação não pode ser desfeita.')) return;
+  saveUsers(getUsers().filter(function(u){ return u.email !== email; }));
+  renderTudo();
+}
+
 function aprovarUser(email) {
   const users=getUsers(); const u=users.find(x=>x.email===email);
   if(u){ u.pendente=false; u.ativo=true; } saveUsers(users); renderTudo();
