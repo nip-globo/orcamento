@@ -410,14 +410,14 @@ function carregarGitHub() {
       if (data.orc_vinculos)   _setCookie('orc_vinculos',   JSON.stringify(data.orc_vinculos), 0.02);
       if (data.orc_delegacoes) _setCookie('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
       if (data.orc_reset_sol)  _setCookie('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
-      // Atualiza contador de pendentes
-      buildTabs();
-      // Re-renderiza conteúdo da aba ativa se for pendentes
-      var tabAtiva = document.querySelector('.tab.active');
-      var idAtivo  = tabAtiva ? tabAtiva.id.replace('tab-','') : '';
-      var wrap     = document.getElementById('mainWrap');
-      if (wrap && idAtivo === 'pendentes') {
-        wrap.innerHTML = renderPendentes();
+      // Atualiza contador mas não re-renderiza se pendentes está ativo (tem fetch próprio)
+      var tabAtivaAtual = document.querySelector('.tab.active');
+      var idAtivoAtual  = tabAtivaAtual ? tabAtivaAtual.id.replace('tab-','') : '';
+      if (idAtivoAtual !== 'pendentes') buildTabs();
+      // Re-renderiza conteúdo da aba ativa se não for pendentes
+      var wrap = document.getElementById('mainWrap');
+      if (wrap && idAtivoAtual && idAtivoAtual !== 'pendentes') {
+        showTab(idAtivoAtual);
       }
       console.log('[Gestor] GitHub carregado —', (data.orc_h2||[]).length, 'orçamentos');
     })
@@ -498,13 +498,30 @@ function showTab(id) {
   if (btn) btn.classList.add('active');
   var wrap = document.getElementById('mainWrap');
   if      (id==='pendentes')   { 
-    // Busca dados frescos do GitHub antes de renderizar
+    // Mostra loading e busca dados frescos antes de renderizar
+    if (wrap) wrap.innerHTML = '<div style="padding:40px;text-align:center;color:#64748B;font-size:13px;font-weight:700">⏳ Carregando pendentes...</div>';
     fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(data){
         if (data) { _ghData = data; }
         if (wrap) wrap.innerHTML = renderPendentes();
-        buildTabs();
+        // Atualiza contador sem re-renderizar conteúdo
+        var bar = document.getElementById('tabBar');
+        if (bar) {
+          var TABS_CC = [{id:'historico'},{id:'relatorios'},{id:'pendentes'},{id:'aprovadores'}];
+          TABS_CC.forEach(function(t){
+            var el = document.getElementById('tab-'+t.id);
+            if (el && t.id === 'pendentes') {
+              var cnt = getLista().filter(function(o){return o.status==='aguardando';}).length +
+                getSolicitacoesAcesso().filter(function(s){return s.status==='pendente' && s.gestor===EMAIL;}).length;
+              var badge = el.querySelector('.tcnt');
+              if (cnt > 0) {
+                if (!badge) { badge = document.createElement('span'); badge.className='tcnt'; el.appendChild(badge); }
+                badge.textContent = cnt;
+              } else if (badge) { badge.remove(); }
+            }
+          });
+        }
       })
       .catch(function(){ if (wrap) wrap.innerHTML = renderPendentes(); });
   }
