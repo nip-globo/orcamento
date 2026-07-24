@@ -3192,7 +3192,7 @@
       "senha": "123456",
       "nome": "Lenilson Reis",
       "perfil": "criador",
-      "ativo": true,
+      "ativo": false,
       "pendente": false,
       "ccVinculado": "",
       "criadoEm": "20/07/2026, 17:12:50"
@@ -3577,8 +3577,8 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T17:31:03.340Z",
-  "_atualizadoPor": "sandro.silva@g.globo",
+  "_atualizadoEm": "2026-07-24T19:30:10.697Z",
+  "_atualizadoPor": "admin@g.globo",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
   },
