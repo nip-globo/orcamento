@@ -3515,11 +3515,21 @@
       "token": "115140",
       "solicitadoEm": "20/07/2026, 00:04:58",
       "status": "pendente"
+    },
+    {
+      "tipo": "solicitacao_acesso",
+      "nome": "Sandro Rosa",
+      "email": "sandro.teste3@g.globo",
+      "perfil": "aprovador",
+      "gestor": "nathalia.abreu@g.globo",
+      "justif": "",
+      "solicitadoEm": "23/07/2026, 23:32:16",
+      "status": "pendente"
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T01:16:49.280960",
-  "_atualizadoPor": "admin@g.globo",
+  "_atualizadoEm": "2026-07-24T02:32:16.388Z",
+  "_atualizadoPor": "",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights",
     "sandro.aprovador@g.globo": "GL160602002 - Dados & Insights"
