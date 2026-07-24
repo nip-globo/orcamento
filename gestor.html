@@ -396,7 +396,7 @@ async function rejeitarSolicitacaoAcesso(email) {
 }
 
 
-// Carrega dados do GitHub Raw e re-renderiza
+// Carrega dados do GitHub Raw — v20260724043325
 function carregarGitHub() {
   fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
     .then(function(r){ return r.ok ? r.json() : null; })
