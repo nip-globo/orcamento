@@ -42,11 +42,12 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
 .btn-add:hover{background:#1D4ED8}
 
 /* Tabela */
-.utable{width:100%;border-collapse:collapse;font-size:12px}
+.utable{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
 .utable th{background:#1B2A4A;color:#fff;padding:8px 12px;text-align:left;font-size:11px;font-weight:700;white-space:nowrap}
 .utable td{padding:8px 12px;border-bottom:1px solid #F1F5F9;vertical-align:middle}
 .utable tr:nth-child(even) td{background:#F8FAFC}
 .utable tr:hover td{background:#EFF6FF}
+.utable-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 
 /* Badges */
 .badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
@@ -158,7 +159,9 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
       </div>
     </div>
     <div class="card-body" style="padding:0">
-      <div id="lista-usuarios"><div class="empty">Carregando...</div></div>
+      <div class="utable-wrap">
+        <div id="lista-usuarios"><div class="empty">Carregando...</div></div>
+      </div>
     </div>
   </div>
 </div>
