@@ -489,7 +489,7 @@ function showTab(id) {
   var btn = document.getElementById('tab-'+id);
   if (btn) btn.classList.add('active');
   var wrap = document.getElementById('mainWrap');
-  if      (id==='pendentes')   wrap.innerHTML = renderPendentes();
+  if      (id==='pendentes')   { wrap.innerHTML = renderPendentes(); carregarGitHub(); }
   else if (id==='aprovadores') wrap.innerHTML = renderAprovadores();
   else if (id==='vincular')    wrap.innerHTML = renderVincular();
   else if (id==='criadores')   wrap.innerHTML = renderCriadores();
