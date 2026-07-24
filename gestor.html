@@ -413,9 +413,9 @@ function carregarGitHub() {
       var tabAtiva = document.querySelector('.tab.active');
       if (tabAtiva) {
         var id = tabAtiva.id.replace('tab-','');
-        var wrap = document.getElementById('tab-content');
-        if (id === 'pendentes' && wrap) {
-          wrap.innerHTML = renderPendentes(); // renderiza direto sem chamar showTab
+        var wrap = document.getElementById('mainWrap');
+        if (wrap && id === 'pendentes') {
+          wrap.innerHTML = renderPendentes(); // renderiza direto sem loop
         } else {
           showTab(id);
         }
