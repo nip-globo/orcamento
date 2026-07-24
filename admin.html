@@ -688,6 +688,9 @@ if (window.SP_BRIDGE) {
 carregarGitHubAdmin();
 
 // ── Render usuários ───────────────────────────────────────────────
+var _userPage = 0;
+var _PER_PAGE_U = 10;
+
 function renderUsuarios() {
   var busca = (document.getElementById('busca-usuario')?.value || '').toLowerCase().trim();
   var todos  = getUsers().filter(u=>!u.pendente);
@@ -699,21 +702,49 @@ function renderUsuarios() {
   const el = document.getElementById('lista-usuarios');
   if (!todos.length){ el.innerHTML='<div class="empty">Nenhum usuário.</div>'; return; }
   if (!users.length){ el.innerHTML='<div class="empty">Nenhum usuário encontrado para "<strong>'+busca+'</strong>".</div>'; return; }
-  el.innerHTML = `<table class="utable"><thead><tr>
-    <th>Nome</th><th>E-mail</th><th>Perfil</th><th>CC / Info</th><th>Status</th><th>Criado em</th><th>Ações</th>
-  </tr></thead><tbody>${users.map(u=>`<tr>
-    <td><strong>${u.nome}</strong></td>
-    <td style="font-size:11px">${u.email}</td>
-    <td><span class="badge ${PERFIS_BADGES[u.perfil]||'b-criador'}">${PERFIS_LABELS[u.perfil]||u.perfil}</span></td>
-    <td style="font-size:11px;color:#64748B">${u.ccVinculado||'—'}</td>
-    <td><span style="font-size:11px;font-weight:600;color:${u.ativo!==false?'#16A34A':'#94A3B8'}">${u.ativo!==false?'✓ Ativo':'✗ Inativo'}</span></td>
-    <td style="font-size:11px;color:#94A3B8">${u.criadoEm||'—'}</td>
-    <td style="white-space:nowrap">
-      <button class="btn-acao ${u.ativo!==false?'btn-desativar':'btn-ativar'}" onclick="toggleAtivo('${u.email}')">${u.ativo!==false?'Desativar':'Ativar'}</button>
-      <button class="btn-acao btn-senha" onclick="resetarSenha('${u.email}')" style="margin-left:4px">🔑 Senha</button>
-      <button class="btn-acao btn-excluir" onclick="excluir('${u.email}')" style="margin-left:4px">Excluir</button>
-    </td>
-  </tr>`).join('')}</tbody></table>`;
+
+  // Paginação
+  const total    = users.length;
+  const totPags  = Math.ceil(total / _PER_PAGE_U);
+  if (_userPage >= totPags) _userPage = 0;
+  const inicio   = _userPage * _PER_PAGE_U;
+  const pagina   = users.slice(inicio, inicio + _PER_PAGE_U);
+
+  // Controles de paginação
+  var paginacao = '';
+  if (totPags > 1) {
+    var btns = '';
+    for (var p = 0; p < totPags; p++) {
+      var ativo = p === _userPage;
+      btns += '<button onclick="_userPage='+p+';renderUsuarios()" style="min-width:30px;height:30px;border-radius:6px;border:1.5px solid '+(ativo?'#3B6FE8':'#E4E9F2')+';background:'+(ativo?'#3B6FE8':'#fff')+';color:'+(ativo?'#fff':'#64748B')+';font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,inherit">'+(p+1)+'</button>';
+    }
+    paginacao = '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid #F1F5F9;background:#F8FAFC">' +
+      '<span style="font-size:12px;color:#64748B;font-weight:600">'+total+' usuário(s) · Página '+((_userPage)+1)+' de '+totPags+'</span>' +
+      '<div style="display:flex;gap:4px;align-items:center">' +
+        '<button onclick="_userPage=Math.max(0,_userPage-1);renderUsuarios()" '+ (_userPage===0?'disabled':'') +' style="height:30px;padding:0 10px;border-radius:6px;border:1.5px solid #E4E9F2;background:#fff;color:#64748B;font-size:12px;cursor:pointer;font-family:Nunito,inherit">← Ant</button>' +
+        btns +
+        '<button onclick="_userPage=Math.min('+(totPags-1)+',_userPage+1);renderUsuarios()" '+(_userPage===totPags-1?'disabled':'')+ ' style="height:30px;padding:0 10px;border-radius:6px;border:1.5px solid #E4E9F2;background:#fff;color:#64748B;font-size:12px;cursor:pointer;font-family:Nunito,inherit">Próx →</button>' +
+      '</div></div>';
+  }
+
+  el.innerHTML = '<table class="utable"><thead><tr>' +
+    '<th>Nome</th><th>E-mail</th><th>Perfil</th><th>CC / Info</th><th>Status</th><th>Criado em</th><th>Ações</th>' +
+    '</tr></thead><tbody>' +
+    pagina.map(function(u){
+      return '<tr>' +
+        '<td><strong>'+u.nome+'</strong></td>' +
+        '<td style="font-size:11px">'+u.email+'</td>' +
+        '<td><span class="badge '+(PERFIS_BADGES[u.perfil]||'b-criador')+'">'+(PERFIS_LABELS[u.perfil]||u.perfil)+'</span></td>' +
+        '<td style="font-size:11px;color:#64748B">'+(u.ccVinculado||'—')+'</td>' +
+        '<td><span style="font-size:11px;font-weight:600;color:'+(u.ativo!==false?'#16A34A':'#94A3B8')+'">'+(u.ativo!==false?'✓ Ativo':'✗ Inativo')+'</span></td>' +
+        '<td style="font-size:11px;color:#94A3B8">'+(u.criadoEm||'—')+'</td>' +
+        '<td style="white-space:nowrap">' +
+          '<button class="btn-acao '+(u.ativo!==false?'btn-desativar':'btn-ativar')+'" onclick="toggleAtivo(\''+u.email.replace(/'/g,"\\'")+'\')">'+( u.ativo!==false?'Desativar':'Ativar')+'</button>' +
+          '<button class="btn-acao btn-senha" onclick="resetarSenha(\''+u.email.replace(/'/g,"\\'")+'\') " style="margin-left:4px">🔑 Senha</button>' +
+          '<button class="btn-acao btn-excluir" onclick="excluir(\''+u.email.replace(/'/g,"\\'")+'\') " style="margin-left:4px">Excluir</button>' +
+        '</td></tr>';
+    }).join('') +
+    '</tbody></table>' + paginacao;
 }
 
 // ── Render pendentes ──────────────────────────────────────────────
