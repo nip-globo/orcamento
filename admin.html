@@ -297,6 +297,10 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
         <a href="atualizar_bases.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#3B6FE8,#1A3AC8);color:#fff;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:800;text-decoration:none;font-family:'Nunito',inherit;box-shadow:0 4px 14px rgba(59,111,232,.3)">
           ✏️ Atualizar Bases de Dados
         </a>
+        <button onclick="importarGestoresBase()" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',inherit;box-shadow:0 4px 14px rgba(124,58,237,.3);margin-top:8px">
+          👥 Importar Gestores da Base CC
+        </button>
+        <div id="import-gestores-msg" style="display:none;margin-top:8px;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700"></div>
       </div>
 
       <!-- Backup -->
@@ -1091,6 +1095,57 @@ function confirmarAdminDel() {
 
 function renderTudo(){ renderUsuarios(); renderPendentes(); renderResets(); renderDelegacoes(); }
 renderTudo();
+
+// ── Importar gestores da BASE_CC como usuários gestor_cc ──────────
+async function importarGestoresBase() {
+  var msg = document.getElementById('import-gestores-msg');
+  if (msg) { msg.style.cssText='display:block;background:#EBF1FF;color:#1A3A8F;border:1.5px solid rgba(59,111,232,.2);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700'; msg.textContent='⏳ Importando gestores da BASE_CC...'; }
+
+  try {
+    var baseCCLista = typeof BASE_CC !== 'undefined' ? BASE_CC : [];
+    if (!baseCCLista.length) throw new Error('BASE_CC não carregada. Recarregue a página.');
+
+    // Agrupa por gestor
+    var gestores = {};
+    baseCCLista.forEach(function(c) {
+      var nome = c.nome || c;
+      var gest = c.gestor || '';
+      if (gest && !gestores[gest]) gestores[gest] = nome;
+    });
+
+    function genEmail(nome) {
+      var p = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().split(/\s+/);
+      return p.length >= 2 ? p[0]+'.'+p[p.length-1]+'@g.globo' : p[0]+'@g.globo';
+    }
+
+    var users   = getUsers();
+    var emails  = new Set(users.map(function(u){ return u.email.toLowerCase(); }));
+    var novos   = 0;
+    var agora   = new Date().toLocaleString('pt-BR');
+
+    Object.keys(gestores).forEach(function(gest) {
+      var email = genEmail(gest);
+      if (!emails.has(email)) {
+        users.push({ email, nome:gest, senha:'123456', perfil:'gestor_cc',
+          ativo:true, pendente:false, ccVinculado:gestores[gest],
+          criadoEm:agora, importadoDaBase:true });
+        emails.add(email);
+        novos++;
+      }
+    });
+
+    if (novos === 0) {
+      if (msg) { msg.style.cssText='display:block;background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700'; msg.textContent='✅ Todos os gestores já estão cadastrados.'; }
+      return;
+    }
+
+    saveUsers(users);
+    renderTudo();
+    if (msg) { msg.style.cssText='display:block;background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700'; msg.textContent=`✅ ${novos} novo(s) gestor(es) CC importado(s) da BASE_CC com sucesso!`; }
+  } catch(e) {
+    if (msg) { msg.style.cssText='display:block;background:#FEF2F2;color:#991B1B;border:1.5px solid rgba(220,38,38,.2);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700'; msg.textContent='❌ Erro: '+e.message; }
+  }
+}
 
 // ── BACKUP ────────────────────────────────────────────────────────
 async function gerarBackupDados() {
