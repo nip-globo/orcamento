@@ -498,29 +498,28 @@ function showTab(id) {
   if (btn) btn.classList.add('active');
   var wrap = document.getElementById('mainWrap');
   if      (id==='pendentes')   { 
-    // Mostra loading e busca dados frescos antes de renderizar
     if (wrap) wrap.innerHTML = '<div style="padding:40px;text-align:center;color:#64748B;font-size:13px;font-weight:700">⏳ Carregando pendentes...</div>';
-    fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+    // Usa GitHub API (sem cache CDN) para buscar dados frescos
+    function getCookieLocal(k) { try { var n=encodeURIComponent(k)+'='; for(var c of document.cookie.split(';')){c=c.trim();if(c.startsWith(n))return decodeURIComponent(c.substring(n.length));}} catch(e){} return null; }
+    var ghToken = getCookieLocal('gh_token');
+    var ghUrl   = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
+    var ghHeaders = {'Accept':'application/vnd.github.v3+json'};
+    if (ghToken) ghHeaders['Authorization'] = 'Bearer ' + ghToken;
+    fetch(ghUrl, {headers: ghHeaders})
       .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(data){
-        if (data) { _ghData = data; }
+      .then(function(meta){
+        if (meta && meta.content) {
+          try { _ghData = JSON.parse(atob(meta.content.replace(/\n/g,''))); } catch(e){}
+        }
         if (wrap) wrap.innerHTML = renderPendentes();
-        // Atualiza contador sem re-renderizar conteúdo
-        var bar = document.getElementById('tabBar');
-        if (bar) {
-          var TABS_CC = [{id:'historico'},{id:'relatorios'},{id:'pendentes'},{id:'aprovadores'}];
-          TABS_CC.forEach(function(t){
-            var el = document.getElementById('tab-'+t.id);
-            if (el && t.id === 'pendentes') {
-              var cnt = getLista().filter(function(o){return o.status==='aguardando';}).length +
-                getSolicitacoesAcesso().filter(function(s){return s.status==='pendente' && s.gestor===EMAIL;}).length;
-              var badge = el.querySelector('.tcnt');
-              if (cnt > 0) {
-                if (!badge) { badge = document.createElement('span'); badge.className='tcnt'; el.appendChild(badge); }
-                badge.textContent = cnt;
-              } else if (badge) { badge.remove(); }
-            }
-          });
+        // Atualiza só o badge de pendentes
+        var tabEl = document.getElementById('tab-pendentes');
+        if (tabEl) {
+          var cnt = getLista().filter(function(o){return o.status==='aguardando';}).length +
+            getSolicitacoesAcesso().filter(function(s){return s.status==='pendente'&&s.gestor===EMAIL;}).length;
+          var badge = tabEl.querySelector('.tcnt');
+          if (cnt > 0) { if(!badge){badge=document.createElement('span');badge.className='tcnt';tabEl.appendChild(badge);}badge.textContent=cnt; }
+          else if (badge) badge.remove();
         }
       })
       .catch(function(){ if (wrap) wrap.innerHTML = renderPendentes(); });
