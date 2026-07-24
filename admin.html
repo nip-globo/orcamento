@@ -845,6 +845,7 @@ async function aprovarSolicitacaoAcesso(email) {
     if (typeof renderTudo === 'function')  renderTudo();
     if (typeof buildTabs  === 'function')  buildTabs();
     if (typeof showTab    === 'function')  showTab('pendentes');
+    setTimeout(function(){ if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
     alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '!\nSenha inicial: 123456');
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
@@ -867,6 +868,7 @@ async function rejeitarSolicitacaoAcesso(email) {
     if (typeof renderTudo === 'function') renderTudo();
     if (typeof buildTabs  === 'function') buildTabs();
     if (typeof showTab    === 'function') showTab('pendentes');
+    setTimeout(function(){ if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
