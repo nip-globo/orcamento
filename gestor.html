@@ -298,56 +298,102 @@ function getSolicitacoesAcesso() {
   } catch(e){ return []; }
 }
 
+// Funções compartilhadas para aprovar/rejeitar solicitações de acesso
+// Salva direto no GitHub via API — não depende do SP_BRIDGE
+
+async function _ghSolGet() {
+  function getCookie(k) {
+    try {
+      var n = encodeURIComponent(k) + '=';
+      for (var c of document.cookie.split(';')) {
+        c = c.trim();
+        if (c.startsWith(n)) return decodeURIComponent(c.substring(n.length));
+      }
+    } catch(e) {}
+    return null;
+  }
+  const token = getCookie('gh_token');
+  if (!token) throw new Error('Token do GitHub não configurado. Acesse Admin → Configurações.');
+  const r = await fetch('https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json', {
+    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) throw new Error('Erro ao ler dados: ' + r.status);
+  const meta = await r.json();
+  const sha  = meta.sha;
+  const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+  return { token, sha, data };
+}
+
+async function _ghSolSave(token, sha, data) {
+  const jsonStr = JSON.stringify(data, null, 2).replace(/[\u0080-\uFFFF]/g, function(c) {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+  });
+  const r = await fetch('https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: 'fix: atualiza solicitação de acesso', content: btoa(jsonStr), sha, branch: 'main' })
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.message || 'Erro ao salvar: ' + r.status); }
+  return true;
+}
+
 async function aprovarSolicitacaoAcesso(email) {
   if (!confirm('Aprovar solicitação de ' + email + '?')) return;
   try {
-    const r    = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
-    const data = await r.json();
+    const { token, sha, data } = await _ghSolGet();
     const sols = data.orc_reset_sol || [];
-    const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
+    const sol  = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
     if (!sol) { alert('Solicitação não encontrada.'); return; }
     const usuarios = data.orc_usuarios || [];
-    if (usuarios.find(function(u){ return u.email===email; })) { alert('Usuário já cadastrado.'); return; }
-    usuarios.push({ email:sol.email, nome:sol.nome, senha:'123456', perfil:sol.perfil,
-      ativo:true, pendente:false, criadoEm:new Date().toLocaleString('pt-BR'),
-      aprovadoPor:EMAIL, aprovadoEm:new Date().toLocaleString('pt-BR') });
-    sol.status='aprovado'; sol.aprovadoPor=EMAIL; sol.aprovadoEm=new Date().toLocaleString('pt-BR');
+    if (usuarios.find(u => u.email === email)) { alert('Usuário já cadastrado.'); return; }
+    const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+    usuarios.push({ email: sol.email, nome: sol.nome, senha: '123456', perfil: sol.perfil,
+      ativo: true, pendente: false, criadoEm: new Date().toLocaleString('pt-BR'),
+      aprovadoPor: (window._USER?.email || window.EMAIL || 'admin'),
+      aprovadoEm: new Date().toLocaleString('pt-BR') });
+    sol.status = 'aprovado';
+    sol.aprovadoPor = (window._USER?.email || window.EMAIL || 'admin');
+    sol.aprovadoEm = new Date().toLocaleString('pt-BR');
     data.orc_usuarios  = usuarios;
     data.orc_reset_sol = sols;
     data._atualizadoEm = new Date().toISOString();
-    // Salva via SP_BRIDGE
-    if (window.SP_BRIDGE) {
-      if (!window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
-      await window.SP_BRIDGE.set('orc_usuarios',  JSON.stringify(usuarios));
-      await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
-    }
-    if (_ghData) { _ghData.orc_usuarios=usuarios; _ghData.orc_reset_sol=sols; }
-    buildTabs();
-    showTab('pendentes');
-    alert('✅ ' + sol.nome + ' aprovado! Senha inicial: 123456');
-  } catch(e) { alert('Erro ao aprovar: ' + e.message); }
+    await _ghSolSave(token, sha, data);
+    // Atualiza cache local
+    if (window._ghData)      { window._ghData.orc_usuarios = usuarios; window._ghData.orc_reset_sol = sols; }
+    if (window._ghDataAdmin) { window._ghDataAdmin.orc_usuarios = usuarios; window._ghDataAdmin.orc_reset_sol = sols; }
+    // Re-renderiza
+    if (typeof renderTudo === 'function')  renderTudo();
+    if (typeof buildTabs  === 'function')  buildTabs();
+    if (typeof showTab    === 'function')  showTab('pendentes');
+    alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '!\nSenha inicial: 123456');
+  } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
 async function rejeitarSolicitacaoAcesso(email) {
   if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
   try {
-    const r    = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
-    const data = await r.json();
+    const { token, sha, data } = await _ghSolGet();
     const sols = data.orc_reset_sol || [];
-    const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
+    const sol  = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
     if (!sol) { alert('Solicitação não encontrada.'); return; }
-    sol.status='rejeitado'; sol.rejeitadoPor=EMAIL; sol.rejeitadoEm=new Date().toLocaleString('pt-BR');
+    sol.status = 'rejeitado';
+    sol.rejeitadoPor = (window._USER?.email || window.EMAIL || 'admin');
+    sol.rejeitadoEm  = new Date().toLocaleString('pt-BR');
     data.orc_reset_sol = sols;
     data._atualizadoEm = new Date().toISOString();
-    if (window.SP_BRIDGE) {
-      if (!window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
-      await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
-    }
-    if (_ghData) _ghData.orc_reset_sol = sols;
-    buildTabs();
-    showTab('pendentes');
-  } catch(e) { alert('Erro ao rejeitar: ' + e.message); }
+    await _ghSolSave(token, sha, data);
+    if (window._ghData)      window._ghData.orc_reset_sol = sols;
+    if (window._ghDataAdmin) window._ghDataAdmin.orc_reset_sol = sols;
+    if (typeof renderTudo === 'function') renderTudo();
+    if (typeof buildTabs  === 'function') buildTabs();
+    if (typeof showTab    === 'function') showTab('pendentes');
+  } catch(e) { alert('❌ Erro: ' + e.message); }
 }
+
 
 // Carrega dados do GitHub Raw e re-renderiza
 function carregarGitHub() {
