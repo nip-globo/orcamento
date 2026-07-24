@@ -336,6 +336,18 @@ async function salvarBase(key) {
     sbox.innerHTML = `✅ <strong>${varName}</strong> publicada no GitHub com sucesso! As mudanças estarão disponíveis em 1-2 minutos.`;
     btn.textContent = '✅ Publicado!';
 
+    // Se atualizou BASE_CC, sincroniza gestores automaticamente
+    if (key === 'cc') {
+      setTimeout(async () => {
+        try {
+          const novos = await sincronizarGestoresCC(parsed.cc);
+          if (novos > 0) {
+            sbox.innerHTML += `<br>👥 <strong>${novos} novo(s) gestor(es) CC</strong> importado(s) automaticamente.`;
+          }
+        } catch(e) { console.warn('Erro ao sincronizar gestores:', e); }
+      }, 2000);
+    }
+
   } catch(err) {
     sbox.className = 'sbox-base err'; sbox.style.display = 'block';
     sbox.textContent = `❌ Erro: ${err.message}`;
@@ -378,6 +390,82 @@ function gerarBlocoJs(key, items) {
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Sincroniza gestores da BASE_CC como usuários gestor_cc ────────
+async function sincronizarGestoresCC(baseCCAtualizada) {
+  function getCookie(k) {
+    try {
+      var n = encodeURIComponent(k) + '=';
+      for (var c of document.cookie.split(';')) {
+        c = c.trim();
+        if (c.startsWith(n)) return decodeURIComponent(c.substring(n.length));
+      }
+    } catch(e) {} return null;
+  }
+  const token = getCookie('gh_token');
+  if (!token) return 0;
+
+  // Lê orc_sync.json atual
+  const ghApi = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
+  const r = await fetch(ghApi, {
+    headers: {'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json'}
+  });
+  if (!r.ok) return 0;
+  const meta = await r.json();
+  const data = JSON.parse(atob(meta.content.replace(/\n/g,'')));
+  const sha  = meta.sha;
+
+  const usuarios = data.orc_usuarios || [];
+  const emails   = new Set(usuarios.map(u => u.email.toLowerCase()));
+
+  // Agrupa gestores por nome
+  const gestores = {};
+  (baseCCAtualizada || []).forEach(function(c) {
+    const nome = c.nome || c;
+    const gest = c.gestor || '';
+    if (gest && !gestores[gest]) gestores[gest] = nome;
+  });
+
+  // Gera e-mail padrão
+  function genEmail(nome) {
+    const p = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().split(/\s+/);
+    return p.length >= 2 ? p[0]+'.'+p[p.length-1]+'@g.globo' : p[0]+'@g.globo';
+  }
+
+  let novos = 0;
+  const agora = new Date().toLocaleString('pt-BR');
+  Object.keys(gestores).forEach(function(gest) {
+    const email = genEmail(gest);
+    if (!emails.has(email)) {
+      usuarios.push({
+        email, nome: gest, senha: '123456', perfil: 'gestor_cc',
+        ativo: true, pendente: false,
+        ccVinculado: gestores[gest],
+        criadoEm: agora, importadoDaBase: true
+      });
+      emails.add(email);
+      novos++;
+    }
+  });
+
+  if (novos === 0) return 0;
+
+  data.orc_usuarios = usuarios;
+  data._atualizadoEm = new Date().toISOString();
+
+  // Salva com escape ASCII para evitar corrupção de encoding
+  const jsonStr = JSON.stringify(data, null, 2).replace(/[\u0080-\uFFFF]/g, function(c) {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+  });
+  const content = btoa(jsonStr);
+
+  const w = await fetch(ghApi, {
+    method: 'PUT',
+    headers: {'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+    body: JSON.stringify({message:'feat: sincroniza gestores CC da BASE_CC atualizada', content, sha, branch:'main'})
+  });
+  return w.ok ? novos : 0;
+}
 </script>
 </body>
 </html>
