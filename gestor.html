@@ -299,64 +299,54 @@ function getSolicitacoesAcesso() {
 }
 
 async function aprovarSolicitacaoAcesso(email) {
-  if (!confirm('Aprovar solicitação de acesso de ' + email + '?')) return;
-  // Lê dados do GitHub
+  if (!confirm('Aprovar solicitação de ' + email + '?')) return;
   try {
-    const r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    const r    = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
     const data = await r.json();
     const sols = data.orc_reset_sol || [];
-    const sol  = sols.find(function(s){ return s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente'; });
+    const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
     if (!sol) { alert('Solicitação não encontrada.'); return; }
-
-    // Cria o usuário
     const usuarios = data.orc_usuarios || [];
-    if (usuarios.find(function(u){ return u.email === email; })) {
-      alert('Usuário já cadastrado.'); return;
-    }
-    usuarios.push({
-      email: sol.email, nome: sol.nome, senha: '123456',
-      perfil: sol.perfil, ativo: true, pendente: false,
-      criadoEm: new Date().toLocaleString('pt-BR'),
-      aprovadoPor: EMAIL, aprovadoEm: new Date().toLocaleString('pt-BR')
-    });
-
-    // Marca solicitação como aprovada
-    sol.status = 'aprovado';
-    sol.aprovadoPor = EMAIL;
-    sol.aprovadoEm = new Date().toLocaleString('pt-BR');
-    data.orc_usuarios = usuarios;
+    if (usuarios.find(function(u){ return u.email===email; })) { alert('Usuário já cadastrado.'); return; }
+    usuarios.push({ email:sol.email, nome:sol.nome, senha:'123456', perfil:sol.perfil,
+      ativo:true, pendente:false, criadoEm:new Date().toLocaleString('pt-BR'),
+      aprovadoPor:EMAIL, aprovadoEm:new Date().toLocaleString('pt-BR') });
+    sol.status='aprovado'; sol.aprovadoPor=EMAIL; sol.aprovadoEm=new Date().toLocaleString('pt-BR');
+    data.orc_usuarios  = usuarios;
     data.orc_reset_sol = sols;
     data._atualizadoEm = new Date().toISOString();
-
     // Salva via SP_BRIDGE
     if (window.SP_BRIDGE) {
-      await window.SP_BRIDGE.set('orc_usuarios', JSON.stringify(usuarios));
+      if (!window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
+      await window.SP_BRIDGE.set('orc_usuarios',  JSON.stringify(usuarios));
       await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
     }
-    // Atualiza cache local
-    if (_ghData) { _ghData.orc_usuarios = usuarios; _ghData.orc_reset_sol = sols; }
-
-    // Re-renderiza
-    showTab(document.querySelector('.tab.active')?.getAttribute('onclick')?.match(/'(\w+)'/)?.[1] || 'pendentes');
-    alert('✅ Usuário ' + sol.nome + ' aprovado com sucesso! Senha inicial: 123456');
-  } catch(e) {
-    alert('Erro ao aprovar: ' + e.message);
-  }
+    if (_ghData) { _ghData.orc_usuarios=usuarios; _ghData.orc_reset_sol=sols; }
+    buildTabs();
+    showTab('pendentes');
+    alert('✅ ' + sol.nome + ' aprovado! Senha inicial: 123456');
+  } catch(e) { alert('Erro ao aprovar: ' + e.message); }
 }
 
 async function rejeitarSolicitacaoAcesso(email) {
   if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
   try {
-    const r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+    const r    = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
     const data = await r.json();
     const sols = data.orc_reset_sol || [];
-    const sol  = sols.find(function(s){ return s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente'; });
-    if (sol) { sol.status = 'rejeitado'; sol.rejeitadoPor = EMAIL; sol.rejeitadoEm = new Date().toLocaleString('pt-BR'); }
+    const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
+    if (!sol) { alert('Solicitação não encontrada.'); return; }
+    sol.status='rejeitado'; sol.rejeitadoPor=EMAIL; sol.rejeitadoEm=new Date().toLocaleString('pt-BR');
     data.orc_reset_sol = sols;
-    if (window.SP_BRIDGE) await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
+    data._atualizadoEm = new Date().toISOString();
+    if (window.SP_BRIDGE) {
+      if (!window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
+      await window.SP_BRIDGE.set('orc_reset_sol', JSON.stringify(sols));
+    }
     if (_ghData) _ghData.orc_reset_sol = sols;
+    buildTabs();
     showTab('pendentes');
-  } catch(e) { alert('Erro: ' + e.message); }
+  } catch(e) { alert('Erro ao rejeitar: ' + e.message); }
 }
 
 // Carrega dados do GitHub Raw e re-renderiza
