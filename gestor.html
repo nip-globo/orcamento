@@ -497,7 +497,17 @@ function showTab(id) {
   var btn = document.getElementById('tab-'+id);
   if (btn) btn.classList.add('active');
   var wrap = document.getElementById('mainWrap');
-  if      (id==='pendentes')   { wrap.innerHTML = renderPendentes(); carregarGitHub(); }
+  if      (id==='pendentes')   { 
+    // Busca dados frescos do GitHub antes de renderizar
+    fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if (data) { _ghData = data; }
+        if (wrap) wrap.innerHTML = renderPendentes();
+        buildTabs();
+      })
+      .catch(function(){ if (wrap) wrap.innerHTML = renderPendentes(); });
+  }
   else if (id==='aprovadores') wrap.innerHTML = renderAprovadores();
   else if (id==='vincular')    wrap.innerHTML = renderVincular();
   else if (id==='criadores')   wrap.innerHTML = renderCriadores();
