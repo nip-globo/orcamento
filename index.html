@@ -3774,8 +3774,7 @@ function getDelegacoes() {
 function saveDelegacoes(d) {
   const json=JSON.stringify(d);
   _ckSet('orc_delegacoes',json);
-  if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_delegacoes',json);
-  else if(_spReady) spSave('orc_delegacoes',json);
+  if(window.SP_BRIDGE) window.SP_BRIDGE.set('orc_delegacoes',json);
 }
 
 // Verifica delegação ativa para o usuário logado
@@ -3886,7 +3885,20 @@ function cancelarDelegacao(id) {
 function abrirModalDelegacao() {
   const user  = window._USER;
   if (!user) return;
-  const users = JSON.parse(_ck('orc_usuarios') || '[]');
+  // Usa cookie ou dados do GitHub (via fetch se necessário)
+  let users = JSON.parse(_ck('orc_usuarios') || '[]');
+  if (!users.length) {
+    // Tenta buscar do GitHub de forma assíncrona e reabre
+    fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if (data && data.orc_usuarios) {
+          _ckSet('orc_usuarios', JSON.stringify(data.orc_usuarios), 0.02);
+        }
+        abrirModalDelegacao();
+      });
+    return;
+  }
 
   // Filtra possíveis delegados (mesmo perfil, diferente do usuário)
   const candidatos = users.filter(function(u) {
@@ -5010,7 +5022,9 @@ function abrirModalPerfil() {
     if (['criador','aprovador'].includes(user.perfil)) {
       const bloqueado = estaBloqueado(user.email);
       const delAtiva  = getDelegacaoAtiva(user.email);
-      const users2    = JSON.parse(_ck('orc_usuarios')||'[]');
+      // Usa _ghData se disponível, senão cookie
+      const users2 = (window.SP_BRIDGE ? JSON.parse(window.SP_BRIDGE.cookie.get('orc_usuarios')||'[]') : null)
+                  || JSON.parse(_ck('orc_usuarios')||'[]');
       function nomeU2(e){ var u=users2.find(function(x){return x.email===e;}); return u?u.nome:e; }
       let delHtml = '<div style="border-top:1px solid var(--cinza-bd);padding-top:16px;margin-bottom:18px">';
       delHtml += '<h3 style="font-size:12px;font-weight:800;color:var(--preto);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">🔁 Delegação de Poderes</h3>';
