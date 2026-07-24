@@ -331,11 +331,11 @@ async function salvarBase(key) {
     // Atualiza comentário de data
     novoConteudo = novoConteudo.replace(
       /\/\/ Gerado automaticamente.*\n/,
-      `// Gerado automaticamente — NIP | Produção Integrada — Atualizado em ${new Date().toLocaleString('pt-BR')}\n`
+      `// Cache-bust 20260724162843 — Gerado automaticamente — NIP | Produção Integrada — Atualizado em ${new Date().toLocaleString('pt-BR')}\n`
     );
 
     // Publica no GitHub
-    const content = btoa(unescape(encodeURIComponent(novoConteudo)));
+    const safeStr = novoConteudo.replace(/[\u0080-\uFFFF]/g, function(c){ return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); }); const content = btoa(safeStr);
     const w = await fetch(ghApi, {
       method: 'PUT',
       headers: {
