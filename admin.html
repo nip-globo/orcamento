@@ -661,7 +661,7 @@ function adicionarUsuario() {
   show(sbox,'ok',`✅ ${nome} (${PERFIS_LABELS[perfil]}) ${novoUser.pendente?'cadastrado — aguardando aprovação do Gestor CC':'adicionado'}!`);
 }
 
-// ── Inicialização do SP Bridge no admin — 20260724001803 ───────────────────────────
+// ── Inicialização do SP Bridge no admin ───────────────────────────
 if (window.SP_BRIDGE) {
   window.SP_BRIDGE.init().then(function(ok) {
     if (ok) {
@@ -1032,7 +1032,7 @@ function renderDelegacoes() {
     html += '<td style="padding:8px 12px;font-weight:700">'+nomeU(d.delegante)+'</td>';
     html += '<td style="padding:8px 12px">'+nomeU(d.delegado)+'</td>';
     html += '<td style="padding:8px 12px;font-size:12px;color:#64748B">'+new Date(d.dataInicio).toLocaleDateString('pt-BR')+' → '+new Date(d.dataFim).toLocaleDateString('pt-BR')+'</td>';
-    html += '<td style="padding:8px 12px;font-size:12px;color:#64748B">'+esc(d.motivo||'—')+'</td>';
+    html += '<td style="padding:8px 12px;font-size:12px;color:#64748B">'+(d.motivo||'—').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     html += '<td style="padding:8px 12px">'+stBadge+'</td>';
     html += '<td style="padding:8px 12px">'+acoesTd+'</td>';
     html += '</tr>';
