@@ -478,15 +478,20 @@ function buildTabs() {
   var TABS_OBS = [{id:'historico',label:'📊 Histórico'},{id:'relatorios',label:'📥 Relatórios'}];
   var tabs = PERFIL==='gestor_cc' ? TABS_CC : PERFIL==='gestor_criador' ? TABS_GC : TABS_OBS;
   var bar  = document.getElementById('tabBar');
+  // Preserva aba ativa atual
+  var tabAtiva = document.querySelector('.tab.active');
+  var idAtivo  = tabAtiva ? tabAtiva.id.replace('tab-','') : tabs[0].id;
   bar.innerHTML = tabs.map(function(t,i){
     var cnt = t.id==='pendentes' ? 
       getLista().filter(function(o){return o.status==='aguardando';}).length +
       getSolicitacoesAcesso().filter(function(s){return s.status==='pendente' && s.gestor===EMAIL;}).length
       : 0;
-    return '<div class="tab' + (i===0?' active':'') + '" id="tab-' + t.id + '" onclick="showTab(\'' + t.id + '\')">' +
+    var isActive = t.id === idAtivo;
+    return '<div class="tab' + (isActive?' active':'') + '" id="tab-' + t.id + '" onclick="showTab(\'' + t.id + '\')">' +
       esc(t.label) + (cnt ? '<span class="tcnt">'+cnt+'</span>' : '') + '</div>';
   }).join('');
-  showTab(tabs[0].id);
+  // Só chama showTab na primeira vez (sem aba ativa ainda)
+  if (!tabAtiva) showTab(tabs[0].id);
 }
 
 function showTab(id) {
