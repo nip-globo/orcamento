@@ -85,7 +85,13 @@
     }
     try {
       if (!_cacheSha) await ghRead();
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+      // Usa JSON com caracteres ASCII escapados (\uXXXX) para evitar corrupção de encoding
+      const jsonStr = JSON.stringify(data, null, 2);
+      // Escapa caracteres não-ASCII para garantir compatibilidade
+      const safeStr = jsonStr.replace(/[\u0080-\uFFFF]/g, function(c) {
+        return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+      });
+      const content = btoa(safeStr);
       const r = await fetch(GH_API, {
         method: 'PUT',
         headers: {
