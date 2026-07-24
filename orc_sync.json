@@ -3480,6 +3480,17 @@
       "ccVinculado": "GL160508010 - Produ\u00e7\u00e3o Integrada - Branded Content e Social",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
+    },
+    {
+      "email": "joa\u00a3o.nogueira@g.globo",
+      "nome": "Jo\u00c3\u00a3o Nogueira",
+      "senha": "123456",
+      "perfil": "gestor_cc",
+      "ativo": true,
+      "pendente": false,
+      "ccVinculado": "GL160602005 - Planejamento, Licenciamento e Narrativas",
+      "criadoEm": "24/07/2026, 14:31:03",
+      "importadoDaBase": true
     }
   ],
   "orc_vinculos": {
@@ -3566,8 +3577,8 @@
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T14:29:57.402Z",
-  "_atualizadoPor": "",
+  "_atualizadoEm": "2026-07-24T17:31:03.340Z",
+  "_atualizadoPor": "sandro.silva@g.globo",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
   },
