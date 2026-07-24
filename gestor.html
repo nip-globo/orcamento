@@ -361,14 +361,14 @@ async function aprovarSolicitacaoAcesso(email) {
     data._atualizadoEm = new Date().toISOString();
     await _ghSolSave(token, sha, data);
     // Atualiza cache local
-    if (window._ghData)      { window._ghData.orc_usuarios = usuarios; window._ghData.orc_reset_sol = sols; }
+    if (window._ghData) { window._ghData.orc_usuarios = usuarios; window._ghData.orc_reset_sol = sols; }
     if (window._ghDataAdmin) { window._ghDataAdmin.orc_usuarios = usuarios; window._ghDataAdmin.orc_reset_sol = sols; }
-    // Re-renderiza
-    if (typeof renderTudo === 'function')  renderTudo();
-    if (typeof buildTabs  === 'function')  buildTabs();
-    if (typeof showTab    === 'function')  showTab('pendentes');
-    // Recarrega do GitHub após 3s para garantir dados frescos
-    setTimeout(function(){ if(typeof carregarGitHub==='function') carregarGitHub(); if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
+    // Re-renderiza direto
+    var wrap = document.getElementById('mainWrap');
+    if (wrap) wrap.innerHTML = renderPendentes();
+    if (typeof buildTabs === 'function') buildTabs();
+    // Recarrega do GitHub após 3s para confirmar
+    setTimeout(function(){ if(typeof carregarGitHub==='function') carregarGitHub(); }, 3000);
     alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '!\nSenha inicial: 123456');
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
@@ -386,12 +386,13 @@ async function rejeitarSolicitacaoAcesso(email) {
     data.orc_reset_sol = sols;
     data._atualizadoEm = new Date().toISOString();
     await _ghSolSave(token, sha, data);
+    // Atualiza cache local imediatamente
     if (window._ghData)      window._ghData.orc_reset_sol = sols;
     if (window._ghDataAdmin) window._ghDataAdmin.orc_reset_sol = sols;
-    if (typeof renderTudo === 'function') renderTudo();
-    if (typeof buildTabs  === 'function') buildTabs();
-    if (typeof showTab    === 'function') showTab('pendentes');
-    setTimeout(function(){ if(typeof carregarGitHub==='function') carregarGitHub(); if(typeof carregarGitHubAdmin==='function') carregarGitHubAdmin(); }, 3000);
+    // Re-renderiza direto — sem chamar showTab para evitar loop
+    var wrap = document.getElementById('mainWrap');
+    if (wrap) wrap.innerHTML = renderPendentes();
+    if (typeof buildTabs === 'function') buildTabs();
   } catch(e) { alert('❌ Erro: ' + e.message); }
 }
 
