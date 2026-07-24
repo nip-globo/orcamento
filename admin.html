@@ -774,7 +774,7 @@ function renderPendentes() {
   el.innerHTML = htmlSols + htmlPend;
 }
 
-// ── Aprovar/Rejeitar solicitação de acesso ────────────────────────
+// ── Aprovar/Rejeitar solicitação de acesso — v20260724031950 ────────────────────────
 async function aprovarSolicitacaoAcesso(email) {
   if (!confirm('Aprovar solicitação de ' + email + '?')) return;
   const sols  = getSolicitacoes();
