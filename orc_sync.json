@@ -3524,11 +3524,13 @@
       "gestor": "nathalia.abreu@g.globo",
       "justif": "",
       "solicitadoEm": "24/07/2026, 01:13:07",
-      "status": "pendente"
+      "status": "rejeitado",
+      "rejeitadoPor": "nathalia.abreu@g.globo",
+      "rejeitadoEm": "24/07/2026, 01:54:24"
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T04:33:13.535141",
+  "_atualizadoEm": "2026-07-24T04:54:24.461Z",
   "_atualizadoPor": "",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
