@@ -3539,10 +3539,20 @@
       "status": "rejeitado",
       "rejeitadoPor": "admin",
       "rejeitadoEm": "24/07/2026, 01:03:51"
+    },
+    {
+      "tipo": "solicitacao_acesso",
+      "nome": "Sandro Rosa",
+      "email": "sandro.teste3@g.globo",
+      "perfil": "aprovador",
+      "gestor": "nathalia.abreu@g.globo",
+      "justif": "",
+      "solicitadoEm": "24/07/2026, 01:06:14",
+      "status": "pendente"
     }
   ],
   "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T04:03:51.651Z",
+  "_atualizadoEm": "2026-07-24T04:06:14.491Z",
   "_atualizadoPor": "",
   "orc_vinculos_aprov": {
     "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
