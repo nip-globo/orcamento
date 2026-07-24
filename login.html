@@ -18,6 +18,8 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
 .logo-area img{height:36px;filter:brightness(0) saturate(100%) invert(29%) sepia(95%) saturate(1500%) hue-rotate(210deg) brightness(95%);margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;}
 .logo-area h1{font-size:20px;font-weight:900;color:#0D1B4B;letter-spacing:-.3px;line-height:1.2;}
 .logo-area p{font-size:12px;color:#6B7A99;margin-top:6px;font-weight:600;}
+.field select{border:1.5px solid #E4E9F2;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Nunito',inherit;font-weight:600;color:#0D1B4B;background:#F5F7FA;width:100%;transition:all .18s;outline:none;}
+.field select:focus{border-color:#3B6FE8;background:#fff;box-shadow:0 0 0 4px rgba(59,111,232,.12);}
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
 .field label{font-size:10px;font-weight:800;color:#3B6FE8;text-transform:uppercase;letter-spacing:.8px;}
 .field input{border:1.5px solid #E4E9F2;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Nunito',inherit;font-weight:600;color:#0D1B4B;background:#F5F7FA;transition:all .18s;}
@@ -83,6 +85,7 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
       <button class="btn-login" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
       <div class="msg err" id="err-login"></div>
       <button class="btn-link" onclick="irParaReset()">Esqueci minha senha</button>
+      <button class="btn-link" onclick="irParaSolicitacao()" style="color:#64748B;margin-top:6px">Solicitar acesso ao sistema</button>
     </div>
 
     <!-- ── VIEW RESET ── -->
@@ -144,6 +147,47 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         <button class="btn-login" onclick="confirmarNovaSenha()">💾 Salvar nova senha</button>
         <div class="msg" id="msg-nova-senha" style="margin-top:10px"></div>
       </div>
+    </div>
+
+    <!-- ── VIEW SOLICITAÇÃO DE ACESSO ── -->
+    <div id="view-solicitacao" style="display:none">
+      <button class="back-link" onclick="voltarLoginDeSolicitacao()">← Voltar ao login</button>
+      <div class="logo-area" style="margin-bottom:20px">
+        <h1 style="font-size:17px">Solicitar Acesso</h1>
+        <p>Preencha seus dados e aguarde aprovação</p>
+      </div>
+
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="sol-nome" placeholder="Seu nome completo">
+      </div>
+      <div class="field">
+        <label>E-mail (@g.globo)</label>
+        <input type="email" id="sol-email" placeholder="seu.nome@g.globo">
+      </div>
+      <div class="field">
+        <label>Perfil desejado</label>
+        <select id="sol-perfil" onchange="atualizarGestoresSolicitacao()">
+          <option value="">Selecione o perfil...</option>
+          <option value="criador">Criador</option>
+          <option value="aprovador">Aprovador</option>
+          <option value="observador">Observador</option>
+        </select>
+      </div>
+      <div class="field" id="sol-gestor-wrap" style="display:none">
+        <label id="sol-gestor-label">Gestor responsável</label>
+        <select id="sol-gestor">
+          <option value="">Selecione o gestor...</option>
+        </select>
+        <span id="sol-gestor-hint" style="font-size:11px;color:#94A3B8;margin-top:3px"></span>
+      </div>
+      <div class="field">
+        <label>Justificativa (opcional)</label>
+        <input type="text" id="sol-justificativa" placeholder="Por que precisa de acesso?">
+      </div>
+
+      <button class="btn-login" onclick="enviarSolicitacao()">📨 Enviar Solicitação</button>
+      <div class="msg" id="msg-solicitacao" style="margin-top:10px"></div>
     </div>
 
   </div>
@@ -289,6 +333,128 @@ async function fazerLogin() {
   STORE.set('orc_user', JSON.stringify(sess), 0.33);
   const gestores = ['gestor_cc','gestor_criador','observador'];
   window.location.replace(gestores.includes(user.perfil) ? 'gestor.html' : 'index.html');
+}
+
+// ── SOLICITAÇÃO DE ACESSO ────────────────────────────────────────
+function irParaSolicitacao() {
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-reset').style.display = 'none';
+  document.getElementById('view-solicitacao').style.display = 'block';
+  ['sol-nome','sol-email','sol-justificativa'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('sol-perfil').value = '';
+  document.getElementById('sol-gestor-wrap').style.display = 'none';
+  document.getElementById('msg-solicitacao').style.display = 'none';
+}
+
+function voltarLoginDeSolicitacao() {
+  document.getElementById('view-solicitacao').style.display = 'none';
+  document.getElementById('view-login').style.display = 'block';
+}
+
+async function atualizarGestoresSolicitacao() {
+  const perfil = document.getElementById('sol-perfil').value;
+  const wrap   = document.getElementById('sol-gestor-wrap');
+  const sel    = document.getElementById('sol-gestor');
+  const label  = document.getElementById('sol-gestor-label');
+  const hint   = document.getElementById('sol-gestor-hint');
+  if (!perfil) { wrap.style.display = 'none'; return; }
+  const usuarios = await getUsuarios();
+  let gestores = [], labelTxt = '', hintTxt = '';
+  if (perfil === 'criador') {
+    gestores = usuarios.filter(u => u.perfil === 'gestor_criador' && u.ativo !== false);
+    labelTxt = 'Gestor de Criadores responsável';
+    hintTxt  = 'Selecione o gestor que irá supervisionar seu trabalho';
+  } else if (perfil === 'aprovador') {
+    gestores = usuarios.filter(u => u.perfil === 'gestor_cc' && u.ativo !== false);
+    labelTxt = 'Gestor CC responsável';
+    hintTxt  = 'Selecione o Gestor CC ao qual este aprovador estará vinculado';
+  } else if (perfil === 'observador') {
+    gestores = usuarios.filter(u => (u.perfil === 'admin' || u.perfil === 'gestor_cc') && u.ativo !== false);
+    labelTxt = 'Responsável pela aprovação';
+    hintTxt  = 'Selecione quem irá aprovar seu acesso como observador';
+  }
+  label.textContent = labelTxt;
+  hint.textContent  = hintTxt;
+  sel.innerHTML = '<option value="">Selecione...</option>' +
+    gestores.map(g => `<option value="${g.email}">${g.nome} (${g.email})</option>`).join('');
+  wrap.style.display = gestores.length ? 'block' : 'none';
+  if (!gestores.length) {
+    wrap.style.display = 'block';
+    sel.innerHTML = '<option value="">Nenhum gestor disponível — contate o Admin</option>';
+  }
+}
+
+async function enviarSolicitacao() {
+  const nome   = document.getElementById('sol-nome').value.trim();
+  const email  = document.getElementById('sol-email').value.trim().toLowerCase();
+  const perfil = document.getElementById('sol-perfil').value;
+  const gestor = document.getElementById('sol-gestor').value;
+  const justif = document.getElementById('sol-justificativa').value.trim();
+  const msg    = document.getElementById('msg-solicitacao');
+
+  function showMsgSol(tipo, txt) {
+    const cores = {
+      ok:   'background:#ECFDF5;color:#065F46;border:1.5px solid rgba(0,168,107,.25)',
+      err:  'background:#FEF2F2;color:#991B1B;border:1.5px solid rgba(229,53,53,.2)',
+      info: 'background:#EBF1FF;color:#1A3A8F;border:1.5px solid rgba(59,111,232,.2)'
+    };
+    msg.style.cssText = (cores[tipo]||cores.info) + ';border-radius:8px;padding:10px 14px;font-size:12.5px;font-weight:700;display:block;line-height:1.5;margin-top:10px';
+    msg.innerHTML = txt;
+  }
+
+  if (!nome)   { showMsgSol('err','Informe seu nome completo.'); return; }
+  if (!email || !email.includes('@')) { showMsgSol('err','Informe um e-mail válido.'); return; }
+  if (!perfil) { showMsgSol('err','Selecione o perfil desejado.'); return; }
+  if (!gestor) { showMsgSol('err','Selecione o gestor responsável.'); return; }
+
+  const usuarios = await getUsuarios();
+  if (usuarios.find(u => u.email === email)) {
+    showMsgSol('err','Este e-mail já está cadastrado. Use o login ou "Esqueci minha senha".');
+    return;
+  }
+
+  showMsgSol('info','⏳ Enviando solicitação...');
+
+  try {
+    const sols = await getSolicitacoes();
+    if (sols.find(s => s.email === email && s.status === 'pendente')) {
+      showMsgSol('err','Já existe uma solicitação pendente para este e-mail. Aguarde a aprovação.');
+      return;
+    }
+    sols.push({
+      tipo: 'solicitacao_acesso',
+      nome, email, perfil, gestor, justif,
+      solicitadoEm: new Date().toLocaleString('pt-BR'),
+      status: 'pendente'
+    });
+    await saveSolicitacoes(sols);
+
+    const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+    const gestorUser  = usuarios.find(u => u.email === gestor);
+    const gestorNome  = gestorUser ? gestorUser.nome : gestor;
+
+    showMsgSol('ok',
+      `✅ Solicitação enviada!<br><br>` +
+      `<strong>${gestorNome}</strong> e o Administrador foram notificados e avaliarão seu pedido de acesso como <strong>${perfisLabel[perfil]||perfil}</strong>.<br><br>` +
+      `Você receberá as credenciais pelo e-mail <strong>${email}</strong> após a aprovação.`
+    );
+
+    // Abre Outlook para notificar o gestor
+    setTimeout(() => {
+      const assunto = encodeURIComponent(`[NIP] Solicitação de Acesso — ${nome} (${perfisLabel[perfil]||perfil})`);
+      const corpo   = encodeURIComponent(
+        `Olá ${gestorNome},\n\n${nome} (${email}) solicitou acesso ao sistema de Orçamento Merchandising com perfil "${perfisLabel[perfil]||perfil}".\n\n` +
+        (justif ? `Justificativa: ${justif}\n\n` : '') +
+        `Para aprovar, acesse o sistema e vá em Admin → Pendentes.\n\nOrçamento Merchandising · Estúdios Globo`
+      );
+      window.open(`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(gestor)}&subject=${assunto}&body=${corpo}`, '_blank');
+    }, 1500);
+
+  } catch(e) {
+    showMsgSol('err','❌ Erro ao enviar. Tente novamente ou contate o Administrador.');
+  }
 }
 
 // ── NAVEGAÇÃO RESET ──────────────────────────────────────────────
