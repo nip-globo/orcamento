@@ -716,8 +716,7 @@ function renderUsuarios() {
 // ── Render pendentes ──────────────────────────────────────────────
 function renderPendentes() {
   const pendentes = getUsers().filter(u=>u.pendente);
-  // Solicitações de acesso pendentes (todas — admin vê tudo)
-  const solsPend  = getSolicitacoes().filter(s => s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
+  const solsPend  = getSolicitacoes().filter(function(s){ return s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
   const el        = document.getElementById('lista-pendentes');
   const badge     = document.getElementById('cnt-pendentes');
   const total     = pendentes.length + solsPend.length;
@@ -727,55 +726,80 @@ function renderPendentes() {
   const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
 
   // Seção solicitações de acesso
-  let htmlSols = '';
+  var htmlSols = '';
   if (solsPend.length) {
     const usuarios = getUsers();
-    const rowsSols = solsPend.map(s => {
-      const gestorUser = usuarios.find(u => u.email === s.gestor);
+    var rowsSols = solsPend.map(function(s) {
+      const gestorUser = usuarios.find(function(u){ return u.email===s.gestor; });
       const gestorNome = gestorUser ? gestorUser.nome : (s.gestor||'—');
-      return `<tr style="background:#FFF7ED">
-        <td><strong>${s.nome}</strong></td>
-        <td style="font-size:11px">${s.email}</td>
-        <td><span class="badge b-pendente">🆕 ${perfisLabel[s.perfil]||s.perfil}</span></td>
-        <td style="font-size:11px;color:#64748B">${gestorNome}</td>
-        <td style="font-size:11px;color:#94A3B8">${s.solicitadoEm||'—'}</td>
-        <td style="font-size:11px;color:#64748B">${s.justif||'—'}</td>
-        <td style="white-space:nowrap">
-          <button class="btn-acao btn-aprovar-user" onclick="aprovarSolicitacaoAcesso('${s.email}')">✅ Aprovar</button>
-          <button class="btn-acao btn-rejeitar-user" onclick="rejeitarSolicitacaoAcesso('${s.email}')" style="margin-left:4px">❌ Rejeitar</button>
-        </td>
-      </tr>`;
+      const emailSafe  = (s.email||'').replace(/'/g,"\\'");
+      return '<tr style="background:#FFF7ED">' +
+        '<td><strong>'+(s.nome||'')+'</strong></td>' +
+        '<td style="font-size:11px">'+(s.email||'')+'</td>' +
+        '<td><span class="badge b-pendente">🆕 '+(perfisLabel[s.perfil]||s.perfil||'')+'</span></td>' +
+        '<td style="font-size:11px;color:#64748B">'+gestorNome+'</td>' +
+        '<td style="font-size:11px;color:#94A3B8">'+(s.solicitadoEm||'—')+'</td>' +
+        '<td style="font-size:11px;color:#64748B">'+(s.justif||'—')+'</td>' +
+        '<td style="white-space:nowrap">' +
+          '<button class="btn-acao btn-aprovar-user" onclick="aprovarSolicitacaoAcesso(\''+emailSafe+'\')">✅ Aprovar</button> ' +
+          '<button class="btn-acao btn-rejeitar-user" onclick="rejeitarSolicitacaoAcesso(\''+emailSafe+'\')" style="margin-left:4px">❌ Rejeitar</button>' +
+        '</td></tr>';
     }).join('');
-    htmlSols = `<div style="margin-bottom:16px">
-      <div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;overflow:hidden">
-        <div style="background:#F97316;padding:10px 16px;color:#fff;font-size:12px;font-weight:800">🆕 Solicitações de Acesso Pendentes (${solsPend.length})</div>
-        <table class="utable"><thead><tr>
-          <th>Nome</th><th>E-mail</th><th>Perfil</th><th>Gestor</th><th>Solicitado em</th><th>Justificativa</th><th>Ações</th>
-        </tr></thead><tbody>${rowsSols}</tbody></table>
-      </div>
-    </div>`;
+    htmlSols = '<div style="margin-bottom:16px;background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;overflow:hidden">' +
+      '<div style="background:#F97316;padding:10px 16px;color:#fff;font-size:12px;font-weight:800">🆕 Solicitações de Acesso Pendentes ('+solsPend.length+')</div>' +
+      '<table class="utable"><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Gestor</th><th>Solicitado em</th><th>Justificativa</th><th>Ações</th></tr></thead>' +
+      '<tbody>'+rowsSols+'</tbody></table></div>';
   }
 
   // Seção usuários pendentes (aprovação Gestor CC)
-  let htmlPend = '';
+  var htmlPend = '';
   if (pendentes.length) {
-    htmlPend = `<table class="utable"><thead><tr>
-      <th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Cadastrado em</th><th>Ações Admin</th>
-    </tr></thead><tbody>${pendentes.map(u=>`<tr>
-      <td><strong>${u.nome}</strong></td>
-      <td style="font-size:11px">${u.email}</td>
-      <td><span class="badge b-pendente">⏳ ${PERFIS_LABELS[u.perfil]||u.perfil} Pendente</span></td>
-      <td style="font-size:11px;color:#EA580C">Aguardando aprovação Gestor CC</td>
-      <td style="font-size:11px;color:#94A3B8">${u.criadoEm||'—'}</td>
-      <td style="white-space:nowrap">
-        <button class="btn-acao btn-aprovar-user" onclick="aprovarUser('${u.email}')">✅ Aprovar</button>
-        <button class="btn-acao btn-rejeitar-user" onclick="rejeitarUser('${u.email}')" style="margin-left:4px">❌ Rejeitar</button>
-      </td>
-    </tr>`).join('')}</tbody></table>`;
+    htmlPend = '<table class="utable"><thead><tr>' +
+      '<th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Cadastrado em</th><th>Ações Admin</th>' +
+      '</tr></thead><tbody>' +
+      pendentes.map(function(u){
+        return '<tr><td><strong>'+u.nome+'</strong></td>' +
+          '<td style="font-size:11px">'+u.email+'</td>' +
+          '<td><span class="badge b-pendente">⏳ '+(PERFIS_LABELS[u.perfil]||u.perfil)+' Pendente</span></td>' +
+          '<td style="font-size:11px;color:#EA580C">Aguardando aprovação Gestor CC</td>' +
+          '<td style="font-size:11px;color:#94A3B8">'+(u.criadoEm||'—')+'</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="btn-acao btn-aprovar-user" onclick="aprovarUser(\''+u.email.replace(/'/g,"\\'")+'\')"  >✅ Aprovar</button> ' +
+            '<button class="btn-acao btn-rejeitar-user" onclick="rejeitarUser(\''+u.email.replace(/'/g,"\\'")+'\')">❌ Rejeitar</button>' +
+          '</td></tr>';
+      }).join('') + '</tbody></table>';
   }
 
   if (!total) { el.innerHTML='<div class="empty">Nenhum pendente.</div>'; return; }
   el.innerHTML = htmlSols + htmlPend;
+}
+
+// ── Aprovar/Rejeitar solicitação de acesso ────────────────────────
+async function aprovarSolicitacaoAcesso(email) {
+  if (!confirm('Aprovar solicitação de ' + email + '?')) return;
+  const sols  = getSolicitacoes();
+  const sol   = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
+  if (!sol) { alert('Solicitação não encontrada.'); return; }
+  const users = getUsers();
+  if (users.find(function(u){ return u.email===email; })) { alert('Usuário já cadastrado.'); return; }
+  const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+  users.push({ email:sol.email, nome:sol.nome, senha:'123456', perfil:sol.perfil,
+    ativo:true, pendente:false, criadoEm:new Date().toLocaleString('pt-BR'),
+    aprovadoPor:'admin', aprovadoEm:new Date().toLocaleString('pt-BR') });
+  sol.status='aprovado'; sol.aprovadoPor='admin'; sol.aprovadoEm=new Date().toLocaleString('pt-BR');
+  saveUsers(users);
+  saveSolicitacoes(sols);
+  renderTudo();
+  alert('✅ ' + sol.nome + ' aprovado como ' + (perfisLabel[sol.perfil]||sol.perfil) + '! Senha inicial: 123456');
+}
+
+function rejeitarSolicitacaoAcesso(email) {
+  if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
+  const sols = getSolicitacoes();
+  const sol  = sols.find(function(s){ return s.email===email && s.tipo==='solicitacao_acesso' && s.status==='pendente'; });
+  if (sol) { sol.status='rejeitado'; sol.rejeitadoPor='admin'; sol.rejeitadoEm=new Date().toLocaleString('pt-BR'); }
+  saveSolicitacoes(sols);
+  renderTudo();
 }
 
 // ── Render vínculos ───────────────────────────────────────────────
@@ -945,38 +969,7 @@ function excluir(email) {
   if(!confirm(`Excluir ${email}?`))return;
   saveUsers(getUsers().filter(u=>u.email!==email)); renderTudo();
 }
-// ── Aprovar/Rejeitar solicitação de acesso ────────────────────────
-async function aprovarSolicitacaoAcesso(email) {
-  if (!confirm('Aprovar solicitação de ' + email + '?')) return;
-  const sols  = getSolicitacoes();
-  const sol   = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
-  if (!sol) { alert('Solicitação não encontrada.'); return; }
-  const users = getUsers();
-  if (users.find(u => u.email === email)) { alert('Usuário já cadastrado.'); return; }
-  const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
-  users.push({
-    email: sol.email, nome: sol.nome, senha: '123456',
-    perfil: sol.perfil, ativo: true, pendente: false,
-    criadoEm: new Date().toLocaleString('pt-BR'),
-    aprovadoPor: 'admin', aprovadoEm: new Date().toLocaleString('pt-BR')
-  });
-  sol.status = 'aprovado';
-  sol.aprovadoPor = 'admin';
-  sol.aprovadoEm  = new Date().toLocaleString('pt-BR');
-  saveUsers(users);
-  saveSolicitacoes(sols);
-  renderTudo();
-  alert(`✅ ${sol.nome} aprovado como ${perfisLabel[sol.perfil]||sol.perfil}! Senha inicial: 123456`);
-}
-
-async function rejeitarSolicitacaoAcesso(email) {
-  if (!confirm('Rejeitar solicitação de ' + email + '?')) return;
-  const sols = getSolicitacoes();
-  const sol  = sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente');
-  if (sol) { sol.status = 'rejeitado'; sol.rejeitadoPor = 'admin'; sol.rejeitadoEm = new Date().toLocaleString('pt-BR'); }
-  saveSolicitacoes(sols);
-  renderTudo();
-}
+function aprovarUser(email) {
   const users=getUsers(); const u=users.find(x=>x.email===email);
   if(u){ u.pendente=false; u.ativo=true; } saveUsers(users); renderTudo();
 }
