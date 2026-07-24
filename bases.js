@@ -173,9 +173,9 @@ const BASE_CONTAS = [
   {nome:'Arte',tipo:'producao'},
   {nome:'Cenografia',tipo:'producao'},
   {nome:'Figurino',tipo:'producao'},
-  {nome:'CaracterizaÃ§Ã£o',tipo:'producao'},
-  {nome:'FiguraÃ§Ã£o',tipo:'producao'},
-  {nome:'Pedidos de ProduÃ§Ã£o',tipo:'producao'},
+  {nome:'Caracterização',tipo:'producao'},
+  {nome:'Figuração',tipo:'producao'},
+  {nome:'Pedidos de Produção',tipo:'producao'},
   {nome:'Gastos Com Talentos',tipo:'producao'},
   {nome:'Tecnologia',tipo:'tecnologia'},
   {nome:'Outros',tipo:'producao'}
