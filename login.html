@@ -447,7 +447,7 @@ async function enviarSolicitacao() {
       const corpo   = encodeURIComponent(
         `Olá ${gestorNome},\n\n${nome} (${email}) solicitou acesso ao sistema de Orçamento Merchandising com perfil "${perfisLabel[perfil]||perfil}".\n\n` +
         (justif ? `Justificativa: ${justif}\n\n` : '') +
-        `Para aprovar, acesse o sistema e vá em Admin → Pendentes.\n\nOrçamento Merchandising · Estúdios Globo`
+        `Para aprovar, acesse o sistema e vá em Admin → Pendentes:\nhttps://nip-globo.github.io/orcamento/admin.html\n\nOrçamento Merchandising · Estúdios Globo`
       );
       window.open(`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(gestor)}&subject=${assunto}&body=${corpo}`, '_blank');
     }, 1500);
