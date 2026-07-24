@@ -418,8 +418,14 @@ async function enviarSolicitacao() {
   showMsgSol('info','⏳ Enviando solicitação...');
 
   try {
-    const sols = await getSolicitacoes();
-    if (sols.find(s => s.email === email && s.status === 'pendente')) {
+    // Busca sempre do GitHub para ter status atualizado
+    let sols = [];
+    try {
+      const r = await fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now());
+      if (r.ok) { const d = await r.json(); sols = d.orc_reset_sol || []; }
+    } catch(e) { sols = await getSolicitacoes(); }
+
+    if (sols.find(s => s.email === email && s.tipo === 'solicitacao_acesso' && s.status === 'pendente')) {
       showMsgSol('err','Já existe uma solicitação pendente para este e-mail. Aguarde a aprovação.');
       return;
     }
