@@ -409,18 +409,15 @@ function carregarGitHub() {
       if (data.orc_vinculos)   _setCookie('orc_vinculos',   JSON.stringify(data.orc_vinculos), 0.02);
       if (data.orc_delegacoes) _setCookie('orc_delegacoes', JSON.stringify(data.orc_delegacoes), 0.02);
       if (data.orc_reset_sol)  _setCookie('orc_reset_sol',  JSON.stringify(data.orc_reset_sol),  0.02);
-      // Re-renderiza a aba atual com dados frescos (sem chamar carregarGitHub de novo)
-      var tabAtiva = document.querySelector('.tab.active');
-      if (tabAtiva) {
-        var id = tabAtiva.id.replace('tab-','');
-        var wrap = document.getElementById('mainWrap');
-        if (wrap && id === 'pendentes') {
-          wrap.innerHTML = renderPendentes(); // renderiza direto sem loop
-        } else {
-          showTab(id);
-        }
-      }
+      // Atualiza contador de pendentes
       buildTabs();
+      // Re-renderiza conteúdo da aba ativa se for pendentes
+      var tabAtiva = document.querySelector('.tab.active');
+      var idAtivo  = tabAtiva ? tabAtiva.id.replace('tab-','') : '';
+      var wrap     = document.getElementById('mainWrap');
+      if (wrap && idAtivo === 'pendentes') {
+        wrap.innerHTML = renderPendentes();
+      }
       console.log('[Gestor] GitHub carregado —', (data.orc_h2||[]).length, 'orçamentos');
     })
     .catch(function(e){ console.warn('[Gestor] Falha ao carregar GitHub:', e.message); });
