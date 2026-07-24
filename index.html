@@ -3882,23 +3882,34 @@ function cancelarDelegacao(id) {
 }
 
 // Abre modal de nova delegação
+function iniciarDelegacao() {
+  // Garante que temos usuários antes de fechar o modal de perfil
+  let users = JSON.parse(_ck('orc_usuarios') || '[]');
+  if (users.length) {
+    fecharModalPerfil();
+    abrirModalDelegacao();
+    return;
+  }
+  // Busca do GitHub e tenta novamente
+  fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (data && data.orc_usuarios) {
+        _ckSet('orc_usuarios', JSON.stringify(data.orc_usuarios), 0.02);
+      }
+      fecharModalPerfil();
+      abrirModalDelegacao();
+    })
+    .catch(function(){
+      fecharModalPerfil();
+      abrirModalDelegacao();
+    });
+}
+
 function abrirModalDelegacao() {
   const user  = window._USER;
   if (!user) return;
-  // Usa cookie ou dados do GitHub (via fetch se necessário)
-  let users = JSON.parse(_ck('orc_usuarios') || '[]');
-  if (!users.length) {
-    // Tenta buscar do GitHub de forma assíncrona e reabre
-    fetch('https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now())
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(data){
-        if (data && data.orc_usuarios) {
-          _ckSet('orc_usuarios', JSON.stringify(data.orc_usuarios), 0.02);
-        }
-        abrirModalDelegacao();
-      });
-    return;
-  }
+  const users = JSON.parse(_ck('orc_usuarios') || '[]');
 
   // Filtra possíveis delegados (mesmo perfil, diferente do usuário)
   const candidatos = users.filter(function(u) {
@@ -5039,7 +5050,7 @@ function abrirModalPerfil() {
           '🔑 Você está gerenciando os orçamentos de <strong>'+nomeU2(delAtiva.delegante)+'</strong> até '+new Date(delAtiva.dataFim).toLocaleDateString('pt-BR')+
         '</div>';
       } else {
-        delHtml += '<button onclick="fecharModalPerfil();abrirModalDelegacao()" style="width:100%;background:var(--azul-clr);color:var(--azul-esc);border:1.5px solid rgba(59,111,232,.2);border-radius:8px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:Nunito,inherit;margin-bottom:4px">🔁 Delegar meus poderes temporariamente</button>';
+        delHtml += '<button onclick="iniciarDelegacao()" style="width:100%;background:var(--azul-clr);color:var(--azul-esc);border:1.5px solid rgba(59,111,232,.2);border-radius:8px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:Nunito,inherit;margin-bottom:4px">🔁 Delegar meus poderes temporariamente</button>';
       }
       delHtml += '</div>';
       delWrap.innerHTML = delHtml;
