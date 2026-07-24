@@ -180,3 +180,17 @@ const BASE_CONTAS = [
   {nome:'Tecnologia',tipo:'tecnologia'},
   {nome:'Outros',tipo:'producao'}
 ];
+
+// BASE_FORMATOS — Tipos de Ação (atualizável via Atualizar Bases)
+const BASE_FORMATOS = [
+  'MERCHAN',
+  'VISU C/INT',
+  'VISU S/INT',
+  'PATROCÍNIO',
+  'PRODUCT PLACEMENT',
+  'AÇÃO ESPECIAL',
+  'BRANDED CONTENT',
+  'DIGITAL',
+  'SOCIAL MEDIA',
+  'OUTROS'
+];
