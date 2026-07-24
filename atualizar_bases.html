@@ -150,6 +150,22 @@
     </div>
   </div>
 
+  <!-- BASE 5: Formatos (Tipos de Ação) -->
+  <div class="card">
+    <div class="card-header"><div class="step-badge">5</div><h2>Formatos — Tipos de Ação</h2></div>
+    <div class="card-body">
+      <div class="upload-row">
+        <button class="upload-btn" id="btn-formatos">📂 Selecionar Excel</button>
+        <input type="file" id="file-formatos" accept=".xlsx,.xls" style="display:none">
+        <span class="upload-status" id="st-formatos">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="hint">Col. A: <strong>Formato / Tipo de Ação</strong> (ex: MERCHAN, VISU C/INT)</div>
+      <div class="preview" id="prev-formatos"><table><thead><tr><th>Formato</th></tr></thead><tbody id="tbody-formatos"></tbody></table></div>
+      <button class="btn-salvar-base" id="salvar-formatos" disabled onclick="salvarBase('formatos')">💾 Salvar esta base</button>
+      <div class="sbox-base" id="sbox-formatos"></div>
+    </div>
+  </div>
+
   <div class="folder-hint">
     💡 Ao clicar em <strong>"Salvar esta base"</strong>: selecione a pasta <strong>orcamento-site</strong>
     (onde está o <em>index.html</em>). O arquivo <strong>bases.js</strong> é atualizado automaticamente
@@ -167,11 +183,11 @@
 <script src="bases.js"></script>
 <script>
 // ── Estado por base ───────────────────────────────────────────────
-const parsed = { cc:null, pp:null, fin:null, contas:null };
+const parsed = { cc:null, pp:null, fin:null, contas:null, formatos:null };
 let dirHandle = null; // mantido por compatibilidade
 
 // ── Conecta botões ────────────────────────────────────────────────
-['cc','pp','fin','contas'].forEach(k => {
+['cc','pp','fin','contas','formatos'].forEach(k => {
   document.getElementById(`btn-${k}`).addEventListener('click', () =>
     document.getElementById(`file-${k}`).click());
   document.getElementById(`file-${k}`).addEventListener('change', e =>
@@ -204,6 +220,11 @@ function lerExcel(key, file) {
       } else if (key === 'fin') {
         rows.slice(1).forEach(r => {
           const v = String(r[0]||'').trim();
+          if (v) items.push(v);
+        });
+      } else if (key === 'formatos') {
+        rows.slice(1).forEach(r => {
+          const v = String(r[0]||'').trim().toUpperCase();
           if (v) items.push(v);
         });
       } else { // contas
@@ -297,7 +318,7 @@ async function salvarBase(key) {
 
     // Gera o novo bloco JS para esta base
     const novoBloco = gerarBlocoJs(key, parsed[key]);
-    const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS'}[key];
+    const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS', formatos:'BASE_FORMATOS'}[key];
     const regex   = new RegExp(`const ${varName}\\s*=\\s*\\[[\\s\\S]*?\\];`, 'm');
 
     let novoConteudo;
@@ -359,12 +380,13 @@ async function salvarBase(key) {
 async function baixarBasesJs(key) {
   const sbox = document.getElementById(`sbox-${key}`);
   // Recria o bases.js completo com a base atualizada
-  const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS'}[key];
+  const varName = {cc:'BASE_CC', pp:'BASE_PP', fin:'BASE_FIN', contas:'BASE_CONTAS', formatos:'BASE_FORMATOS'}[key];
   const js = `// bases.js — Atualizado em ${new Date().toLocaleString('pt-BR')}\n\n` +
     gerarBlocoJs('cc',      parsed.cc      || (typeof BASE_CC!=='undefined'?BASE_CC:[])) + '\n\n' +
     gerarBlocoJs('pp',      parsed.pp      || (typeof BASE_PP!=='undefined'?BASE_PP:[])) + '\n\n' +
     gerarBlocoJs('fin',     parsed.fin     || (typeof BASE_FIN!=='undefined'?BASE_FIN:[])) + '\n\n' +
-    gerarBlocoJs('contas',  parsed.contas  || (typeof BASE_CONTAS!=='undefined'?BASE_CONTAS:[]));
+    gerarBlocoJs('contas',  parsed.contas  || (typeof BASE_CONTAS!=='undefined'?BASE_CONTAS:[])) + '\n\n' +
+    gerarBlocoJs('formatos',parsed.formatos|| (typeof BASE_FORMATOS!=='undefined'?BASE_FORMATOS:[]));
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
   a.download = 'bases.js'; a.click();
@@ -385,6 +407,7 @@ function gerarBlocoJs(key, items) {
   }
   if (key === 'pp')  return `const BASE_PP = [\n${items.map(([p,pc])=>`  ['${e2(p)}', '${e2(pc)}']`).join(',\n')}\n];`;
   if (key === 'fin') return `const BASE_FIN = [\n${items.map(v=>`  '${e2(v)}'`).join(',\n')}\n];`;
+  if (key === 'formatos') return `const BASE_FORMATOS = [\n${items.map(v=>`  '${e2(v)}'`).join(',\n')}\n];`;
   // contas
   return `const BASE_CONTAS = [\n${items.map(c=>`  {nome:'${e2(c.nome)}',tipo:'${c.tipo}'}`).join(',\n')}\n];`;
 }
