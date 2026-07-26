@@ -330,10 +330,12 @@ async function fazerLogin() {
   }
 
   // Salva sessão em cookie (~8h)
-  const sess = { email: user.email, nome: user.nome, perfil: user.perfil, _ts: Date.now() };
+  // Normaliza perfil legado
+  const perfilFinal = user.perfil === 'aprovador' ? 'solicitante_aprovador' : user.perfil;
+  const sess = { email: user.email, nome: user.nome, perfil: perfilFinal, _ts: Date.now() };
   STORE.set('orc_user', JSON.stringify(sess), 0.33);
   const gestores = ['gestor_cc','gestor_criador','observador'];
-  window.location.replace(gestores.includes(user.perfil) ? 'gestor.html' : 'index.html');
+  window.location.replace(gestores.includes(perfilFinal) ? 'gestor.html' : 'index.html');
 }
 
 // ── SOLICITAÇÃO DE ACESSO ────────────────────────────────────────
