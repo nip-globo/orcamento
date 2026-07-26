@@ -1494,6 +1494,24 @@ function montar(){
 }
 
 function validar(o){
+  // Para edição de 'solicitado', complementar com dados do original
+  if (window._editandoIdx !== undefined && window._editandoIdx !== null) {
+    var _orig = hist[window._editandoIdx];
+    if (_orig && _orig.status === 'solicitado') {
+      if (!o.tipoAcao && _orig.tipoAcao) o.tipoAcao = _orig.tipoAcao;
+      if (!o.cc       && _orig.cc)       o.cc       = _orig.cc;
+      if (!o.proj     && _orig.proj)     o.proj     = _orig.proj;
+      if (!o.cliente  && _orig.cliente)  o.cliente  = _orig.cliente;
+      if (!o.fin      && _orig.fin)      o.fin      = _orig.fin;
+      if (!o.cr       && _orig.cr)       o.cr       = _orig.cr;
+      if (!o.contabil && _orig.contabil) o.contabil = _orig.contabil;
+      if (!o.focal    && _orig.focal)    o.focal    = _orig.focal;
+      if (!o.meta     && _orig.meta)     o.meta     = _orig.meta;
+      if (!o.sla      && _orig.sla)      o.sla      = _orig.sla;
+      if (!o.solicitante) o.solicitante = _orig.solicitante;
+      if (!o.focal_email) o.focal_email = _orig.focal_email;
+    }
+  }
   if(!o.tipoAcao) return'Preencha o Tipo de Ação.';
   if(!o.cc)       return'O campo Centro de Custo Merchandising é obrigatório.';
   if(!o.cliente)  return'Preencha o Cliente.';
