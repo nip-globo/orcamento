@@ -1500,7 +1500,11 @@ function validar(o){
   if(!o.proj)     return'Preencha o Nome do Projeto.';
   // Data de Gravação não obrigatória
   if(!(document.getElementById('f_fin')?.value||'').trim()) return'O campo Finalidade é obrigatório.';
-  if(window._USER?.perfil !== 'solicitante_aprovador' && !(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
+  // Aprovador só obrigatório para perfil Criador e Admin
+  var _perfilAtual = (window._USER && window._USER.perfil) ? window._USER.perfil : '';
+  if(_perfilAtual === '' || _perfilAtual === 'criador' || _perfilAtual === 'admin') {
+    if(!(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
+  }
   // Valida perfil do aprovador
   const aprovEmail = (document.getElementById('f_aprovador')?.value||'').trim();
   if (aprovEmail) {
