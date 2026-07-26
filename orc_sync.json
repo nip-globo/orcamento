@@ -1,15 +1,15 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-26T19:36:27.726Z",
-  "_atualizadoPor": "sistema/restauracao",
+  "_atualizadoEm": "2026-07-26T19:54:02.643Z",
+  "_atualizadoPor": "sandro.teste@g.globo",
   "_cacheBust": 1785094587726,
   "orc_h2": [
     {
       "num": "ORC-044",
-      "tipoAcao": "AÇÃO BÁSICA",
+      "tipoAcao": "A\u00c7\u00c3O B\u00c1SICA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "",
       "dataE": "",
       "observadores": [
@@ -19,36 +19,66 @@
       "focal": "",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "26/07/2026",
       "dataSolicitacao": "26/07/2026",
       "meta": "34800",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
-      "contas": {},
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 2345,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Cenografia",
+          "tipo": "producao",
+          "valor": 23467,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 34567,
+          "desc": "",
+          "extra": true
+        }
+      },
       "ci": 0,
-      "tp": 0,
-      "ct": 0,
-      "ta": 0,
+      "tp": 25812,
+      "ct": 34567,
+      "ta": 60379,
       "emails": [
         "sandro.teste@g.globo"
       ],
-      "dataEnvio": "26/07/2026, 16:36:27",
-      "aprovador": "",
-      "criador": "",
-      "focal_email": "sandro.aprovador@g.globo",
+      "dataEnvio": "26/07/2026, 16:53:59",
+      "aprovador": "sandro.teste@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "focal_email": "",
       "solicitante": "sandro.aprovador@g.globo",
-      "status": "solicitado"
+      "status": "aguardando",
+      "historicoStatus": [
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "26/07/2026, 16:54:02",
+          "por": "Sandro Silva"
+        }
+      ]
     },
     {
       "num": "ORC-043",
-      "tipoAcao": "AÇÃO BÁSICA",
+      "tipoAcao": "A\u00c7\u00c3O B\u00c1SICA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "DOMINGÃO 2026",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "",
       "dataE": "",
       "observadores": [
@@ -58,15 +88,15 @@
       "focal": "",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "26/07/2026",
       "dataSolicitacao": "26/07/2026",
       "meta": "23450",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {},
       "ci": 0,
@@ -85,9 +115,9 @@
     },
     {
       "num": "ORC-042",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "É DE CASA 2026",
+      "proj": "\u00c9 DE CASA 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-17",
       "observadores": [
@@ -97,13 +127,13 @@
       "focal": "Thamires Oliveira",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "É DE CASA 2026",
+      "prog": "\u00c9 DE CASA 2026",
       "ppm": "1111",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000006-006-003 - \u00c9 DE CASA/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "2",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -142,7 +172,7 @@
     },
     {
       "num": "ORC-041",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
       "proj": "BIG BROTHER BRASIL 2026",
       "dataG": "2026-07-14",
@@ -157,10 +187,10 @@
       "prog": "BIG BROTHER BRASIL 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000002-005-003 - BBB/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.RLT.000002-005-003 - BBB/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -199,9 +229,9 @@
     },
     {
       "num": "ORC-040",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-06",
       "dataE": "2026-07-11",
       "observadores": [
@@ -211,13 +241,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "1111",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "1",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -252,7 +282,7 @@
       "num": "ORC-039",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "MAIS VOCÊ 2026",
+      "proj": "MAIS VOC\u00ca 2026",
       "dataG": "2026-07-06",
       "dataE": "2026-07-16",
       "observadores": [
@@ -262,13 +292,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "MAIS VOCÊ 2026",
+      "prog": "MAIS VOC\u00ca 2026",
       "ppm": "123456",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOC\u00ca/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "1",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -286,7 +316,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 332,
           "desc": "",
@@ -314,9 +344,9 @@
     },
     {
       "num": "ORC-038",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "DOMINGÃO 2026",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "2026-07-01",
       "dataE": "2026-07-12",
       "observadores": [
@@ -326,13 +356,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "11122",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -382,9 +412,9 @@
     },
     {
       "num": "ORC-037",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "QUE SEJA DOCE - 11ª T",
+      "proj": "QUE SEJA DOCE - 11\u00aa T",
       "dataG": "2026-07-07",
       "dataE": "2026-07-16",
       "observadores": [
@@ -394,13 +424,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "QUE SEJA DOCE - 11ª T",
+      "prog": "QUE SEJA DOCE - 11\u00aa T",
       "ppm": "1111",
       "tac": "MERCHA",
-      "contabil": "P.SER.000301-011-999 - QUE SEJA DOCE/11ª/NA",
+      "contabil": "P.SER.000301-011-999 - QUE SEJA DOCE/11\u00aa/NA",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -450,7 +480,7 @@
     },
     {
       "num": "ORC-036",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
       "proj": "NOVELA III - QUEM AMA CUIDA",
       "dataG": "2026-07-07",
@@ -465,10 +495,10 @@
       "prog": "NOVELA III - QUEM AMA CUIDA",
       "ppm": "11111",
       "tac": "MERCHAN",
-      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -479,7 +509,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 3444,
           "desc": "",
@@ -507,9 +537,9 @@
     },
     {
       "num": "ORC-035",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "NOVELA II - CORAÇÃO ACELERADO",
+      "proj": "NOVELA II - CORA\u00c7\u00c3O ACELERADO",
       "dataG": "2026-07-14",
       "dataE": "2026-07-31",
       "observadores": [
@@ -519,13 +549,13 @@
       "focal": "SANDRO",
       "cap": "44",
       "cena": "7",
-      "prog": "NOVELA II - CORAÇÃO ACELERADO",
+      "prog": "NOVELA II - CORA\u00c7\u00c3O ACELERADO",
       "ppm": "21212",
       "tac": "MERCHAN",
-      "contabil": "P.NOV.000101-001-003 - CORAÇÃO ACELERADO/1ª/AÇÕES MERCHANDISING",
+      "contabil": "P.NOV.000101-001-003 - CORA\u00c7\u00c3O ACELERADO/1\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -536,7 +566,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 2345,
           "desc": "",
@@ -564,7 +594,7 @@
     },
     {
       "num": "ORC-034",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
       "proj": "NOVELA I - A NOBREZA DO AMOR",
       "dataG": "2026-07-07",
@@ -579,10 +609,10 @@
       "prog": "NOVELA I - A NOBREZA DO AMOR",
       "ppm": "11111",
       "tac": "MERCHAN",
-      "contabil": "P.NOV.000100-001-999 - A NOBREZA DO AMOR/1ª/NA",
+      "contabil": "P.NOV.000100-001-999 - A NOBREZA DO AMOR/1\u00aa/NA",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -593,7 +623,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 5678,
           "desc": "",
@@ -621,9 +651,9 @@
     },
     {
       "num": "ORC-033",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "É DE CASA 2026",
+      "proj": "\u00c9 DE CASA 2026",
       "dataG": "2026-07-25",
       "dataE": "2026-07-25",
       "observadores": [
@@ -633,13 +663,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "É DE CASA 2026",
+      "prog": "\u00c9 DE CASA 2026",
       "ppm": "33345",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000006-006-003 - \u00c9 DE CASA/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -650,7 +680,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 9089,
           "desc": "",
@@ -678,7 +708,7 @@
     },
     {
       "num": "ORC-032",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
       "proj": "ALTAS HORAS 2026",
       "dataG": "2026-07-14",
@@ -693,10 +723,10 @@
       "prog": "ALTAS HORAS 2026",
       "ppm": "22223",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -735,9 +765,9 @@
     },
     {
       "num": "ORC-031",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "DOMINGÃO 2026",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "2026-07-14",
       "dataE": "2026-07-25",
       "observadores": [
@@ -747,13 +777,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "23456",
       "tac": "MERCHAN",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -792,7 +822,7 @@
     },
     {
       "num": "ORC-030",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
       "proj": "ALTAS HORAS 2026",
       "dataG": "2026-07-14",
@@ -807,10 +837,10 @@
       "prog": "ALTAS HORAS 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -821,7 +851,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 4567,
           "desc": "",
@@ -862,7 +892,7 @@
       "num": "ORC-029",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "É DE CASA 2026",
+      "proj": "\u00c9 DE CASA 2026",
       "dataG": "2026-07-11",
       "dataE": "2026-07-11",
       "observadores": [
@@ -872,13 +902,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "É DE CASA 2026",
+      "prog": "\u00c9 DE CASA 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000006-006-003 - \u00c9 DE CASA/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -889,7 +919,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 8765,
           "desc": "",
@@ -930,7 +960,7 @@
       "num": "ORC-028",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A 2026",
+      "proj": "CAMPEONATO BRASILEIRO DE FUTEBOL - S\u00c9RIE A 2026",
       "dataG": "2026-07-14",
       "dataE": "2026-07-15",
       "observadores": [
@@ -940,13 +970,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A 2026",
+      "prog": "CAMPEONATO BRASILEIRO DE FUTEBOL - S\u00c9RIE A 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.EVT.000022-006-999 - CAMPEONATO BRASILEIRO DE FUTEBOL - SÉRIE A/2026/NA",
+      "contabil": "P.EVT.000022-006-999 - CAMPEONATO BRASILEIRO DE FUTEBOL - S\u00c9RIE A/2026/NA",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -957,7 +987,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 2345,
           "desc": "",
@@ -985,7 +1015,7 @@
       "historicoStatus": [
         {
           "status": "devolvido",
-          "obs": "ALTERE A DATA DE EXIBIÇÃO.",
+          "obs": "ALTERE A DATA DE EXIBI\u00c7\u00c3O.",
           "data": "19/07/2026, 23:39:39",
           "por": "Sandro Rosa"
         },
@@ -1008,9 +1038,9 @@
     },
     {
       "num": "ORC-027",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-06",
       "dataE": "2026-07-11",
       "observadores": [],
@@ -1018,13 +1048,13 @@
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1060,13 +1090,13 @@
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
       "status": "rejeitado",
-      "obsAprovacao": "AÇÃO CANCELADA.",
+      "obsAprovacao": "A\u00c7\u00c3O CANCELADA.",
       "dataAcao": "19/07/2026, 23:39:51",
       "aprovadorNome": "Sandro Rosa",
       "historicoStatus": [
         {
           "status": "rejeitado",
-          "obs": "AÇÃO CANCELADA.",
+          "obs": "A\u00c7\u00c3O CANCELADA.",
           "data": "19/07/2026, 23:39:51",
           "por": "Sandro Rosa"
         }
@@ -1077,22 +1107,22 @@
     },
     {
       "num": "ORC-026",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "proj": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "dataG": "2026-07-01",
       "dataE": "2026-07-22",
       "cliente": "SEARA",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "prog": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO N\u00cdVEL/2\u00aa/NA",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1144,20 +1174,20 @@
       "num": "ORC-025",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "MAIS VOCÊ 2026",
+      "proj": "MAIS VOC\u00ca 2026",
       "dataG": "2026-07-21",
       "dataE": "2026-07-21",
       "cliente": "SEARA",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "MAIS VOCÊ 2026",
+      "prog": "MAIS VOC\u00ca 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOC\u00ca/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1182,7 +1212,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1000,
           "desc": "",
@@ -1221,22 +1251,22 @@
     },
     {
       "num": "ORC-024",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "VIVER SERTANEJO - 2ª T - 2026",
+      "proj": "VIVER SERTANEJO - 2\u00aa T - 2026",
       "dataG": "2026-06-29",
       "dataE": "2026-07-12",
       "cliente": "TIM",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "VIVER SERTANEJO - 2ª T - 2026",
+      "prog": "VIVER SERTANEJO - 2\u00aa T - 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2ª/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1261,7 +1291,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 34000,
           "desc": "",
@@ -1302,20 +1332,20 @@
       "num": "ORC-023",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "VIVER SERTANEJO - 2ª T - 2026",
+      "proj": "VIVER SERTANEJO - 2\u00aa T - 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-19",
       "cliente": "SEARA",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "VIVER SERTANEJO - 2ª T - 2026",
+      "prog": "VIVER SERTANEJO - 2\u00aa T - 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2ª/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000064-002-003 - VIVER SERTANEJO/2\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1340,7 +1370,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 34000,
           "desc": "",
@@ -1381,20 +1411,20 @@
       "num": "ORC-022",
       "tipoAcao": "VISU",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "DOMINGÃO 2026",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "2026-07-05",
       "dataE": "2026-07-29",
       "cliente": "CIMED",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1419,7 +1449,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 3500,
           "desc": "",
@@ -1458,22 +1488,22 @@
     },
     {
       "num": "ORC-021",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-18",
       "cliente": "TIM",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1530,22 +1560,22 @@
     },
     {
       "num": "ORC-020",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "proj": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "dataG": "2026-07-08",
       "dataE": "2026-07-16",
       "cliente": "SEARA",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "prog": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO N\u00cdVEL/2\u00aa/NA",
       "sla": "8",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE DE PREENCHIMENTO",
       "contas": {
         "extra_0": {
@@ -1570,7 +1600,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 4567,
           "desc": "",
@@ -1623,8 +1653,8 @@
       "tac": "",
       "contabil": "I.NIP.000075-002-999 - BET MGM/CIRCUITO SERTANEJO/NA",
       "sla": "3",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1649,14 +1679,14 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 897,
           "desc": "",
           "extra": true
         },
         "extra_4": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 9800,
           "desc": "",
@@ -1681,13 +1711,13 @@
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
       "status": "rejeitado",
-      "obsAprovacao": "ERRO NA NUMERAÇÃO DO ORÇAMENTO.",
+      "obsAprovacao": "ERRO NA NUMERA\u00c7\u00c3O DO OR\u00c7AMENTO.",
       "dataAcao": "19/07/2026, 10:08:46",
       "aprovadorNome": "Sandro Rosa",
       "historicoStatus": [
         {
           "status": "rejeitado",
-          "obs": "ERRO NA NUMERAÇÃO DO ORÇAMENTO.",
+          "obs": "ERRO NA NUMERA\u00c7\u00c3O DO OR\u00c7AMENTO.",
           "data": "19/07/2026, 10:08:46",
           "por": "Sandro Rosa"
         }
@@ -1698,22 +1728,22 @@
     },
     {
       "num": "ORC-019",
-      "tipoAcao": "AÇÃO PLENA",
-      "cc": "GL160610003 - Produção Integrada - Regionais e Afiliadas e Noticias",
-      "proj": "DOMINGÃO 2026",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
+      "cc": "GL160610003 - Produ\u00e7\u00e3o Integrada - Regionais e Afiliadas e Noticias",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "2026-07-14",
       "dataE": "2026-07-30",
       "cliente": "GM",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "12",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1731,7 +1761,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 987,
           "desc": "",
@@ -1759,7 +1789,7 @@
       "historicoStatus": [
         {
           "status": "enviado",
-          "obs": "Rascunho enviado para aprovação",
+          "obs": "Rascunho enviado para aprova\u00e7\u00e3o",
           "data": "19/07/2026, 03:17:11",
           "por": "Sandro Silva"
         },
@@ -1776,22 +1806,22 @@
     },
     {
       "num": "ORC-018",
-      "tipoAcao": "AÇÃO PLENA",
-      "cc": "GL160610003 - Produção Integrada - Regionais e Afiliadas e Noticias",
-      "proj": "BET MGM - DOMINGÃO",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
+      "cc": "GL160610003 - Produ\u00e7\u00e3o Integrada - Regionais e Afiliadas e Noticias",
+      "proj": "BET MGM - DOMING\u00c3O",
       "dataG": "2026-07-10",
       "dataE": "2026-08-05",
       "cliente": "VIVO",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "BET MGM - DOMINGÃO",
+      "prog": "BET MGM - DOMING\u00c3O",
       "ppm": "",
       "tac": "",
-      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMINGÃO/NA",
+      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMING\u00c3O/NA",
       "sla": "12",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1809,7 +1839,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 500,
           "desc": "",
@@ -1851,22 +1881,22 @@
     },
     {
       "num": "ORC-017",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CHEF DE ALTO NÍVEL - 2ª T",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "dataG": "2026-07-07",
       "dataE": "2026-07-24",
       "cliente": "vivo",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CHEF DE ALTO NÍVEL - 2ª T",
+      "prog": "CHEF DE ALTO N\u00cdVEL - 2\u00aa T",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO NÍVEL/2ª/NA",
+      "contabil": "P.RLT.000074-002-999 - CHEF DE ALTO N\u00cdVEL/2\u00aa/NA",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -1891,7 +1921,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 3666,
           "desc": "",
@@ -1931,7 +1961,7 @@
     {
       "num": "ORC-016",
       "tipoAcao": "Visu",
-      "cc": "GL160603003 - Gestão de Elenco",
+      "cc": "GL160603003 - Gest\u00e3o de Elenco",
       "proj": "BIG BROTHER BRASIL 2026",
       "dataG": "2026-07-06",
       "dataE": "2026-07-30",
@@ -1942,10 +1972,10 @@
       "prog": "BIG BROTHER BRASIL 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000002-005-003 - BBB/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.RLT.000002-005-003 - BBB/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "7",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2002,22 +2032,22 @@
     },
     {
       "num": "ORC-015",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-30",
       "cliente": "Tim",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2042,7 +2072,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1356,
           "desc": "",
@@ -2082,7 +2112,7 @@
     {
       "num": "ORC-016",
       "tipoAcao": "Visu",
-      "cc": "GL160603003 - Gestão de Elenco",
+      "cc": "GL160603003 - Gest\u00e3o de Elenco",
       "proj": "CIRCUITO SERTANEJO 2026",
       "dataG": "2026-07-05",
       "dataE": "2026-07-08",
@@ -2095,8 +2125,8 @@
       "tac": "",
       "contabil": "P.EVT.000261-005-999 - CIRCUITO SERTANEJO/2026/NA",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "",
       "contas": {
         "extra_0": {
@@ -2158,22 +2188,22 @@
     },
     {
       "num": "ORC-015",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-06-18",
       "cliente": "Tim",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2198,7 +2228,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1356,
           "desc": "",
@@ -2223,13 +2253,13 @@
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
       "status": "rejeitado",
-      "obsAprovacao": "Ação cancelada",
+      "obsAprovacao": "A\u00e7\u00e3o cancelada",
       "dataAcao": "18/07/2026, 20:20:54",
       "aprovadorNome": "Sandro Rosa",
       "historicoStatus": [
         {
           "status": "rejeitado",
-          "obs": "Ação cancelada",
+          "obs": "A\u00e7\u00e3o cancelada",
           "data": "18/07/2026, 20:20:54",
           "por": "Sandro Rosa"
         }
@@ -2240,22 +2270,22 @@
     },
     {
       "num": "ORC-015",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-06",
       "dataE": "2026-07-30",
       "cliente": "Tim",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2280,7 +2310,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1356,
           "desc": "",
@@ -2308,7 +2338,7 @@
       "historicoStatus": [
         {
           "status": "enviado",
-          "obs": "Rascunho enviado para aprovação",
+          "obs": "Rascunho enviado para aprova\u00e7\u00e3o",
           "data": "18/07/2026, 20:09:43",
           "por": "Sandro Silva"
         },
@@ -2325,22 +2355,22 @@
     },
     {
       "num": "ORC-013",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "BET MGM - DOMINGÃO",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "BET MGM - DOMING\u00c3O",
       "dataG": "2026-07-06",
       "dataE": "2026-07-30",
       "cliente": "BET MGM",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "BET MGM - DOMINGÃO",
+      "prog": "BET MGM - DOMING\u00c3O",
       "ppm": "",
       "tac": "",
-      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMINGÃO/NA",
+      "contabil": "I.NIP.000075-001-999 - BET MGM/DOMING\u00c3O/NA",
       "sla": "5",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2365,7 +2395,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1900,
           "desc": "",
@@ -2407,22 +2437,22 @@
     },
     {
       "num": "ORC-012",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-13",
       "dataE": "2026-07-24",
       "cliente": "Tim",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2447,7 +2477,7 @@
           "extra": true
         },
         "extra_3": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1356,
           "desc": "",
@@ -2486,8 +2516,8 @@
     },
     {
       "num": "ORC-011",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160609004 - Projetos Mercadológicos e Filmes",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160609004 - Projetos Mercadol\u00f3gicos e Filmes",
       "proj": "CIRCUITO SERTANEJO 2026 - BARRETOS",
       "dataG": "2026-07-13",
       "dataE": "2026-07-31",
@@ -2500,8 +2530,8 @@
       "tac": "",
       "contabil": "P.EVT.000261-005-011 - CIRCUITO SERTANEJO/2026/BARRETOS",
       "sla": "5",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "Teste",
       "contas": {
         "extra_0": {
@@ -2519,7 +2549,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 6700,
           "desc": "",
@@ -2552,21 +2582,21 @@
     {
       "num": "ORC-010",
       "tipoAcao": "Visu",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-25",
       "cliente": "TIM",
       "focal": "Sandro",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "5",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "",
       "contas": {
         "extra_0": {
@@ -2584,7 +2614,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 5690,
           "desc": "",
@@ -2617,21 +2647,21 @@
     {
       "num": "ORC-009",
       "tipoAcao": "VISU",
-      "cc": "GL160606004 - Variedades e Auditório",
+      "cc": "GL160606004 - Variedades e Audit\u00f3rio",
       "proj": "ALTAS HORAS 2026",
       "dataG": "2026-07-13",
       "dataE": "2026-07-29",
-      "cliente": "ITAÚ",
+      "cliente": "ITA\u00da",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
       "prog": "ALTAS HORAS 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000001-006-003 - ALTAS HORAS/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "7",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2642,7 +2672,7 @@
           "extra": true
         },
         "extra_1": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 2670,
           "desc": "",
@@ -2681,22 +2711,22 @@
     },
     {
       "num": "ORC-008",
-      "tipoAcao": "AÇÃO PLENA",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "AVISA LÁ QUE EU VOU/5ª T",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "AVISA L\u00c1 QUE EU VOU/5\u00aa T",
       "dataG": "2026-07-07",
       "dataE": "2026-07-29",
       "cliente": "STONE",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "AVISA LÁ QUE EU VOU/5ª T",
+      "prog": "AVISA L\u00c1 QUE EU VOU/5\u00aa T",
       "ppm": "",
       "tac": "",
-      "contabil": "P.SER.000437-005-003 - AVISA LÁ QUE EU VOU/5ª/AÇÕES DE MERCHANDISING",
+      "contabil": "P.SER.000437-005-003 - AVISA L\u00c1 QUE EU VOU/5\u00aa/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "8",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
@@ -2740,25 +2770,25 @@
     {
       "num": "ORC-007",
       "tipoAcao": "VISU",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "MAIS VOCÊ 2026",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "MAIS VOC\u00ca 2026",
       "dataG": "2026-07-08",
       "dataE": "2026-07-30",
       "cliente": "STONE",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "MAIS VOCÊ 2026",
+      "prog": "MAIS VOC\u00ca 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000014-006-003 - MAIS VOC\u00ca/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 2300,
           "desc": "",
@@ -2797,22 +2827,22 @@
     },
     {
       "num": "ORC-006",
-      "tipoAcao": "Ação Simples",
-      "cc": "GL160606004 - Variedades e Auditório",
-      "proj": "DOMINGÃO 2026",
+      "tipoAcao": "A\u00e7\u00e3o Simples",
+      "cc": "GL160606004 - Variedades e Audit\u00f3rio",
+      "proj": "DOMING\u00c3O 2026",
       "dataG": "2026-06-30",
       "dataE": "2026-07-28",
       "cliente": "CIMED",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "DOMINGÃO 2026",
+      "prog": "DOMING\u00c3O 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMING\u00c3O/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "20",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "",
       "contas": {
         "extra_0": {
@@ -2830,7 +2860,7 @@
           "extra": true
         },
         "extra_2": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 15000,
           "desc": "",
@@ -2862,26 +2892,26 @@
     },
     {
       "num": "ORC-005",
-      "tipoAcao": "Ação Plena",
-      "cc": "GL160606005 - Variedades e Produções Externas",
-      "proj": "CALDEIRÃO DO MION 2026",
+      "tipoAcao": "A\u00e7\u00e3o Plena",
+      "cc": "GL160606005 - Variedades e Produ\u00e7\u00f5es Externas",
+      "proj": "CALDEIR\u00c3O DO MION 2026",
       "dataG": "2026-07-07",
       "dataE": "2026-07-16",
       "cliente": "AMBEV",
       "focal": "SANDRO",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "CALDEIRÃO DO MION 2026",
+      "prog": "CALDEIR\u00c3O DO MION 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000009-006-003 - CALDEIRÃO DO MION/2026/AÇÕES DE MERCHANDISING",
+      "contabil": "P.TSH.000009-006-003 - CALDEIR\u00c3O DO MION/2026/A\u00c7\u00d5ES DE MERCHANDISING",
       "sla": "10",
-      "cr": "0000000 – INDIRETO",
-      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "cr": "0000000 \u2013 INDIRETO",
+      "fin": "FG000023 - PRODU\u00c7\u00c3O TERCEIRIZADA / COPRODU\u00c7\u00c3O",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1000,
           "desc": "",
@@ -2920,7 +2950,7 @@
     },
     {
       "num": "ORC-004",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160606003 - Variedades e Realities",
       "proj": "BIG BROTHER BRASIL 2026",
       "dataG": "2026-07-01",
@@ -2932,12 +2962,12 @@
       "prog": "BIG BROTHER BRASIL 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.RLT.000002-005-003 - BBB/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.RLT.000002-005-003 - BBB/2026/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "10",
       "obs": "TESTE",
       "contas": {
         "extra_0": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "tipo": "producao",
           "valor": 1000,
           "desc": "",
@@ -2976,7 +3006,7 @@
     },
     {
       "num": "ORC-003",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160603002 - Dramaturgia",
       "proj": "NOVELA III - QUEM AMA CUIDA",
       "dataG": "2026-07-13",
@@ -2988,7 +3018,7 @@
       "prog": "NOVELA III - QUEM AMA CUIDA",
       "ppm": "",
       "tac": "",
-      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "12",
       "obs": "TESTE",
       "contas": {
@@ -3008,17 +3038,17 @@
           "desc": ""
         },
         "caracterizacao": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
         "figuracao": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
         "pedidos": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
@@ -3049,19 +3079,19 @@
     },
     {
       "num": "ORC-002",
-      "tipoAcao": "AÇÃO PLENA",
-      "cc": "GL160601001 - Produtos Publicitários Canais",
-      "proj": "TREINAMENTO - ORÇAMENTO ADMINISTRATIVO DA ÁREA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
+      "cc": "GL160601001 - Produtos Publicit\u00e1rios Canais",
+      "proj": "TREINAMENTO - OR\u00c7AMENTO ADMINISTRATIVO DA \u00c1REA",
       "dataG": "2026-07-06",
       "dataE": "2026-07-07",
       "cliente": "teste",
       "focal": "teste",
       "cap": "30",
       "cena": "7",
-      "prog": "TREINAMENTO - ORÇAMENTO ADMINISTRATIVO DA ÁREA",
+      "prog": "TREINAMENTO - OR\u00c7AMENTO ADMINISTRATIVO DA \u00c1REA",
       "ppm": "",
       "tac": "MERCHAN",
-      "contabil": "I.NIP.000032-003-999 - TREINAMENTO/CAPACITAÇÃO/NA",
+      "contabil": "I.NIP.000032-003-999 - TREINAMENTO/CAPACITA\u00c7\u00c3O/NA",
       "sla": "20",
       "obs": "TESTE",
       "contas": {
@@ -3081,17 +3111,17 @@
           "desc": ""
         },
         "caracterizacao": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
         "figuracao": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
         "pedidos": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
@@ -3122,7 +3152,7 @@
     },
     {
       "num": "ORC-001",
-      "tipoAcao": "AÇÃO PLENA",
+      "tipoAcao": "A\u00c7\u00c3O PLENA",
       "cc": "GL160606002",
       "proj": "QUEM AMA CUIDA",
       "dataG": "2026-07-17",
@@ -3133,8 +3163,8 @@
       "cena": "12",
       "prog": "QUEM AMA CUIDA",
       "ppm": "TESTE",
-      "tac": "AÇÃO PLENA",
-      "contabil": "PNOV000109001003 - P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "tac": "A\u00c7\u00c3O PLENA",
+      "contabil": "PNOV000109001003 - P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1\u00aa/A\u00c7\u00d5ES MERCHANDISING",
       "sla": "2026-07-16",
       "obs": "TESTE",
       "contas": {
@@ -3154,17 +3184,17 @@
           "desc": ""
         },
         "caracterizacao": {
-          "nome": "Caracterização",
+          "nome": "Caracteriza\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
         "figuracao": {
-          "nome": "Figuração",
+          "nome": "Figura\u00e7\u00e3o",
           "valor": 1500,
-          "desc": "Teste Figuração"
+          "desc": "Teste Figura\u00e7\u00e3o"
         },
         "pedidos": {
-          "nome": "Pedidos de Produção",
+          "nome": "Pedidos de Produ\u00e7\u00e3o",
           "valor": 0,
           "desc": ""
         },
@@ -3294,7 +3324,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160603001 - Dramaturgia e GestÃÂÃÂ£o de Elenco",
+      "ccVinculado": "GL160603001 - Dramaturgia e Gest\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o de Elenco",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3305,7 +3335,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160503005 - ProduÃÂÃÂ§ÃÂÃÂ£o Integrada - Formatos PublicitÃÂÃÂ¡rios",
+      "ccVinculado": "GL160503005 - Produ\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a7\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o Integrada - Formatos Publicit\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a1rios",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3316,7 +3346,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606001 - Variedades, Realities e AuditÃÂÃÂ³rio",
+      "ccVinculado": "GL160606001 - Variedades, Realities e Audit\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00b3rio",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3327,7 +3357,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160601001 - Produtos PublicitÃÂÃÂ¡rios Canais",
+      "ccVinculado": "GL160601001 - Produtos Publicit\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a1rios Canais",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3338,7 +3368,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160609004 - Projetos MercadolÃÂÃÂ³gicos e Filmes",
+      "ccVinculado": "GL160609004 - Projetos Mercadol\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00b3gicos e Filmes",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3371,7 +3401,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160603003 - GestÃÂÃÂ£o de Elenco",
+      "ccVinculado": "GL160603003 - Gest\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o de Elenco",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3393,7 +3423,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160602007 - Formatos PublicitÃÂÃÂ¡rios e Produtos",
+      "ccVinculado": "GL160602007 - Formatos Publicit\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a1rios e Produtos",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3404,13 +3434,13 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607004 - CriaÃÂÃÂ§ÃÂÃÂ£o e PMO Esporte e NotÃÂÃÂ­cias",
+      "ccVinculado": "GL160607004 - Cria\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a7\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o e PMO Esporte e Not\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00adcias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
     {
-      "email": "joÃÂÃÂ£o.nogueira@g.globo",
-      "nome": "JoÃÂÃÂ£o Nogueira",
+      "email": "jo\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o.nogueira@g.globo",
+      "nome": "Jo\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o Nogueira",
       "senha": "123456",
       "perfil": "gestor_cc",
       "ativo": true,
@@ -3426,7 +3456,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607001 - Esporte e NotÃÂÃÂ­cias",
+      "ccVinculado": "GL160607001 - Esporte e Not\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00adcias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3437,7 +3467,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606004 - Variedades e AuditÃÂÃÂ³rio",
+      "ccVinculado": "GL160606004 - Variedades e Audit\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00b3rio",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3448,7 +3478,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606005 - Variedades e ProduÃÂÃÂ§ÃÂÃÂµes Externas",
+      "ccVinculado": "GL160606005 - Variedades e Produ\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a7\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00b5es Externas",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3492,7 +3522,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607002 - Planejamento NotÃÂÃÂ­cias",
+      "ccVinculado": "GL160607002 - Planejamento Not\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00adcias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3536,7 +3566,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160602009 - ProduÃÂÃÂ§ÃÂÃÂ£o IntegradaLicenciamento",
+      "ccVinculado": "GL160602009 - Produ\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a7\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o IntegradaLicenciamento",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3547,7 +3577,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160609001 - TerritÃÂÃÂ³rios",
+      "ccVinculado": "GL160609001 - Territ\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00b3rios",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3558,13 +3588,13 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160508010 - ProduÃÂÃÂ§ÃÂÃÂ£o Integrada - Branded Content e Social",
+      "ccVinculado": "GL160508010 - Produ\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a7\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o Integrada - Branded Content e Social",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
     {
-      "email": "joaÃÂÃÂ£o.nogueira@g.globo",
-      "nome": "JoÃÂÃÂÃÂÃÂ£o Nogueira",
+      "email": "joa\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0082\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o.nogueira@g.globo",
+      "nome": "Jo\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u0083\u00c3\u0083\u00c2\u0083\u00c3\u0082\u00c2\u0082\u00c3\u0083\u00c2\u0082\u00c3\u0082\u00c2\u00a3o Nogueira",
       "senha": "123456",
       "perfil": "gestor_cc",
       "ativo": true,
