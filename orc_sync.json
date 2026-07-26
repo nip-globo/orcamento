@@ -1,10 +1,49 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T00:00:01",
+  "_atualizadoEm": "2026-07-26T23:20:58.279Z",
   "_atualizadoPor": "sandro.teste@g.globo",
-  "_cacheBust": 1785105432466,
+  "_cacheBust": 1785108058279,
   "orc_h2": [
+    {
+      "num": "ORC-048",
+      "tipoAcao": "AÇÃO BÁSICA",
+      "cc": "GL160602002 - Dados & Insights",
+      "proj": "É DE CASA 2026",
+      "dataG": "",
+      "dataE": "",
+      "observadores": [
+        "sandro.observador@g.globo"
+      ],
+      "cliente": "SEARA",
+      "focal": "",
+      "cap": "N/A",
+      "cena": "N/A",
+      "prog": "É DE CASA 2026",
+      "ppm": "",
+      "tac": "",
+      "contabil": "P.TSH.000006-006-003 - É DE CASA/2026/AÇÕES MERCHANDISING",
+      "sla": "26/07/2026",
+      "dataSolicitacao": "26/07/2026",
+      "meta": "",
+      "cr": "0000000 – INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "obs": "TESTE",
+      "contas": {},
+      "ci": 0,
+      "tp": 0,
+      "ct": 0,
+      "ta": 0,
+      "emails": [
+        "sandro.teste@g.globo"
+      ],
+      "dataEnvio": "26/07/2026, 20:20:57",
+      "aprovador": "",
+      "criador": "",
+      "focal_email": "sandro.aprovador@g.globo",
+      "solicitante": "sandro.aprovador@g.globo",
+      "status": "solicitado"
+    },
     {
       "num": "ORC-047",
       "tipoAcao": "AÇÃO BÁSICA",
