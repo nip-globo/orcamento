@@ -2461,10 +2461,13 @@ function renderHist(){
     // Delegado também pode aprovar em nome do aprovador original
     const _delAtivaAprov = getDelegacaoAtiva(user?.email||'');
     const _isDelegadoAprov = _delAtivaAprov && _delAtivaAprov.delegado === user?.email && _delAtivaAprov.delegante === o.aprovador;
-    const _eSolicitante = user?.perfil==='solicitante_aprovador' &&
-      (user?.email===o.aprovador || user?.email===o.solicitante || user?.email===o.focal_email);
-    const podeAprovar = (user?.perfil==='admin' || _eSolicitante ||
-      user?.perfil==='aprovador' && user?.email===o.aprovador || _isDelegadoAprov) && o.status==='aguardando';
+    const _eAprovadorDesignado = user?.email === o.aprovador;
+    const podeAprovar = (
+      user?.perfil === 'admin' ||
+      (user?.perfil === 'solicitante_aprovador' && _eAprovadorDesignado) ||
+      (user?.perfil === 'aprovador' && _eAprovadorDesignado) ||
+      _isDelegadoAprov
+    ) && o.status === 'aguardando';
     const painelAprov = podeAprovar ? `
       <div class="painel-aprovacao">
         <h3>📋 Ação de Aprovação</h3>
