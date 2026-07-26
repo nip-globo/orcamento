@@ -1,9 +1,9 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-26T23:20:58.279Z",
+  "_atualizadoEm": "2026-07-26T23:29:06.297Z",
   "_atualizadoPor": "sandro.teste@g.globo",
-  "_cacheBust": 1785108058279,
+  "_cacheBust": 1785108546297,
   "orc_h2": [
     {
       "num": "ORC-048",
@@ -16,7 +16,7 @@
         "sandro.observador@g.globo"
       ],
       "cliente": "SEARA",
-      "focal": "",
+      "focal": "sandro.aprovador@g.globo",
       "cap": "N/A",
       "cena": "N/A",
       "prog": "É DE CASA 2026",
@@ -29,20 +29,51 @@
       "cr": "0000000 – INDIRETO",
       "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
       "obs": "TESTE",
-      "contas": {},
+      "contas": {
+        "extra_0": {
+          "nome": "Arte",
+          "tipo": "producao",
+          "valor": 3456,
+          "desc": "",
+          "extra": true
+        },
+        "extra_1": {
+          "nome": "Figurino",
+          "tipo": "producao",
+          "valor": 3566,
+          "desc": "",
+          "extra": true
+        },
+        "extra_2": {
+          "nome": "Tecnologia",
+          "tipo": "tecnologia",
+          "valor": 12345,
+          "desc": "",
+          "extra": true
+        }
+      },
       "ci": 0,
-      "tp": 0,
-      "ct": 0,
-      "ta": 0,
+      "tp": 7022,
+      "ct": 12345,
+      "ta": 19367,
       "emails": [
-        "sandro.teste@g.globo"
+        "sandro.teste@g.globo",
+        "sandro.aprovador@g.globo"
       ],
-      "dataEnvio": "26/07/2026, 20:20:57",
-      "aprovador": "",
-      "criador": "",
+      "dataEnvio": "26/07/2026, 20:29:03",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
       "focal_email": "sandro.aprovador@g.globo",
       "solicitante": "sandro.aprovador@g.globo",
-      "status": "solicitado"
+      "status": "aguardando",
+      "historicoStatus": [
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "26/07/2026, 20:29:05",
+          "por": "Sandro Silva"
+        }
+      ]
     },
     {
       "num": "ORC-047",
