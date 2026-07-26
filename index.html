@@ -391,7 +391,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           </div>
           <div id="dd_formato" class="dropdown"></div>
         </div>
-        <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente"></div>
+        <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente" autocomplete="off"></div>
         <div class="field s3" style="position:relative">
           <label>Nome do Projeto (Programa) <span class="req">*</span></label>
           <div style="position:relative;display:flex;align-items:center">
@@ -402,7 +402,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           </div>
           <div id="dd_proj" class="dropdown"></div>
         </div>
-        <div class="field"><label>Data Gravação <span class="req">*</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
+        <div class="field"><label>Data Gravação</label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
         <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
       </div>
     </div>
@@ -425,8 +425,8 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         <div class="field s2"><label>Programa / Produção</label><input id="f_prog" placeholder="Nome do programa"></div>
         <div class="field"><label>Projeto PPM (Estúdios)</label><input id="f_ppm" placeholder="Código PPM"></div>
         <div class="field"><label>Tipo de Ação Comercial</label><input id="f_tac" placeholder="Ex: MERCHAN, VISU"></div>
-        <div class="field"><label style="white-space:nowrap">SLA — Prazo de execução (dias)</label>
-          <input type="number" id="f_sla" min="1" max="365" placeholder="Nº de dias">
+        <div class="field"><label style="white-space:nowrap">Data da Solicitação</label>
+          <input type="text" id="f_sla" placeholder="Preenchido automaticamente" readonly>
         </div>
       </div>
     </div>
@@ -1442,7 +1442,7 @@ async function registrarSP(orc){
       ProjetoPPM:     orc.ppm,
       TipoComercial:  orc.tac,
       ProjetoContabil:orc.contabil,
-      SLA:            orc.sla,
+      DataSolicitacao: orc.sla,
       Observacoes:    orc.obs,
       TotalProducao:  orc.tp,
       CustosIndiretos:orc.ci,
@@ -1480,7 +1480,7 @@ function montar(){
     observadores:[...observadores],
     cliente:sv('f_cliente'),focal:sv('f_focal'),cap:sv('f_cap')||'N/A',
     cena:sv('f_cena')||'N/A',prog:sv('f_prog'),ppm:sv('f_ppm'),
-    tac:sv('f_tac'),contabil:sv('f_contabil'),sla:sv('f_sla'),
+    tac:sv('f_tac'),contabil:sv('f_contabil'),sla:sv('f_sla'),dataSolicitacao:sv('f_sla'),
     cr:sv('f_cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
     obs:sv('f_obs'),contas,ci:nv('c_ind'),
     tp:t.tp,ct:t.ct,ta:t.ta,
@@ -1497,7 +1497,7 @@ function validar(o){
   if(!o.cc)       return'O campo Centro de Custo Merchandising é obrigatório.';
   if(!o.cliente)  return'Preencha o Cliente.';
   if(!o.proj)     return'Preencha o Nome do Projeto.';
-  if(!o.dataG)    return'Preencha a Data de Gravação.';
+  // Data de Gravação não obrigatória
   if(!(document.getElementById('f_fin')?.value||'').trim()) return'O campo Finalidade é obrigatório.';
   if(!(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
   // Valida perfil do aprovador
@@ -1632,7 +1632,7 @@ function gerarExcel(o){
   ${secHdr('📁  DADOS CONTÁBEIS')}
   ${hdr('Centro de Custo Merchandising','Projeto Contábil Utilizado','Finalidade')}
   ${row(o.cc, o.contabil, o.fin)}
-  ${hdr('Projeto PPM (Estúdios)','Tipo de Ação Comercial','SLA — Prazo de Execução (dias)')}
+  ${hdr('Projeto PPM (Estúdios)','Tipo de Ação Comercial','Data da Solicitação')}
   ${row(o.ppm, o.tac, o.sla, C_CINZC)}
   ${o.obs ? hdr('Observações','','') + row(o.obs,'','') : ''}
   ${blank()}
@@ -1965,7 +1965,7 @@ function gerarHTMLOrcamento(o){
   </div>
   ${bloco('📋 Identificação',[['Nº Orçamento',o.num],['Tipo de Ação',o.tipoAcao],['Projeto',o.proj]])}
   ${bloco('🎬 Dados da Gravação',[['Data Gravação',o.dataG],['Data Exibição',o.dataE],['Cliente',o.cliente],['Programa',o.prog],['Cap/Cena',(o.cap||'')+(o.cena?'/'+o.cena:'')],['Ponto Focal',o.focal]])}
-  ${bloco('📁 Dados Contábeis',[['CC Merchandising',o.cc],['Projeto Contábil',o.contabil],['Finalidade',o.fin],['PPM',o.ppm],['Tipo Ação Comercial',o.tac],['SLA (dias)',o.sla],...(o.obs?[['Observações',o.obs]]:[]) ])}
+  ${bloco('📁 Dados Contábeis',[['CC Merchandising',o.cc],['Projeto Contábil',o.contabil],['Finalidade',o.fin],['PPM',o.ppm],['Tipo Ação Comercial',o.tac],['Data da Solicitação',o.sla],...(o.obs?[['Observações',o.obs]]:[]) ])}
   <div style="margin-bottom:14px;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
     <div style="background:#0F4762;color:#fff;padding:9px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px">💰 Orçamento por Contas</div>
     <table style="width:100%;border-collapse:collapse">
@@ -2075,7 +2075,7 @@ ${bloco('📁 Dados Contábeis',[
   ['Finalidade', o.fin],
   ['Projeto PPM (Estúdios)', o.ppm],
   ['Tipo de Ação Comercial', o.tac],
-  ['SLA — Prazo de Execução (dias)', o.sla],
+  ['Data da Solicitação', o.sla],
   ...(o.obs ? [['Observações', o.obs]] : []),
 ])}
 
@@ -2415,7 +2415,7 @@ function renderHist(){
               ['Ponto Focal', o.focal],
               ['PPM', o.ppm],
               ['Tipo Ação Comercial', o.tac],
-              ['SLA (dias)', o.sla],
+              ['Data da Solicitação', o.sla],
             ].map(([lbl,val])=>`
               <div style="font-size:11.5px">
                 <span style="font-size:9.5px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:2px">${lbl}</span>
@@ -2532,7 +2532,7 @@ function exportarTodos(){
     'Tipo Ação','CC Merchandising','Data Grav.','Data Exib.','Programa',
     'Criador (Nome)','Criador (E-mail)',
     'Aprovador (Nome)','Aprovador (E-mail)',
-    'PPM','Tipo Ação Comercial','Projeto Contábil','SLA (dias)','CR','Finalidade','Obs'
+    'PPM','Tipo Ação Comercial','Projeto Contábil','Data da Solicitação','CR','Finalidade','Obs'
   ];
 
   // Colunas dinâmicas: uma coluna de Valor por conta
@@ -2570,7 +2570,7 @@ function exportarTodos(){
       o.ppm||'',                          // PPM
       o.tac||'',                          // Tipo Ação Comercial
       o.contabil||'',                     // Projeto Contábil
-      o.sla||'',                          // SLA (dias)
+      o.sla||'',                          // Data da Solicitação
       o.cr||'',                           // CR
       o.fin||'',                          // Finalidade
       o.obs||''                           // Obs
@@ -3083,6 +3083,15 @@ function initPerfil() {
         focalInp.setAttribute('data-focal-email', user.email);
         focalInp.title = 'Preenchido automaticamente — você é o Ponto Focal desta solicitação';
       }
+      // Preenche Data da Solicitação automaticamente com data atual
+      const slaInp = document.getElementById('f_sla');
+      if (slaInp && !slaInp.value) {
+        const hoje = new Date();
+        const dd = String(hoje.getDate()).padStart(2,'0');
+        const mm = String(hoje.getMonth()+1).padStart(2,'0');
+        const yyyy = hoje.getFullYear();
+        slaInp.value = dd + '/' + mm + '/' + yyyy;
+      }
     }, 200);
 
     // Esconde: card Dados da Gravação (index 1), Contas e Valores (index 3)
@@ -3124,7 +3133,7 @@ function initPerfil() {
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
     setTimeout(function() {
-      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs'];
+      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE'];
       camposIdent.forEach(function(id) {
         var el = document.getElementById(id);
         if (el && !el.readOnly) {
