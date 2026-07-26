@@ -2212,39 +2212,16 @@ async function enviar(){
     _ckSet('orc_h2', _hjSol);
     sbox.textContent = 'Salvando solicitação...';
     try {
-      // Garante que o SP_BRIDGE está inicializado
       if (window.SP_BRIDGE && !window.SP_BRIDGE.ready) {
         await window.SP_BRIDGE.init();
       }
       if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
         await window.SP_BRIDGE.set('orc_h2', _hjSol);
       } else {
-        // Fallback: salva direto via fetch na API GitHub
-        const _tok = window.SP_BRIDGE ? window.SP_BRIDGE.status().tokenOk : false;
-        const _ghApi = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
-        const _rSha  = await fetch(_ghApi+'?ref=main&t='+Date.now(),
-          {headers:{'Authorization':'Bearer '+(window.SP_BRIDGE?._ghToken||''),'Accept':'application/vnd.github.v3+json'}});
-        const _jSha  = await _rSha.json();
-        if (_jSha.sha) {
-          // Ler o sync atual e atualizar orc_h2
-          const _syncRaw = atob(_jSha.content.replace(/\n/g,''));
-          let _sync = {};
-          try { _sync = JSON.parse(_syncRaw); } catch(e){}
-          _sync.orc_h2 = hist;
-          _sync._atualizadoEm = new Date().toISOString();
-          _sync._cacheBust = Date.now();
-          const _newJson = JSON.stringify(_sync, null, 2);
-          const _safe = _newJson.replace(/[-￿]/g, c =>
-            '\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4));
-          await fetch(_ghApi, {
-            method: 'PUT',
-            headers: {'Authorization':'Bearer '+(window.SP_BRIDGE?._ghToken||''),
-                      'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-            body: JSON.stringify({message:'feat: '+o.num+' solicitado',
-                                  content: btoa(_safe), sha: _jSha.sha, branch:'main'})
-          });
-        }
+        console.warn('[Solicitação] SP_BRIDGE indisponivel');
       }
+    } catch(e) {
+      console.error('[Solicitação] Erro ao salvar:', e);
     } catch(e) {
       console.error('[Solicitação] Erro ao salvar:', e);
     }
