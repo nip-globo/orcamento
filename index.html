@@ -2227,8 +2227,7 @@ async function enviar(){
         const _jSha  = await _rSha.json();
         if (_jSha.sha) {
           // Ler o sync atual e atualizar orc_h2
-          const _syncRaw = atob(_jSha.content.replace(/
-/g,''));
+          const _syncRaw = atob(_jSha.content.replace(/\n/g,''));
           let _sync = {};
           try { _sync = JSON.parse(_syncRaw); } catch(e){}
           _sync.orc_h2 = hist;
