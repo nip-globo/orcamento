@@ -5207,15 +5207,7 @@ if (window._USER) {
             spEl.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#16A34A;flex-shrink:0"></span>' +
               '<span style="font-size:10px;color:#16A34A;font-weight:700">GitHub</span>';
           }
-          // Recarrega hist do GitHub após sync
-          try {
-            var _h2gh = window.SP_BRIDGE.cache('orc_h2');
-            if (_h2gh) {
-              hist = JSON.parse(_h2gh);
-              _ckSet('orc_h2', _h2gh);
-              renderHist();
-            }
-          } catch(e) {}
+          // SP_BRIDGE sincronizado — hist será atualizado pela sync imediata da API
         }
       });
     }
