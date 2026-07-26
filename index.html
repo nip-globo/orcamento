@@ -431,8 +431,6 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
             style="width:100%;box-sizing:border-box;text-transform:none">
           <div id="dd-focal" class="email-dd" style="top:calc(100% + 2px);left:0;right:0;min-width:0;width:100%;z-index:9999;position:absolute"></div>
         </div>
-        <div class="field"><label>Capítulo</label><input id="f_cap" placeholder="Ex: 67"></div>
-        <div class="field"><label>Cena</label><input id="f_cena" placeholder="Ex: 38"></div>
         <div class="field s2"><label>Programa / Produção</label><input id="f_prog" placeholder="Nome do programa"></div>
         <div class="field"><label>Projeto PPM (Estúdios)</label><input id="f_ppm" placeholder="Código PPM"></div>
         <div class="field"><label>Tipo de Ação Comercial</label><input id="f_tac" placeholder="Ex: MERCHAN, VISU"></div>
@@ -3316,7 +3314,7 @@ function initPerfil() {
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
     setTimeout(function() {
-      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla'];
+      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla','f_cap','f_cena'];
       camposIdent.forEach(function(id) {
         var el = document.getElementById(id);
         if (el && !el.readOnly) {
