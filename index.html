@@ -2231,7 +2231,13 @@ async function enviar(){
     const idxEdit   = window._editandoIdx;
     const stAnterior = hist[idxEdit]?.status || 'rascunho';
     o.status        = 'aguardando'; // sempre envia para aprovação
-    o.criador       = hist[idxEdit]?.criador || o.criador;
+    // Se era um 'solicitado', o Criador assume como criador do orçamento
+    if (stAnterior === 'solicitado') {
+      o.criador = window._USER?.email || '';
+      o.solicitante = hist[idxEdit]?.solicitante || hist[idxEdit]?.criador || '';
+    } else {
+      o.criador = hist[idxEdit]?.criador || o.criador;
+    }
     o.historicoStatus = hist[idxEdit]?.historicoStatus || [];
     o.historicoStatus.push({
       status: stAnterior === 'rascunho' ? 'enviado' : 'reenviado',
@@ -2244,8 +2250,15 @@ async function enviar(){
     const btnE = document.getElementById('btnEnv');
     if (btnE) { btnE.textContent = '📤 Enviar Orçamento'; btnE.style.background = ''; }
   } else {
-    o.status  = 'aguardando';
-    o.criador = window._USER?.email || '';
+    // Solicitante/Aprovador cria com status 'solicitado'; Criador complementa e envia para aprovação
+    if (window._USER?.perfil === 'solicitante_aprovador') {
+      o.status    = 'solicitado';
+      o.solicitante = window._USER?.email || '';
+      o.criador   = ''; // será preenchido pelo Criador
+    } else {
+      o.status  = 'aguardando';
+      o.criador = window._USER?.email || '';
+    }
     hist.unshift(o);
   }
   const _hj1=JSON.stringify(hist);
@@ -2285,13 +2298,12 @@ function renderHist(){
 
   if (user?.perfil === 'criador') {
     if (_bloqueado) {
-      // Delegante bloqueado — não vê seus orçamentos
       lista = [];
     } else if (_delAtiva && _delAtiva.delegado === user.email) {
-      // Delegado — vê orçamentos do delegante separados
       lista = hist.filter(o => o.criador === _delAtiva.delegante);
     } else {
-      lista = hist.filter(o => o.criador === user.email);
+      // Criador vê seus orçamentos + orçamentos solicitados que ainda não têm criador
+      lista = hist.filter(o => o.criador === user.email || o.status === 'solicitado');
     }
   } else if (user?.perfil === 'solicitante_aprovador') {
     // Vê orçamentos onde é o solicitante (ponto focal) ou aprovador
@@ -2399,8 +2411,9 @@ function renderHist(){
 
     const btnDuplicar = podeDuplicar(o)
       ? `<button class="btn-duplicar" style="background:#F0FDF4;color:#15803D;border-color:#BBF7D0;font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();duplicarOrc(${idxReal})" title="Duplicar">⧉ Duplicar</button>` : '';
+    const _labelEditar = o.status === 'solicitado' ? '📋 Complementar' : '✏️ Editar';
     const btnEditar = podeEditarOrc(o)
-      ? `<button class="btn-duplicar" style="background:#FFF7ED;color:#EA580C;border-color:#FED7AA;font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();editarOrc(${idxReal})" title="Editar">✏️ Editar</button>` : '';
+      ? `<button class="btn-duplicar" style="background:#FFF7ED;color:#EA580C;border-color:#FED7AA;font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();editarOrc(${idxReal})" title="Editar">${_labelEditar}</button>` : '';
     const btnExcel = `<button class="btn-duplicar" style="background:#EFF6FF;color:#2563EB;border-color:#BFDBFE;font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();baixarExcelHist(${idxReal})" title="Baixar Excel">📊 Excel</button>`;
     const btnPDF   = `<button class="btn-duplicar" style="background:#FFF1F2;color:#EF4444;border-color:#FECDD3;font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();abrirPDFHist(${idxReal})" title="Gerar PDF">📄 PDF</button>`;
 
@@ -3534,9 +3547,13 @@ function podeEditarOrc(o) {
   const user = window._USER;
   if (!user) return false;
   if (user.perfil === 'admin') return true;
-  if (user.perfil === 'criador' && o.criador === user.email) {
-    const st = o.status || 'rascunho';
-    return ['rascunho','devolvido',''].includes(st);
+  if (user.perfil === 'criador') {
+    // Pode editar seus próprios em rascunho/devolvido OU orçamentos solicitados sem criador
+    if (o.status === 'solicitado') return true;
+    if (o.criador === user.email) {
+      const st = o.status || 'rascunho';
+      return ['rascunho','devolvido',''].includes(st);
+    }
   }
   if (user.perfil === 'solicitante_aprovador' && (o.focal_email === user.email || o.solicitante === user.email) &&
       ['rascunho','devolvido',''].includes(o.status || 'rascunho')) return true;
@@ -3567,6 +3584,7 @@ function podeDuplicar(o) {
 function statusBadge(status, ciente) {
   const cfg = {
     aguardando:  {cls:'st-aguardando', label:'⏳ Aguardando'},
+    solicitado:  {cls:'st-rascunho',   label:'📋 Solicitado'},
     aprovado:    {cls:'st-aprovado',   label:'✅ Aprovado'},
     rejeitado:   {cls:'st-rejeitado',  label:'❌ Rejeitado'},
     devolvido:   {cls:'st-devolvido',  label:'↩️ Devolvido'},
