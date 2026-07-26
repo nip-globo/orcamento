@@ -3125,25 +3125,29 @@ function initPerfil() {
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
     setTimeout(function() {
-      const camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs'];
+      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs'];
       camposIdent.forEach(function(id) {
-        const el = document.getElementById(id);
+        var el = document.getElementById(id);
         if (el && !el.readOnly) {
           el.setAttribute('readonly', '');
-          el.style.background = 'var(--azul-clr,#EFF6FF)';
-          el.style.color = 'var(--azul-esc,#1A3A8F)';
+          el.style.background = '#EFF6FF';
+          el.style.color = '#1A3A8F';
           el.style.cursor = 'default';
           el.style.fontWeight = '700';
         }
       });
-      // Desabilita botões de limpar dos campos readonly
+      // Desabilita dropdowns dos campos readonly
       ['dd_formato','dd_proj','dd_cc','dd_fin'].forEach(function(ddId) {
-        const dd = document.getElementById(ddId);
+        var dd = document.getElementById(ddId);
         if (dd) dd.style.pointerEvents = 'none';
-        // Esconde clear-btn do campo correspondente
       });
-      document.querySelectorAll('[onclick^="limparCampo('f_tipoAcao"), [onclick^="limparPrograma"], [onclick^="limparCampo('f_cc"), [onclick^="limparCampo('f_fin"]').forEach(function(btn) {
-        btn.style.display = 'none';
+      // Esconde botões de limpar via atributo onclick
+      document.querySelectorAll('.clear-btn').forEach(function(btn) {
+        var oc = btn.getAttribute('onclick') || '';
+        if (oc.indexOf('f_tipoAcao') > -1 || oc.indexOf('limparPrograma') > -1 ||
+            oc.indexOf('f_cc') > -1 || oc.indexOf('f_fin') > -1) {
+          btn.style.display = 'none';
+        }
       });
     }, 100);
   }
