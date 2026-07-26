@@ -2322,11 +2322,13 @@ async function enviar(){
     o.status        = 'aguardando'; // sempre envia para aprovação
     // Se era um 'solicitado', o Criador assume como criador do orçamento
     if (stAnterior === 'solicitado') {
-      o.criador   = window._USER?.email || '';
+      o.criador     = window._USER?.email || '';
       o.solicitante = hist[idxEdit]?.solicitante || hist[idxEdit]?.focal_email || '';
-      // O aprovador deve ser o Solicitante/Aprovador, não o Criador
-      if (!o.aprovador || o.aprovador === window._USER?.email) {
-        o.aprovador = o.solicitante || hist[idxEdit]?.solicitante || '';
+      // Aprovador é SEMPRE o Solicitante/Aprovador que criou a solicitação
+      o.aprovador   = o.solicitante;
+      // Garantir que o solicitante está nos emails (destinatários)
+      if (o.aprovador && !o.emails.includes(o.aprovador)) {
+        o.emails.push(o.aprovador);
       }
     } else {
       o.criador = hist[idxEdit]?.criador || o.criador;
@@ -3083,24 +3085,24 @@ function editarOrc(idx) {
   observadores = [...(o.observadores||[])];
   renderObs();
   renderEmails();
-  setTimeout(() => {
-    const selAprov = document.getElementById('f_aprovador');
-    if (o.status === 'solicitado') {
-      // Para orçamentos solicitados, o aprovador é o Solicitante/Aprovador
-      const _aprovSol = o.solicitante || o.focal_email || '';
-      if (_aprovSol && !emails.includes(_aprovSol)) {
-        emails.push(_aprovSol);
-        renderEmails();
-      }
-      // Aguarda renderEmails popular o select antes de selecionar
-      setTimeout(() => {
-        const _sel = document.getElementById('f_aprovador');
-        if (_sel) _sel.value = _aprovSol;
-      }, 300);
-    } else if (selAprov && o.aprovador) {
-      selAprov.value = o.aprovador;
+  // Destinatários e aprovador
+  if (o.status === 'solicitado') {
+    // Para solicitados, adicionar o Solicitante/Aprovador como destinatário e aprovador
+    const _aprovSol = o.solicitante || o.focal_email || '';
+    if (_aprovSol && !emails.includes(_aprovSol)) {
+      emails.push(_aprovSol);
+      renderEmails();
     }
-  }, 100);
+    setTimeout(() => {
+      const _sel = document.getElementById('f_aprovador');
+      if (_sel) _sel.value = _aprovSol;
+    }, 400);
+  } else {
+    setTimeout(() => {
+      const selAprov = document.getElementById('f_aprovador');
+      if (selAprov && o.aprovador) selAprov.value = o.aprovador;
+    }, 100);
+  }
 
   calc();
   window.scrollTo({top:0, behavior:'smooth'});
