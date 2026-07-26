@@ -300,6 +300,28 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
+// Limpa cache orc_h2 se corrompido (encoding duplo)
+(function(){
+  try {
+    var _h = document.cookie.split(';');
+    for (var _i=0;_i<_h.length;_i++) {
+      var _c = _h[_i].trim();
+      if (_c.indexOf('orc_h2=') === 0 || _c.indexOf(encodeURIComponent('orc_h2')+'=') === 0) {
+        var _v = _c.substring(_c.indexOf('=')+1);
+        try { _v = decodeURIComponent(_v); } catch(e){}
+        // Detecta corrupção por double-encoding
+        if (_v && (/Ã§/.test(_v) || /Ã£/.test(_v) || /Ãµ/.test(_v) || /Ã¡/.test(_v) || /Ã´/.test(_v))) {
+          // Apaga o cookie corrompido
+          document.cookie = 'orc_h2=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+          document.cookie = encodeURIComponent('orc_h2')+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+          console.warn('[Cache] Cookie orc_h2 corrompido removido — dados serão carregados do GitHub');
+        }
+        break;
+      }
+    }
+  } catch(e){}
+})();
+
 // Verificação de sessão via cookie
 (function(){
   try {
