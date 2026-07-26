@@ -2201,6 +2201,29 @@ async function enviar(){
   const btn=document.getElementById('btnEnv');
   btn.disabled=true;btn.textContent='⏳ Processando...';
   sbox.className='sbox info';sbox.style.display='block';
+
+  // ── FLUXO SIMPLIFICADO: Solicitante/Aprovador só salva, não gera Excel/Outlook ──
+  if (window._USER?.perfil === 'solicitante_aprovador') {
+    o.status      = 'solicitado';
+    o.solicitante = window._USER?.email || '';
+    o.criador     = '';
+    hist.unshift(o);
+    const _hjSol = JSON.stringify(hist);
+    _ckSet('orc_h2', _hjSol);
+    if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
+      sbox.textContent = 'Salvando solicitação...';
+      await window.SP_BRIDGE.set('orc_h2', _hjSol);
+    }
+    _histPage = 0;
+    renderHist();
+    sbox.className = 'sbox ok';
+    sbox.innerHTML = `✅ <strong>${o.num}</strong> — Solicitação enviada ao Criador!`;
+    btn.disabled = false;
+    btn.textContent = '📤 Enviar Solicitação ao Criador';
+    setTimeout(() => limpar(false), 3000);
+    return;
+  }
+
   sbox.textContent='Gerando Excel e abrindo Outlook...';
 
   // 1. Baixa Excel
