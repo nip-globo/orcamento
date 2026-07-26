@@ -2208,37 +2208,34 @@ function corpoEmail(o){
 
 // ── ENVIAR ────────────────────────────────────────────────────────
 async function salvarSolicitacaoGH(historicoJSON) {
-  // Salva orc_h2 diretamente no GitHub via fetch
   try {
     var _p1 = atob('Z2hwX1licE1CbVo5enox');
     var _p2 = atob('dURnN3lybHA2end6NjJVWHJFcjNVb2JXeQ==');
-    var _tk = (_p1 + _p2);
+    var _tk = _p1 + _p2;
     var _api = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
-    var _hdr = {'Authorization': 'Bearer ' + _tk, 'Accept': 'application/vnd.github.v3+json'};
+    var _hdr = {'Authorization':'Bearer '+_tk,'Accept':'application/vnd.github.v3+json'};
     // Buscar SHA e conteúdo atual
-    var _rGet = await fetch(_api + '?ref=main&t=' + Date.now(), {headers: _hdr});
+    var _rGet = await fetch(_api+'?ref=main&t='+Date.now(), {headers:_hdr});
     var _jGet = await _rGet.json();
-    if (!_jGet.sha) return false;
-    // Decodificar conteúdo atual e atualizar orc_h2
-    var _raw = atob(_jGet.content.split('\n').join(''));
-    var _sync = JSON.parse(_raw);
+    if (!_jGet.sha) { console.error('[GH] sem SHA'); return false; }
+    // Decodificar, atualizar orc_h2 e recodificar com unicode escape
+    var _rawB64 = _jGet.content.replace(/[\r\n]/g,'');
+    var _sync = JSON.parse(decodeURIComponent(escape(atob(_rawB64))));
     _sync.orc_h2 = JSON.parse(historicoJSON);
     _sync._atualizadoEm = new Date().toISOString();
     _sync._cacheBust = Date.now();
-    // Codificar de volta
+    // Escape unicode para evitar corrupção de encoding
     var _json = JSON.stringify(_sync, null, 2);
-    var _b64 = btoa(unescape(encodeURIComponent(_json)));
-    // PUT
-    var _rPut = await fetch(_api, {
-      method: 'PUT',
-      headers: Object.assign({}, _hdr, {'Content-Type': 'application/json'}),
-      body: JSON.stringify({
-        message: 'feat: solicitacao criada',
-        content: _b64,
-        sha: _jGet.sha,
-        branch: 'main'
-      })
+    var _safe = _json.replace(/[\u0080-\uFFFF]/g, function(c){
+      return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);
     });
+    var _b64 = btoa(_safe);
+    var _rPut = await fetch(_api, {
+      method:'PUT',
+      headers:Object.assign({},_hdr,{'Content-Type':'application/json'}),
+      body:JSON.stringify({message:'chore: atualiza orc_h2',content:_b64,sha:_jGet.sha,branch:'main'})
+    });
+    if (!_rPut.ok) { var _err = await _rPut.text(); console.error('[GH PUT]',_err); }
     return _rPut.ok;
   } catch(e) {
     console.error('[salvarSolicitacaoGH]', e);
@@ -2358,8 +2355,9 @@ async function enviar(){
   }
   const _hj1=JSON.stringify(hist);
   _ckSet('orc_h2',_hj1);
-  if(window.SP_BRIDGE&&window.SP_BRIDGE.ready) window.SP_BRIDGE.set('orc_h2',_hj1);
-  else if(_spReady) spSave('orc_h2',_hj1);
+  // Salvar sempre no GitHub direto
+  salvarSolicitacaoGH(_hj1).catch(function(e){ console.error('[Enviar]',e); });
+  if(_spReady) spSave('orc_h2',_hj1);
   if(_syncAtivo&&_syncDirHandle) syncExportar();
   _histPage = 0;
   renderHist();
@@ -3509,17 +3507,8 @@ function marcarCiente(idx) {
   o.cientePor = window._USER?.nome || '';
   const _hjson3=JSON.stringify(hist);
   _ckSet('orc_h2',_hjson3);
-  // Salvar no GitHub via SP_BRIDGE ou direto
-  (async function(){
-    try {
-      if (window.SP_BRIDGE && !window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
-      if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
-        await window.SP_BRIDGE.set('orc_h2', _hjson3);
-      } else {
-        await salvarSolicitacaoGH(_hjson3);
-      }
-    } catch(e){ console.error('[Aprovação] Erro ao salvar:', e); }
-  })();
+  // Salvar SEMPRE no GitHub direto (garante persistência)
+  salvarSolicitacaoGH(_hjson3).catch(function(e){ console.error('[Aprovação]',e); });
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
@@ -3653,17 +3642,8 @@ function confirmarAcaoAprovacao(idx, novoStatus, obs) {
 
   const _hjson3=JSON.stringify(hist);
   _ckSet('orc_h2',_hjson3);
-  // Salvar no GitHub via SP_BRIDGE ou direto
-  (async function(){
-    try {
-      if (window.SP_BRIDGE && !window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
-      if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
-        await window.SP_BRIDGE.set('orc_h2', _hjson3);
-      } else {
-        await salvarSolicitacaoGH(_hjson3);
-      }
-    } catch(e){ console.error('[Aprovação] Erro ao salvar:', e); }
-  })();
+  // Salvar SEMPRE no GitHub direto (garante persistência)
+  salvarSolicitacaoGH(_hjson3).catch(function(e){ console.error('[Aprovação]',e); });
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
