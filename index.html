@@ -300,25 +300,11 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
-// Limpa cache orc_h2 se corrompido (encoding duplo)
+// Limpa SEMPRE o cookie orc_h2 — GitHub é a fonte da verdade
 (function(){
   try {
-    var _h = document.cookie.split(';');
-    for (var _i=0;_i<_h.length;_i++) {
-      var _c = _h[_i].trim();
-      if (_c.indexOf('orc_h2=') === 0 || _c.indexOf(encodeURIComponent('orc_h2')+'=') === 0) {
-        var _v = _c.substring(_c.indexOf('=')+1);
-        try { _v = decodeURIComponent(_v); } catch(e){}
-        // Detecta corrupção por double-encoding
-        if (_v && (/Ã§/.test(_v) || /Ã£/.test(_v) || /Ãµ/.test(_v) || /Ã¡/.test(_v) || /Ã´/.test(_v))) {
-          // Apaga o cookie corrompido
-          document.cookie = 'orc_h2=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
-          document.cookie = encodeURIComponent('orc_h2')+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
-          console.warn('[Cache] Cookie orc_h2 corrompido removido — dados serão carregados do GitHub');
-        }
-        break;
-      }
-    }
+    document.cookie = 'orc_h2=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+    document.cookie = encodeURIComponent('orc_h2')+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
   } catch(e){}
 })();
 
@@ -761,27 +747,14 @@ function _ckSet(key, val, days) {
 // ── ESTADO ────────────────────────────────────────────────────────
 let emails=[];
 let observadores=[];
-let hist=(function(){
-  try {
-    var _raw = _ck('orc_h2') || '[]';
-    var _arr = JSON.parse(_raw);
-    // Detecta corrupção: sequência de chars estranhos como Ã, Â seguidos de letra
-    var _sample = JSON.stringify(_arr.slice(0,3));
-    if (/[ÃÂ][ÂÀÁÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØ]/.test(_sample)) {
-      console.warn('[hist] Cookie corrompido detectado — limpando cache local');
-      _ckSet('orc_h2', '[]');
-      return [];
-    }
-    return _arr;
-  } catch(e) { return []; }
-})();
+let hist=[]; // Sempre carrega do GitHub via sync imediata
 // Corrige entradas com número corrompido (ex: ORC-NAN) geradas por bug anterior
 (function(){
   let dirty=false;
   hist.forEach(function(o){
     if(o.num&&/NAN/i.test(o.num)){ o.num='ORC-???'; dirty=true; }
   });
-  if(dirty) _ckSet('orc_h2',JSON.stringify(hist));
+  if(dirty) // _ckSet orc_h2 desativado — GitHub é fonte da verdade
 })();
 let cfg =JSON.parse(_ck('orc_c2')||'{}');
 let spConectado=false;
@@ -2388,8 +2361,7 @@ async function enviar(){
     hist.unshift(o);
   }
   const _hj1=JSON.stringify(hist);
-  _ckSet('orc_h2',_hj1);
-  // Salvar sempre no GitHub direto
+  // Salva APENAS no GitHub (não grava cookie para evitar corrupção)
   salvarSolicitacaoGH(_hj1).catch(function(e){ console.error('[Enviar]',e); });
   if(_spReady) spSave('orc_h2',_hj1);
   if(_syncAtivo&&_syncDirHandle) syncExportar();
@@ -3540,8 +3512,7 @@ function marcarCiente(idx) {
   o.cienteEm = new Date().toLocaleString('pt-BR');
   o.cientePor = window._USER?.nome || '';
   const _hjson3=JSON.stringify(hist);
-  _ckSet('orc_h2',_hjson3);
-  // Salvar SEMPRE no GitHub direto (garante persistência)
+  // Salva APENAS no GitHub (não grava cookie para evitar corrupção)
   salvarSolicitacaoGH(_hjson3).catch(function(e){ console.error('[Aprovação]',e); });
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
@@ -3675,8 +3646,7 @@ function confirmarAcaoAprovacao(idx, novoStatus, obs) {
   });
 
   const _hjson3=JSON.stringify(hist);
-  _ckSet('orc_h2',_hjson3);
-  // Salvar SEMPRE no GitHub direto (garante persistência)
+  // Salva APENAS no GitHub (não grava cookie para evitar corrupção)
   salvarSolicitacaoGH(_hjson3).catch(function(e){ console.error('[Aprovação]',e); });
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
