@@ -1500,13 +1500,13 @@ function validar(o){
   if(!o.proj)     return'Preencha o Nome do Projeto.';
   // Data de Gravação não obrigatória
   if(!(document.getElementById('f_fin')?.value||'').trim()) return'O campo Finalidade é obrigatório.';
-  if(!(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
+  if(window._USER?.perfil !== 'solicitante_aprovador' && !(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
   // Valida perfil do aprovador
   const aprovEmail = (document.getElementById('f_aprovador')?.value||'').trim();
   if (aprovEmail) {
     const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
     const aprovUser = usuarios.find(u => u.email === aprovEmail);
-    if (aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin' && aprovUser.perfil !== 'solicitante_aprovador') {
+    if (window._USER?.perfil !== 'solicitante_aprovador' && aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin' && aprovUser.perfil !== 'solicitante_aprovador') {
       return `"${aprovUser.nome}" tem perfil "${aprovUser.perfil}" e não pode ser aprovador. Selecione um usuário com perfil Aprovador, Solicitante/Aprovador ou Admin.`;
     }
     // Valida vínculo de CC
@@ -3077,6 +3077,15 @@ function initPerfil() {
   // Vê: Identificação, Chave Contábil, Destinatários, Observadores, Histórico, Relatórios
   // NÃO vê: Dados da Gravação Estúdios, Contas e Valores, card Aprovador (select)
   if (perfil === 'solicitante_aprovador') {
+    // Garante que campos editáveis pelo Solicitante não fiquem readonly
+    setTimeout(function() {
+      var editaveis = ['f_tipoAcao','f_proj','f_cliente','f_dataG','f_dataE','f_meta','f_cc','f_fin','f_obs'];
+      editaveis.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.removeAttribute('readonly');
+      });
+    }, 50);
+
     // Preenche ponto focal automaticamente com o próprio usuário
     setTimeout(function() {
       const focalInp = document.getElementById('f_focal');
