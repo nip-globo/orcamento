@@ -754,7 +754,7 @@ let hist=[]; // Sempre carrega do GitHub via sync imediata
   hist.forEach(function(o){
     if(o.num&&/NAN/i.test(o.num)){ o.num='ORC-???'; dirty=true; }
   });
-  if(dirty) // _ckSet orc_h2 desativado — GitHub é fonte da verdade
+  if(dirty) { /* orc_h2 cache desativado — GitHub é fonte da verdade */ }
 })();
 let cfg =JSON.parse(_ck('orc_c2')||'{}');
 let spConectado=false;
