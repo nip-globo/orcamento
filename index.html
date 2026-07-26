@@ -5232,8 +5232,9 @@ if (window._USER) {
         var _resp = await fetch(_api, {headers:{'Authorization':'Bearer '+_tk,'Accept':'application/vnd.github.v3+json'}});
         if (_resp.ok) {
           var _meta = await _resp.json();
-          var _raw  = atob(_meta.content.split('\\n').join(''));
-          var _data = JSON.parse(_raw);
+          var _b64  = _meta.content.replace(/[\r\n]/g,'');
+          var _bytes = Uint8Array.from(atob(_b64), function(c){ return c.charCodeAt(0); });
+          var _data = JSON.parse(new TextDecoder('utf-8').decode(_bytes));
           if (_data && Array.isArray(_data.orc_h2) && _data.orc_h2.length > 0) {
             // Sempre atualiza do GitHub — fonte da verdade
             hist = _data.orc_h2;
