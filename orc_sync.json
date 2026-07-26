@@ -1,9 +1,9 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-26T23:33:15.544Z",
+  "_atualizadoEm": "2026-07-26T23:33:31.618Z",
   "_atualizadoPor": "sandro.teste@g.globo",
-  "_cacheBust": 1785108795544,
+  "_cacheBust": 1785108811618,
   "orc_h2": [
     {
       "num": "ORC-048",
@@ -596,7 +596,18 @@
       "dataEnvio": "22/07/2026, 01:56:42",
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
-      "status": "aguardando"
+      "status": "rejeitado",
+      "obsAprovacao": "CANCELAMENTO",
+      "dataAcao": "26/07/2026, 20:33:30",
+      "aprovadorNome": "Administrador",
+      "historicoStatus": [
+        {
+          "status": "rejeitado",
+          "obs": "CANCELAMENTO",
+          "data": "26/07/2026, 20:33:30",
+          "por": "Administrador"
+        }
+      ]
     },
     {
       "num": "ORC-039",
