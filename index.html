@@ -5176,6 +5176,22 @@ if (window._USER) {
     // Histórico inicial do cookie (pode estar vazio na primeira carga)
     try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
     renderHist();
+
+    // Sincronização imediata do GitHub (raw público, sem autenticação)
+    (async function() {
+      try {
+        var _ghRaw = 'https://raw.githubusercontent.com/nip-globo/orcamento/main/orc_sync.json?t=' + Date.now();
+        var _resp  = await fetch(_ghRaw);
+        if (_resp.ok) {
+          var _data = await _resp.json();
+          if (_data && Array.isArray(_data.orc_h2) && _data.orc_h2.length >= hist.length) {
+            hist = _data.orc_h2;
+            _ckSet('orc_h2', JSON.stringify(hist));
+            renderHist();
+          }
+        }
+      } catch(e) { console.warn('[Sync imediato]', e.message); }
+    })();
     renderBannerDelegacao();
     renderNotificacoes();
   }
