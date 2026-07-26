@@ -3057,7 +3057,18 @@ function editarOrc(idx) {
   set('f_dataG',    o.dataG);
   set('f_dataE',    o.dataE);
   set('f_cliente',  o.cliente);
-  set('f_focal',    o.focal || o.solicitante || o.focal_email || '');
+  // Ponto Focal: usa nome do solicitante se focal estiver vazio
+  (function() {
+    var _focalVal = o.focal || '';
+    if (!_focalVal && (o.solicitante || o.focal_email)) {
+      var _solEmail = o.solicitante || o.focal_email;
+      // Buscar nome do usuário pelo email
+      var _usrs = typeof usuariosSistema !== 'undefined' ? usuariosSistema : (typeof _usuarios !== 'undefined' ? _usuarios : []);
+      var _uSol = _usrs.find(function(u){ return u.email === _solEmail; });
+      _focalVal = _uSol ? (_uSol.nome || _solEmail) : _solEmail;
+    }
+    set('f_focal', _focalVal);
+  })();
   set('f_cap',      (o.cap==='N/A'?'':o.cap));
   set('f_cena',     (o.cena==='N/A'?'':o.cena));
   set('f_ppm',      o.ppm);
@@ -3156,7 +3167,18 @@ function duplicarOrc(idx) {
   set('f_dataG',    '');  // datas em branco — nova gravação
   set('f_dataE',    '');
   set('f_cliente',  o.cliente);
-  set('f_focal',    o.focal || o.solicitante || o.focal_email || '');
+  // Ponto Focal: usa nome do solicitante se focal estiver vazio
+  (function() {
+    var _focalVal = o.focal || '';
+    if (!_focalVal && (o.solicitante || o.focal_email)) {
+      var _solEmail = o.solicitante || o.focal_email;
+      // Buscar nome do usuário pelo email
+      var _usrs = typeof usuariosSistema !== 'undefined' ? usuariosSistema : (typeof _usuarios !== 'undefined' ? _usuarios : []);
+      var _uSol = _usrs.find(function(u){ return u.email === _solEmail; });
+      _focalVal = _uSol ? (_uSol.nome || _solEmail) : _solEmail;
+    }
+    set('f_focal', _focalVal);
+  })();
   set('f_cap',      o.cap);
   set('f_cena',     o.cena);
   set('f_ppm',      o.ppm);
