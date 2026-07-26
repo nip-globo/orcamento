@@ -343,13 +343,10 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         // Normaliza perfil legado: 'aprovador' → 'solicitante_aprovador'
         if (u.perfil === 'aprovador') {
           u.perfil = 'solicitante_aprovador';
-          // Regrava o cookie com perfil normalizado (sem encodeURIComponent duplo)
+          // Regrava o cookie com perfil normalizado (mesmo formato do STORE.set)
           try {
             var uStr = JSON.stringify(u);
             var exp = '; expires=' + new Date(Date.now() + 8*3600*1000).toUTCString();
-            // Grava sem encodeURIComponent para compatibilidade com SP_BRIDGE
-            document.cookie = 'orc_user=' + encodeURIComponent(uStr) + exp + '; path=/; SameSite=Lax';
-            // Também grava com chave encodada (para o getCookie original)
             document.cookie = encodeURIComponent('orc_user') + '=' + encodeURIComponent(uStr) + exp + '; path=/; SameSite=Lax';
           } catch(e) {}
         }
