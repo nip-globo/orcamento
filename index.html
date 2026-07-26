@@ -301,39 +301,44 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
-// Verificação de sessão via cookie — build 20260722022157 (SP-safe — sem localStorage/sessionStorage)
+// Verificação de sessão via cookie — leitura robusta multi-formato
 (function(){
-  function getCookie(key) {
-    try {
-      // Tenta com e sem encodeURIComponent na chave
-      var searches = [encodeURIComponent(key) + '=', key + '='];
-      var parts = document.cookie.split(';');
-      for (var s = 0; s < searches.length; s++) {
-        var name = searches[s];
-        for (var i = 0; i < parts.length; i++) {
-          var c = parts[i].trim();
-          if (c.indexOf(name) === 0) {
-            try { return decodeURIComponent(c.substring(name.length)); } catch(e) { return c.substring(name.length); }
-          }
-        }
+  // Tenta todas as variações possíveis de como o cookie pode estar gravado
+  function lerCookieUsuario() {
+    var raw = null;
+    var parts = document.cookie.split(';');
+    var chaves = ['orc_user', encodeURIComponent('orc_user')];
+    for (var i = 0; i < parts.length; i++) {
+      var c = parts[i].trim();
+      var eqIdx = c.indexOf('=');
+      if (eqIdx < 0) continue;
+      var k = c.substring(0, eqIdx).trim();
+      var v = c.substring(eqIdx + 1);
+      var kDec = '';
+      try { kDec = decodeURIComponent(k); } catch(e) { kDec = k; }
+      if (k === 'orc_user' || kDec === 'orc_user') {
+        // Tenta decodificar o valor
+        try { raw = decodeURIComponent(v); } catch(e) { raw = v; }
+        break;
       }
-    } catch(e) {}
-    return null;
+    }
+    return raw;
   }
+
   try {
-    var raw = getCookie('orc_user');
+    var raw = lerCookieUsuario();
     if (raw) {
       var u = JSON.parse(raw);
+      // Caso de double-stringify: u é ainda uma string
+      if (typeof u === 'string') u = JSON.parse(u);
       var age = Date.now() - (u._ts || 0);
       if (u && u.email && u.perfil && age < 8 * 3600 * 1000) {
-        if (u.perfil === 'aprovador') {
-          u.perfil = 'solicitante_aprovador';
-          try { document.cookie = encodeURIComponent('orc_user') + '=' + encodeURIComponent(JSON.stringify(u)) + '; expires=' + new Date(Date.now()+8*3600*1000).toUTCString() + '; path=/; SameSite=Lax'; } catch(e){}
-        }
+        // Normaliza perfil legado
+        if (u.perfil === 'aprovador') u.perfil = 'solicitante_aprovador';
         window._USER = u;
         var perfisGestor = ['gestor_cc','gestor_criador','observador'];
         if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
-        return; // sessão OK — carrega o sistema
+        return; // sessão OK
       }
     }
   } catch(e) { console.error('[Sessão] Erro:', e.message); }
