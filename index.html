@@ -2210,58 +2210,17 @@ async function enviar(){
     hist.unshift(o);
     const _hjSol = JSON.stringify(hist);
     _ckSet('orc_h2', _hjSol);
-    sbox.textContent = 'Salvando solicitação no GitHub...';
-
-    // Salva direto no GitHub usando o token do cookie gh_token
+    sbox.textContent = 'Salvando solicitação...';
     try {
-      const _ghTok = (function(){
-        var _ps = document.cookie.split(';');
-        for (var _i=0;_i<_ps.length;_i++){
-          var _c=_ps[_i].trim(), _eq=_c.indexOf('=');
-          if(_eq<0) continue;
-          var _k=_c.substring(0,_eq).trim();
-          try{_k=decodeURIComponent(_k);}catch(e){}
-          if(_k==='gh_token'){var _v=_c.substring(_eq+1);try{_v=decodeURIComponent(_v);}catch(e){}return _v;}
-        }
-        return '';
-      })();
-
-      if (_ghTok) {
-        // Busca SHA atual do orc_sync.json
-        const _ghApi = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
-        const _rGet  = await fetch(_ghApi+'?ref=main&t='+Date.now(), {
-          headers: {'Authorization':'Bearer '+_ghTok, 'Accept':'application/vnd.github.v3+json'}
-        });
-        const _rGetJ = await _rGet.json();
-        const _ghSha = _rGetJ.sha || '';
-
-        // Monta o orc_sync completo igual o SP_BRIDGE faz
-        let _syncData = {};
-        try { _syncData = JSON.parse(await (async()=>{
-          const _r2 = await fetch(_ghApi+'?ref=main&t='+Date.now(),{headers:{'Authorization':'Bearer '+_ghTok,'Accept':'application/vnd.github.v3+json'}});
-          const _j2 = await _r2.json();
-          return atob(_j2.content.replace(/\n/g,''));
-        })()); } catch(e){}
-
-        _syncData.orc_h2 = hist;
-        _syncData._atualizadoEm  = new Date().toISOString();
-        _syncData._atualizadoPor = window._USER?.email || '';
-        _syncData._cacheBust     = Date.now();
-
-        const _jsonStr = JSON.stringify(_syncData, null, 2);
-        const _safeStr = _jsonStr.replace(/[\u0080-\uFFFF]/g, function(c){
-          return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);
-        });
-        const _content = btoa(_safeStr);
-
-        await fetch(_ghApi, {
-          method: 'PUT',
-          headers: {'Authorization':'Bearer '+_ghTok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-          body: JSON.stringify({message:'feat: solicitação '+o.num+' criada por '+o.solicitante, content:_content, sha:_ghSha, branch:'main'})
-        });
-        sbox.textContent = '✅ Salvo no GitHub!';
-      } else if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
+      let _tent = 0;
+      while ((!window.SP_BRIDGE || !window.SP_BRIDGE.ready) && _tent < 30) {
+        await new Promise(r => setTimeout(r, 200));
+        _tent++;
+      }
+      if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
         await window.SP_BRIDGE.set('orc_h2', _hjSol);
+      } else {
+        console.warn('[Solicitação] SP_BRIDGE não pronto');
       }
     } catch(e) {
       console.error('[Solicitação] Erro ao salvar:', e);
