@@ -305,7 +305,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 (function(){
   function getCookie(key) {
     try {
-      // Tenta com e sem encodeURIComponent na chave
+      // Tenta múltiplas variações da chave
       var searches = [encodeURIComponent(key) + '=', key + '='];
       var parts = document.cookie.split(';');
       for (var s = 0; s < searches.length; s++) {
@@ -313,8 +313,22 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         for (var i = 0; i < parts.length; i++) {
           var c = parts[i].trim();
           if (c.indexOf(name) === 0) {
-            try { return decodeURIComponent(c.substring(name.length)); } catch(e) { return c.substring(name.length); }
+            var raw = c.substring(name.length);
+            try { return decodeURIComponent(raw); } catch(e) { return raw; }
           }
+        }
+      }
+      // Fallback: busca case-insensitive e sem encode
+      var lkey = key.toLowerCase();
+      for (var i = 0; i < parts.length; i++) {
+        var c = parts[i].trim();
+        var eqIdx = c.indexOf('=');
+        if (eqIdx < 0) continue;
+        var k = c.substring(0, eqIdx).trim();
+        try { k = decodeURIComponent(k); } catch(e) {}
+        if (k.toLowerCase() === lkey) {
+          var raw = c.substring(eqIdx + 1);
+          try { return decodeURIComponent(raw); } catch(e) { return raw; }
         }
       }
     } catch(e) {}
@@ -329,10 +343,14 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         // Normaliza perfil legado: 'aprovador' → 'solicitante_aprovador'
         if (u.perfil === 'aprovador') {
           u.perfil = 'solicitante_aprovador';
-          // Regrava o cookie com perfil normalizado
+          // Regrava o cookie com perfil normalizado (sem encodeURIComponent duplo)
           try {
+            var uStr = JSON.stringify(u);
             var exp = '; expires=' + new Date(Date.now() + 8*3600*1000).toUTCString();
-            document.cookie = encodeURIComponent('orc_user') + '=' + encodeURIComponent(JSON.stringify(u)) + exp + '; path=/; SameSite=Lax';
+            // Grava sem encodeURIComponent para compatibilidade com SP_BRIDGE
+            document.cookie = 'orc_user=' + encodeURIComponent(uStr) + exp + '; path=/; SameSite=Lax';
+            // Também grava com chave encodada (para o getCookie original)
+            document.cookie = encodeURIComponent('orc_user') + '=' + encodeURIComponent(uStr) + exp + '; path=/; SameSite=Lax';
           } catch(e) {}
         }
         window._USER = u;
