@@ -1521,8 +1521,12 @@ function validar(o){
       return `O aprovador "${aprovUser?.nome||aprovEmail}" está vinculado ao CC "${ccAprov}" e não pode aprovar orçamentos do CC "${ccForm}". Selecione um aprovador vinculado a este Centro de Custo.`;
     }
   }
-  if(o.ta<=0)     return'Informe ao menos uma conta com valor.';
-  if(!emails.length)return'Adicione ao menos um destinatário.';
+  // Contas e destinatários só obrigatórios para Criador/Admin (Solicitante não preenche contas)
+  if(_perfilAtual === '' || _perfilAtual === 'criador' || _perfilAtual === 'admin') {
+    if(o.ta<=0)      return'Informe ao menos uma conta com valor.';
+    if(!emails.length) return'Adicione ao menos um destinatário.';
+  }
+  if(_perfilAtual === 'solicitante_aprovador' && !emails.length) return'Adicione ao menos um destinatário.';
   // Valida datas: gravação não pode ser posterior à exibição
   if(o.dataG && o.dataE) {
     const dG = new Date(o.dataG);
