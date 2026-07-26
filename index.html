@@ -5228,7 +5228,8 @@ if (window._USER) {
           var _meta = await _resp.json();
           var _raw  = atob(_meta.content.split('\\n').join(''));
           var _data = JSON.parse(_raw);
-          if (_data && Array.isArray(_data.orc_h2) && _data.orc_h2.length >= hist.length) {
+          if (_data && Array.isArray(_data.orc_h2)) {
+            // Sempre atualiza — status pode ter mudado mesmo com mesmo tamanho
             hist = _data.orc_h2;
             _ckSet('orc_h2', JSON.stringify(hist));
             renderHist();
