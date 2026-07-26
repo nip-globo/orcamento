@@ -326,6 +326,8 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
       var u = JSON.parse(raw);
       var age = Date.now() - (u._ts || 0);
       if (u && u.email && u.perfil && age < 8 * 3600 * 1000) {
+        // Normaliza perfil legado: 'aprovador' → 'solicitante_aprovador'
+        if (u.perfil === 'aprovador') u.perfil = 'solicitante_aprovador';
         window._USER = u;
         var perfisGestor = ['gestor_cc','gestor_criador','observador'];
         if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
