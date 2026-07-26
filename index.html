@@ -404,6 +404,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         </div>
         <div class="field"><label>Data Gravação</label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
         <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
+        <div class="field"><label>Meta Orçamentária (R$)</label><input type="number" id="f_meta" min="0" step="0.01" placeholder="0,00" style="width:100%;border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:Nunito,inherit"></div>
       </div>
     </div>
   </div>
@@ -1480,7 +1481,7 @@ function montar(){
     observadores:[...observadores],
     cliente:sv('f_cliente'),focal:sv('f_focal'),cap:sv('f_cap')||'N/A',
     cena:sv('f_cena')||'N/A',prog:sv('f_prog'),ppm:sv('f_ppm'),
-    tac:sv('f_tac'),contabil:sv('f_contabil'),sla:sv('f_sla'),dataSolicitacao:sv('f_sla'),
+    tac:sv('f_tac'),contabil:sv('f_contabil'),sla:sv('f_sla'),dataSolicitacao:sv('f_sla'),meta:sv('f_meta'),
     cr:sv('f_cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
     obs:sv('f_obs'),contas,ci:nv('c_ind'),
     tp:t.tp,ct:t.ct,ta:t.ta,
@@ -2416,6 +2417,7 @@ function renderHist(){
               ['PPM', o.ppm],
               ['Tipo Ação Comercial', o.tac],
               ['Data da Solicitação', o.sla],
+              ['Meta Orçamentária', o.meta ? 'R$ '+parseFloat(o.meta).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—'],
             ].map(([lbl,val])=>`
               <div style="font-size:11.5px">
                 <span style="font-size:9.5px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:2px">${lbl}</span>
@@ -2636,7 +2638,7 @@ function exportarTodos(){
 function limpar(confirm=true){
   if(confirm&&hist.length&&!window.confirm('Limpar o formulário?'))return;
   ['f_tipoAcao','f_cc','f_proj','f_dataG','f_dataE','f_cliente','f_focal',
-   'f_cap','f_cena','f_prog','f_ppm','f_tac','f_contabil','f_sla','f_fin','f_obs','c_ind','f_aprovador']
+   'f_cap','f_cena','f_prog','f_ppm','f_tac','f_contabil','f_sla','f_fin','f_obs','f_meta','c_ind','f_aprovador']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   CONTAS.forEach(c=>{
     const v=document.getElementById('cv_'+c.id);if(v)v.value='';
@@ -2916,6 +2918,7 @@ function editarOrc(idx) {
   set('f_tac',      o.tac);
   set('f_sla',      o.sla);
   set('f_obs',      o.obs);
+  set('f_meta',     o.meta||'');
 
   const cc  = document.getElementById('f_cc');
   const fin = document.getElementById('f_fin');
@@ -3133,7 +3136,7 @@ function initPerfil() {
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
     setTimeout(function() {
-      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE'];
+      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta'];
       camposIdent.forEach(function(id) {
         var el = document.getElementById(id);
         if (el && !el.readOnly) {
