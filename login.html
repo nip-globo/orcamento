@@ -250,7 +250,7 @@ async function lerSyncPublico() {
   }
 }
 
-async function getUsuarios() {
+async async function getUsuarios() {
   // 1. Tenta SP_BRIDGE (que tem cache em memória)
   if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
     try {
@@ -299,7 +299,7 @@ function showMsg(id, tipo, txt) {
 }
 
 // ── LOGIN ────────────────────────────────────────────────────────
-async function fazerLogin() {
+async async function fazerLogin() {
   const email = document.getElementById('email').value.trim().toLowerCase();
   const senha  = document.getElementById('senha').value;
   const err    = document.getElementById('err-login');
