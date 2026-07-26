@@ -1490,7 +1490,7 @@ function montar(){
     num:sv('f_num'),tipoAcao:_svx('f_tipoAcao','tipoAcao'),cc:_svx('f_cc','cc'),
     proj:_svx('f_proj','proj'),dataG:sv('f_dataG'),dataE:sv('f_dataE'),
     observadores:[...observadores],
-    cliente:sv('f_cliente'),focal:sv('f_focal'),cap:sv('f_cap')||'N/A',
+    cliente:sv('f_cliente'),focal:(sv('f_focal')||(_orig&&(_orig.focal||_orig.solicitante||_orig.focal_email))||(window._USER?.perfil==='solicitante_aprovador'?(window._USER?.nome||window._USER?.email):'')),cap:sv('f_cap')||'N/A',
     cena:sv('f_cena')||'N/A',prog:sv('f_prog'),ppm:sv('f_ppm'),
     tac:sv('f_tac'),contabil:_svx('f_contabil','contabil'),sla:_svx('f_sla','sla'),dataSolicitacao:_svx('f_sla','dataSolicitacao'),meta:_svx('f_meta','meta'),
     cr:_svx('f_cr','cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
