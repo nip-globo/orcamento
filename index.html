@@ -2218,18 +2218,17 @@ async function salvarSolicitacaoGH(historicoJSON) {
     var _rGet = await fetch(_api+'?ref=main&t='+Date.now(), {headers:_hdr});
     var _jGet = await _rGet.json();
     if (!_jGet.sha) { console.error('[GH] sem SHA'); return false; }
-    // Decodificar, atualizar orc_h2 e recodificar com unicode escape
+    // Decodificar base64 → bytes → UTF-8 string (evita corrupção de acentos)
     var _rawB64 = _jGet.content.replace(/[\r\n]/g,'');
-    var _sync = JSON.parse(decodeURIComponent(escape(atob(_rawB64))));
+    var _bytes = Uint8Array.from(atob(_rawB64), function(c){ return c.charCodeAt(0); });
+    var _sync = JSON.parse(new TextDecoder('utf-8').decode(_bytes));
     _sync.orc_h2 = JSON.parse(historicoJSON);
     _sync._atualizadoEm = new Date().toISOString();
     _sync._cacheBust = Date.now();
-    // Escape unicode para evitar corrupção de encoding
+    // Codificar de volta: string UTF-8 → bytes → base64
     var _json = JSON.stringify(_sync, null, 2);
-    var _safe = _json.replace(/[\u0080-\uFFFF]/g, function(c){
-      return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);
-    });
-    var _b64 = btoa(_safe);
+    var _encBytes = new TextEncoder().encode(_json);
+    var _b64 = btoa(String.fromCharCode.apply(null, _encBytes));
     var _rPut = await fetch(_api, {
       method:'PUT',
       headers:Object.assign({},_hdr,{'Content-Type':'application/json'}),
