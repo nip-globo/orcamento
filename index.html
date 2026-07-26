@@ -474,7 +474,20 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           </div>
           <div id="dd_fin" class="dropdown"></div>
         </div>
-        <div class="field s2"><label>Observações</label><textarea id="f_obs" placeholder="Informações adicionais..."></textarea></div>
+        <div class="field s3">
+          <label>Escopo da Entrega Comercial <span style="font-weight:400;font-size:11px;color:#94A3B8">(Orientações)</span></label>
+          <textarea id="f_obs" placeholder="Descreva o escopo da entrega, orientações e informações adicionais para o Criador do orçamento..."
+            style="min-height:120px;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label for="f_anexo" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#F1F5F9;border:1.5px dashed #94A3B8;border-radius:7px;padding:6px 14px;font-size:12px;color:#475569;font-weight:600;transition:background .2s" onmouseover="this.style.background='#E2E8F0'" onmouseout="this.style.background='#F1F5F9'">
+              📎 Anexar documento de orientação
+              <input type="file" id="f_anexo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.png,.jpg" style="display:none" onchange="handleAnexo(this)">
+            </label>
+            <span id="f_anexo_nome" style="font-size:12px;color:#059669;font-weight:600"></span>
+            <button id="f_anexo_remover" onclick="removerAnexo()" style="display:none;background:none;border:none;color:#DC2626;cursor:pointer;font-size:12px">✕ Remover</button>
+          </div>
+          <div id="f_anexo_preview" style="margin-top:6px;font-size:11px;color:#64748B"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1494,7 +1507,7 @@ function montar(){
     cena:sv('f_cena')||'N/A',prog:sv('f_prog'),ppm:sv('f_ppm'),
     tac:sv('f_tac'),contabil:_svx('f_contabil','contabil'),sla:_svx('f_sla','sla'),dataSolicitacao:_svx('f_sla','dataSolicitacao'),meta:_svx('f_meta','meta'),
     cr:_svx('f_cr','cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
-    obs:sv('f_obs'),contas,ci:nv('c_ind'),
+    obs:sv('f_obs'),anexoBase64:_anexoBase64||'',anexoNome:_anexoNome||'',anexoTipo:_anexoTipo||'',contas,ci:nv('c_ind'),
     tp:t.tp,ct:t.ct,ta:t.ta,
     emails:[...emails],dataEnvio:new Date().toLocaleString('pt-BR'),
     aprovador:(document.getElementById('f_aprovador')?.value||'').trim(),criador:window._USER?.email||'',
@@ -1692,7 +1705,7 @@ function gerarExcel(o){
   ${row(o.cc, o.contabil, o.fin)}
   ${hdr('Projeto PPM (Estúdios)','Tipo de Ação Comercial','Data da Solicitação')}
   ${row(o.ppm, o.tac, o.sla, C_CINZC)}
-  ${o.obs ? hdr('Observações','','') + row(o.obs,'','') : ''}
+  ${o.obs ? hdr('Escopo da Entrega Comercial','','') + row(o.obs,'','') : ''}${o.anexoNome ? hdr('Anexo','','') + `<tr><td colspan='4' style='padding:4px 8px'><a href='${o.anexoBase64||'#'}' download='${o.anexoNome}' style='color:#2563EB;font-weight:600;font-size:12px'>📎 ${o.anexoNome}</a></td></tr>` : ''}
   ${blank()}
 
   <!-- CONTAS -->
@@ -2023,7 +2036,7 @@ function gerarHTMLOrcamento(o){
   </div>
   ${bloco('📋 Identificação',[['Nº Orçamento',o.num],['Tipo de Ação',o.tipoAcao],['Projeto',o.proj]])}
   ${bloco('🎬 Dados da Gravação',[['Data Gravação',o.dataG],['Data Exibição',o.dataE],['Cliente',o.cliente],['Programa',o.prog],['Cap/Cena',(o.cap||'')+(o.cena?'/'+o.cena:'')],['Ponto Focal',o.focal]])}
-  ${bloco('📁 Dados Contábeis',[['CC Merchandising',o.cc],['Projeto Contábil',o.contabil],['Finalidade',o.fin],['PPM',o.ppm],['Tipo Ação Comercial',o.tac],['Data da Solicitação',o.sla],...(o.obs?[['Observações',o.obs]]:[]) ])}
+  ${bloco('📁 Dados Contábeis',[['CC Merchandising',o.cc],['Projeto Contábil',o.contabil],['Finalidade',o.fin],['PPM',o.ppm],['Tipo Ação Comercial',o.tac],['Data da Solicitação',o.sla],...(o.obs?[['Escopo da Entrega Comercial',o.obs]]:[]) ])}
   <div style="margin-bottom:14px;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden">
     <div style="background:#0F4762;color:#fff;padding:9px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px">💰 Orçamento por Contas</div>
     <table style="width:100%;border-collapse:collapse">
@@ -2134,7 +2147,7 @@ ${bloco('📁 Dados Contábeis',[
   ['Projeto PPM (Estúdios)', o.ppm],
   ['Tipo de Ação Comercial', o.tac],
   ['Data da Solicitação', o.sla],
-  ...(o.obs ? [['Observações', o.obs]] : []),
+  ...(o.obs ? [['Escopo da Entrega Comercial', o.obs]] : []),
 ])}
 
 <!-- Contas -->
@@ -2215,6 +2228,65 @@ function corpoEmail(o){
 }
 
 // ── ENVIAR ────────────────────────────────────────────────────────
+// ── ANEXO DE ORIENTAÇÃO ──────────────────────────────────────────
+var _anexoBase64 = '';
+var _anexoNome   = '';
+var _anexoTipo   = '';
+
+function handleAnexo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert('O arquivo deve ter no máximo 5MB.');
+    input.value = '';
+    return;
+  }
+  _anexoNome = file.name;
+  _anexoTipo = file.type;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    _anexoBase64 = e.target.result; // data URL completo
+    const nomeEl = document.getElementById('f_anexo_nome');
+    const remBtn = document.getElementById('f_anexo_remover');
+    const prev   = document.getElementById('f_anexo_preview');
+    if (nomeEl) nomeEl.textContent = '📄 ' + _anexoNome;
+    if (remBtn) remBtn.style.display = 'inline';
+    if (prev)   prev.textContent    = 'Tamanho: ' + (file.size/1024).toFixed(1) + ' KB';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removerAnexo() {
+  _anexoBase64 = '';
+  _anexoNome   = '';
+  _anexoTipo   = '';
+  const inp  = document.getElementById('f_anexo');
+  const nome = document.getElementById('f_anexo_nome');
+  const btn  = document.getElementById('f_anexo_remover');
+  const prev = document.getElementById('f_anexo_preview');
+  if (inp)  inp.value      = '';
+  if (nome) nome.textContent = '';
+  if (btn)  btn.style.display = 'none';
+  if (prev) prev.textContent  = '';
+}
+
+function carregarAnexo(o) {
+  // Restaura o anexo ao editar um orçamento
+  if (o.anexoBase64 && o.anexoNome) {
+    _anexoBase64 = o.anexoBase64;
+    _anexoNome   = o.anexoNome;
+    _anexoTipo   = o.anexoTipo || '';
+    const nome = document.getElementById('f_anexo_nome');
+    const btn  = document.getElementById('f_anexo_remover');
+    const prev = document.getElementById('f_anexo_preview');
+    if (nome) nome.textContent = '📄 ' + _anexoNome;
+    if (btn)  btn.style.display = 'inline';
+    if (prev) prev.textContent  = 'Arquivo carregado do orçamento';
+  } else {
+    removerAnexo();
+  }
+}
+
 async function salvarSolicitacaoGH(historicoJSON) {
   try {
     var _p1 = atob('Z2hwX1licE1CbVo5enox');
@@ -3047,6 +3119,7 @@ function editarOrc(idx) {
 
   // Limpa e preenche o formulário com os dados do orçamento
   limpar(false);
+  carregarAnexo(o);
 
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v||''; };
   set('f_num',      o.num);   // mantém o mesmo número
