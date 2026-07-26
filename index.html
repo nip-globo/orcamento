@@ -5212,9 +5212,9 @@ if (window._USER) {
       });
     }
 
-    // Histórico inicial do cookie (pode estar vazio na primeira carga)
-    try { hist = JSON.parse(_ck('orc_h2') || '[]'); } catch(e){ hist=[]; }
-    renderHist();
+    // hist sempre começa vazio — dados vêm da sync da API GitHub
+    hist = [];
+    renderHist(); // mostra lista vazia enquanto carrega
 
     // Sincronização imediata via API GitHub (sem cache CDN)
     (async function() {
