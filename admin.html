@@ -53,6 +53,7 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
 .badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
 .b-admin{background:#FFF7ED;color:#EA580C}
 .b-aprovador{background:#F0FFF4;color:#16A34A}
+.b-solicitante_aprovador{background:#ECFDF5;color:#059669;font-weight:800}
 .b-criador{background:#EFF6FF;color:#2563EB}
 .b-observador{background:#F5F3FF;color:#7C3AED}
 .b-gestor_cc{background:#FFF0F6;color:#BE185D}
@@ -117,7 +118,8 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
         <div class="field"><label>Perfil</label>
           <select id="n_perfil" onchange="mostrarCamposExtra()">
             <option value="criador">Criador</option>
-            <option value="aprovador">Aprovador</option>
+            <option value="solicitante_aprovador">Solicitante/Aprovador</option>
+            <option value="aprovador">Aprovador (legado)</option>
             <option value="observador">Observador</option>
             <option value="gestor_cc">Gestor CC</option>
             <option value="gestor_criador">Gestor de Criadores</option>
@@ -345,7 +347,8 @@ body{font-family:'Nunito',system-ui,sans-serif;background:#F1F5F9;color:#1e293b;
     <div class="field" style="margin-bottom:12px"><label>Perfil</label>
       <select id="adel-perfil" onchange="atualizarOpcoesAdel()" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit">
         <option value="criador">Criador</option>
-        <option value="aprovador">Aprovador</option>
+        <option value="solicitante_aprovador">Solicitante/Aprovador</option>
+        <option value="aprovador">Aprovador (legado)</option>
       </select></div>
     <div class="field" style="margin-bottom:12px"><label>Delegante (quem vai delegar)</label>
       <select id="adel-de" onchange="atualizarOpcoesAdel()" style="width:100%;border:1.5px solid #E4E9F2;border-radius:8px;padding:10px;font-size:13px;font-family:'Nunito',inherit"><option value="">Selecione...</option></select></div>
@@ -390,11 +393,11 @@ function logout(){
 
 // ── Dados ─────────────────────────────────────────────────────────
 const PERFIS_LABELS = {
-  admin:'Admin', aprovador:'Aprovador', criador:'Criador',
+  admin:'Admin', aprovador:'Aprovador', solicitante_aprovador:'Solicitante/Aprovador', criador:'Criador',
   observador:'Observador', gestor_cc:'Gestor CC', gestor_criador:'Gestor Criadores'
 };
 const PERFIS_BADGES = {
-  admin:'b-admin', aprovador:'b-aprovador', criador:'b-criador',
+  admin:'b-admin', aprovador:'b-aprovador', solicitante_aprovador:'b-solicitante_aprovador', criador:'b-criador',
   observador:'b-observador', gestor_cc:'b-gestor_cc', gestor_criador:'b-gestor_criador'
 };
 const USUARIOS_DEFAULT = [{email:'admin@g.globo',senha:'Admin@2026',nome:'Administrador',perfil:'admin',ativo:true}];
@@ -757,7 +760,7 @@ function renderPendentes() {
   badge.textContent = total;
   badge.style.display = total ? 'inline' : 'none';
 
-  const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+  const perfisLabel = {criador:'Criador', solicitante_aprovador:'Solicitante/Aprovador', aprovador:'Aprovador', observador:'Observador'};
 
   // Seção solicitações de acesso
   var htmlSols = '';
@@ -860,7 +863,7 @@ async function aprovarSolicitacaoAcesso(email) {
     if (!sol) { alert('Solicitação não encontrada.'); return; }
     const usuarios = data.orc_usuarios || [];
     if (usuarios.find(u => u.email === email)) { alert('Usuário já cadastrado.'); return; }
-    const perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+    const perfisLabel = {criador:'Criador', solicitante_aprovador:'Solicitante/Aprovador', aprovador:'Aprovador', observador:'Observador'};
     usuarios.push({ email: sol.email, nome: sol.nome, senha: '123456', perfil: sol.perfil,
       ativo: true, pendente: false, criadoEm: new Date().toLocaleString('pt-BR'),
       aprovadoPor: (window._USER?.email || window.EMAIL || 'admin'),

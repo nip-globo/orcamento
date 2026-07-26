@@ -547,7 +547,7 @@ function renderPendentes() {
     return u ? u.nome : email;
   }
 
-  var perfisLabel = {criador:'Criador', aprovador:'Aprovador', observador:'Observador'};
+  var perfisLabel = {criador:'Criador', aprovador:'Aprovador', solicitante_aprovador:'Solicitante/Aprovador', observador:'Observador'};
 
   // Seção de solicitações de acesso
   var htmlSols = '';
@@ -602,7 +602,7 @@ function renderPendentes() {
 // ── APROVADORES ───────────────────────────────────────────────────
 function renderAprovadores() {
   var todos  = getUsers();
-  var aprs   = todos.filter(function(u){ return u.perfil==='aprovador' && u.ativo!==false; });
+  var aprs   = todos.filter(function(u){ return (u.perfil==='aprovador'||u.perfil==='solicitante_aprovador') && u.ativo!==false; });
   var hist   = getLista(); // orçamentos do CC deste gestor
   var histAll = getHist(); // todos os orçamentos do sistema
 
@@ -1115,7 +1115,7 @@ function exportPDF(tipo) {
 
 // ── MODAL MEU PERFIL ─────────────────────────────────────────────
 var LABELS_PERFIL = {
-  admin:'Administrador', criador:'Criador', aprovador:'Aprovador',
+  admin:'Administrador', criador:'Criador', aprovador:'Aprovador', solicitante_aprovador:'Solicitante/Aprovador',
   observador:'Observador', gestor_cc:'Gestor CC', gestor_criador:'Gestor de Criadores'
 };
 

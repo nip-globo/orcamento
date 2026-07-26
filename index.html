@@ -146,8 +146,8 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 .htable tr:hover td{background:var(--azul-clr)}
 .nbadge{background:var(--azul-clr);color:var(--azul);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:800;font-family:'Nunito',monospace;white-space:nowrap;display:inline-block}
 .empty-h{text-align:center;color:var(--cinza-tx);padding:32px;font-size:13px;font-weight:600}
-.perfil-aprovador .layout{grid-template-columns:1fr}
-.perfil-aprovador .sidebar{display:none}
+.perfil-solicitante_aprovador .layout{grid-template-columns:1fr}
+.perfil-solicitante_aprovador .sidebar{display:none}
 
 /* ── NOTIFICAÇÕES ───────────────────────────────────────────── */
 .notif-banner{border-radius:var(--raio);padding:14px 18px;margin-bottom:4px;display:flex;align-items:flex-start;gap:12px;animation:slideIn .3s ease}
@@ -986,7 +986,7 @@ function sugerirEmail() {
     .slice(0, 5);
 
   if (usuariosSistema.length) {
-    const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
+    const cores = {admin:'#EA580C',aprovador:'#16A34A',solicitante_aprovador:'#059669',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
     dd.innerHTML = usuariosSistema.map((u, i) => `
       <div class="email-dd-item" data-email="${u.email}"
         onmousedown="selecionarEmail('${u.email.replace(/'/g,"\\'")}')"
@@ -1035,7 +1035,7 @@ function sugerirEmail() {
       ...pessoas.filter(p => !emailsSistema.includes(p.email)).map(p => ({ ...p, tipo: 'pessoa' })),
     ].slice(0, 8);
 
-    const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
+    const cores = {admin:'#EA580C',aprovador:'#16A34A',solicitante_aprovador:'#059669',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
     dd.innerHTML = items.map((p, i) => `
       <div class="email-dd-item" data-email="${p.email}"
         onmousedown="selecionarEmail('${p.email.replace(/'/g,"\'")}')"
@@ -1153,7 +1153,7 @@ function renderEmails(){
       sel.parentNode.insertBefore(aviso, sel.nextSibling);
     }
     if (emails.length) {
-      aviso.textContent = '⚠️ Nenhum dos destinatários tem perfil Aprovador. Adicione um usuário com perfil Aprovador para poder enviar.';
+      aviso.textContent = '⚠️ Nenhum dos destinatários tem perfil Aprovador ou Solicitante/Aprovador. Adicione um usuário com esse perfil para poder enviar.';
       aviso.style.display = 'block';
     } else {
       aviso.style.display = 'none';
@@ -1228,10 +1228,10 @@ function sugerirFocal() {
   const q  = (inp.value||'').toLowerCase().trim();
   const cc = (document.getElementById('f_cc')?.value||'').trim();
 
-  const cores = {admin:'#EA580C', aprovador:'#16A34A'};
+  const cores = {admin:'#EA580C', aprovador:'#16A34A', solicitante_aprovador:'#059669'};
   // Filtra por CC se houver vínculo configurado
   const usuarios = cc ? getAprovadoresPorCC(cc) : JSON.parse(_ck('orc_usuarios')||'[]')
-    .filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'admin'));
+    .filter(u => u.ativo !== false && (u.perfil === 'aprovador' || u.perfil === 'solicitante_aprovador' || u.perfil === 'admin'));
 
   const filtrados = q ? usuarios.filter(u =>
     u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
@@ -1296,7 +1296,7 @@ function sugerirObs() {
   const q   = (inp.value||'').toLowerCase().trim();
   if (!q || q.length < 1) { dd.classList.remove('open'); return; }
 
-  const cores = {admin:'#EA580C',aprovador:'#16A34A',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
+  const cores = {admin:'#EA580C',aprovador:'#16A34A',solicitante_aprovador:'#059669',criador:'#2563EB',observador:'#7C3AED',gestor_cc:'#BE185D',gestor_criador:'#854D0E'};
   const usuarios = JSON.parse(_ck('orc_usuarios')||'[]').filter(u => u.ativo !== false);
 
   // Busca em todos os usuários do sistema
@@ -1474,7 +1474,10 @@ function montar(){
     obs:sv('f_obs'),contas,ci:nv('c_ind'),
     tp:t.tp,ct:t.ct,ta:t.ta,
     emails:[...emails],dataEnvio:new Date().toLocaleString('pt-BR'),
-    aprovador:(document.getElementById('f_aprovador')?.value||'').trim(),criador:window._USER?.email||'',status:'aguardando',
+    aprovador:(document.getElementById('f_aprovador')?.value||'').trim(),criador:window._USER?.email||'',
+    focal_email:(document.getElementById('f_focal')?.getAttribute('data-focal-email')||''),
+    solicitante:(window._USER?.perfil==='solicitante_aprovador'?window._USER?.email:''),
+    status:'aguardando',
   };
 }
 
@@ -1491,8 +1494,8 @@ function validar(o){
   if (aprovEmail) {
     const usuarios = JSON.parse(_ck('orc_usuarios')||'[]');
     const aprovUser = usuarios.find(u => u.email === aprovEmail);
-    if (aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin') {
-      return `"${aprovUser.nome}" tem perfil "${aprovUser.perfil}" e não pode ser aprovador. Selecione um usuário com perfil Aprovador ou Admin.`;
+    if (aprovUser && aprovUser.perfil !== 'aprovador' && aprovUser.perfil !== 'admin' && aprovUser.perfil !== 'solicitante_aprovador') {
+      return `"${aprovUser.nome}" tem perfil "${aprovUser.perfil}" e não pode ser aprovador. Selecione um usuário com perfil Aprovador, Solicitante/Aprovador ou Admin.`;
     }
     // Valida vínculo de CC
     const vinc   = getVinculosAprov();
@@ -2250,6 +2253,15 @@ function renderHist(){
     } else {
       lista = hist.filter(o => o.criador === user.email);
     }
+  } else if (user?.perfil === 'solicitante_aprovador') {
+    // Vê orçamentos onde é o solicitante (ponto focal) ou aprovador
+    if (_bloqueado) {
+      lista = [];
+    } else if (_delAtiva && _delAtiva.delegado === user.email) {
+      lista = hist.filter(o => o.aprovador === _delAtiva.delegante || o.focal_email === _delAtiva.delegante);
+    } else {
+      lista = hist.filter(o => o.aprovador === user.email || o.focal_email === user.email || o.solicitante === user.email);
+    }
   } else if (user?.perfil === 'aprovador') {
     if (_bloqueado) {
       lista = [];
@@ -2329,7 +2341,7 @@ function renderHist(){
     // Delegado também pode aprovar em nome do aprovador original
     const _delAtivaAprov = getDelegacaoAtiva(user?.email||'');
     const _isDelegadoAprov = _delAtivaAprov && _delAtivaAprov.delegado === user?.email && _delAtivaAprov.delegante === o.aprovador;
-    const podeAprovar = (user?.perfil==='admin' || user?.email===o.aprovador || _isDelegadoAprov) && o.status==='aguardando';
+    const podeAprovar = (user?.perfil==='admin' || user?.perfil==='solicitante_aprovador' && user?.email===o.aprovador || user?.perfil==='aprovador' && user?.email===o.aprovador || _isDelegadoAprov) && o.status==='aguardando';
     const painelAprov = podeAprovar ? `
       <div class="painel-aprovacao">
         <h3>📋 Ação de Aprovação</h3>
@@ -3015,11 +3027,11 @@ function initPerfil() {
 
   // Badge no header
   const cores = {
-    admin:'#EA580C', aprovador:'#16A34A', criador:'#2563EB',
+    admin:'#EA580C', aprovador:'#16A34A', solicitante_aprovador:'#059669', criador:'#2563EB',
     observador:'#7C3AED', gestor_cc:'#BE185D', gestor_criador:'#854D0E'
   };
   const labels = {
-    admin:'Admin', aprovador:'Aprovador', criador:'Criador',
+    admin:'Admin', aprovador:'Aprovador', solicitante_aprovador:'Solicitante/Aprovador', criador:'Criador',
     observador:'Observador', gestor_cc:'Gestor CC', gestor_criador:'Gestor Criadores'
   };
   // Adiciona classe ao body para CSS por perfil
@@ -3046,47 +3058,102 @@ function initPerfil() {
 
   // Controla visibilidade por perfil
   const perfil = user.perfil;
-  const somenteVisualizacao = ['aprovador','observador','gestor_cc','gestor_criador'].includes(perfil);
-  if (somenteVisualizacao) {
-    // Esconde toda a seção de criação/edição (formulário + sidebar ações)
-    // mas preserva o card de histórico (card-historico) e notificações
-    document.querySelectorAll('.main > .card').forEach(card => {
-      if (card.id !== 'card-historico' && card.id !== 'card-relatorios') card.style.display = 'none';
-    });
-    // Esconde todos os cards de formulário com ID
-    ['card-aprovador'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = 'none';
-    });
-    // Esconde sidebar de ações
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-      if (perfil === 'aprovador') sidebar.style.display = 'none';
-    }
-    // Esconde botões de ação
-    const btnEnv = document.getElementById('btnEnv');
-    if (btnEnv) btnEnv.style.display = 'none';
-    document.querySelectorAll('.btn-limpar, [onclick="salvarRascunho()"]').forEach(b => b.style.display='none');
 
-    // Para aprovador: ajusta layout para coluna única
-    if (perfil === 'aprovador') {
-      const layout = document.querySelector('.layout');
-      if (layout) layout.style.gridTemplateColumns = '1fr';
-      // Adiciona título de contexto ao card histórico
-      const histCard = document.getElementById('card-historico');
-      if (histCard) {
-        const hdr = histCard.querySelector('.card-header h2');
-        if (hdr) hdr.textContent = 'Orçamentos para Aprovação';
+  // ── PERFIL: SOLICITANTE/APROVADOR ──
+  // Vê: Identificação, Chave Contábil, Destinatários, Observadores, Histórico, Relatórios
+  // NÃO vê: Dados da Gravação Estúdios, Contas e Valores, card Aprovador (select)
+  if (perfil === 'solicitante_aprovador') {
+    // Preenche ponto focal automaticamente com o próprio usuário
+    setTimeout(function() {
+      const focalInp = document.getElementById('f_focal');
+      if (focalInp && !focalInp.value) {
+        focalInp.value = user.nome || user.email;
+        focalInp.setAttribute('readonly', '');
+        focalInp.setAttribute('data-focal-email', user.email);
+        focalInp.title = 'Preenchido automaticamente — você é o Ponto Focal desta solicitação';
       }
+    }, 200);
+
+    // Esconde: card Dados da Gravação (index 1), Contas e Valores (index 3)
+    // e o card Aprovador na sidebar
+    const cards = document.querySelectorAll('.main > .card');
+    cards.forEach(card => {
+      const hdr = card.querySelector('.card-header h2');
+      if (!hdr) return;
+      const txt = hdr.textContent.trim();
+      if (txt.includes('Dados da Gravação') || txt.includes('Contas e Valores')) {
+        card.style.display = 'none';
+      }
+    });
+    // Esconde card Aprovador na sidebar
+    const sidebarCards = document.querySelectorAll('.sidebar > .card');
+    sidebarCards.forEach(card => {
+      const hdr = card.querySelector('.card-header h2');
+      if (hdr && hdr.textContent.trim().includes('Aprovador')) {
+        card.style.display = 'none';
+      }
+    });
+
+    // Ajusta o botão de envio para contexto correto
+    const btnEnv = document.getElementById('btnEnv');
+    if (btnEnv) btnEnv.textContent = '📤 Enviar Solicitação ao Criador';
+
+    // Ajusta título do histórico
+    const histCard = document.getElementById('card-historico');
+    if (histCard) {
+      const hdr = histCard.querySelector('.card-header h2');
+      if (hdr) hdr.textContent = 'Minhas Solicitações';
     }
   }
 
-  // Mostra e renderiza filtros/relatórios para criador, aprovador e admin
-  if (['criador','aprovador','admin'].includes(perfil)) {
+  // ── PERFIL: CRIADOR ──
+  // Vê: Dados da Gravação, Contas e Valores, Aprovador (select)
+  // NÃO preenche: Identificação, Chave Contábil (preenchidos pelo Solicitante/Aprovador)
+  // O Criador recebe o orçamento e complementa com Dados da Gravação e Contas
+  if (perfil === 'criador') {
+    // Campos de Identificação e Chave Contábil são readonly para o Criador
+    setTimeout(function() {
+      const camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs'];
+      camposIdent.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el && !el.readOnly) {
+          el.setAttribute('readonly', '');
+          el.style.background = 'var(--azul-clr,#EFF6FF)';
+          el.style.color = 'var(--azul-esc,#1A3A8F)';
+          el.style.cursor = 'default';
+          el.style.fontWeight = '700';
+        }
+      });
+      // Desabilita botões de limpar dos campos readonly
+      ['dd_formato','dd_proj','dd_cc','dd_fin'].forEach(function(ddId) {
+        const dd = document.getElementById(ddId);
+        if (dd) dd.style.pointerEvents = 'none';
+        // Esconde clear-btn do campo correspondente
+      });
+      document.querySelectorAll('[onclick^="limparCampo('f_tipoAcao"), [onclick^="limparPrograma"], [onclick^="limparCampo('f_cc"), [onclick^="limparCampo('f_fin"]').forEach(function(btn) {
+        btn.style.display = 'none';
+      });
+    }, 100);
+  }
+
+  // ── PERFIS SÓ VISUALIZAÇÃO (antigo comportamento) ──
+  const somenteVisualizacao = ['observador','gestor_cc','gestor_criador'].includes(perfil);
+  if (somenteVisualizacao) {
+    document.querySelectorAll('.main > .card').forEach(card => {
+      if (card.id !== 'card-historico' && card.id !== 'card-relatorios') card.style.display = 'none';
+    });
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) sidebar.style.display = 'none';
+    const btnEnv = document.getElementById('btnEnv');
+    if (btnEnv) btnEnv.style.display = 'none';
+    document.querySelectorAll('.btn-limpar, [onclick="salvarRascunho()"]').forEach(b => b.style.display='none');
+  }
+
+  // Mostra e renderiza filtros/relatórios para criador, solicitante_aprovador, aprovador e admin
+  if (['criador','aprovador','solicitante_aprovador','admin'].includes(perfil)) {
     const cardRel = document.getElementById('card-relatorios');
     if (cardRel) {
       cardRel.style.display = 'block';
-      // Renderiza após um tick para garantir que o DOM está pronto
       setTimeout(function(){ renderRelatoriosIndex(); }, 0);
     }
   }
@@ -3411,6 +3478,8 @@ function podeEditarOrc(o) {
     const st = o.status || 'rascunho';
     return ['rascunho','devolvido',''].includes(st);
   }
+  if (user.perfil === 'solicitante_aprovador' && (o.focal_email === user.email || o.solicitante === user.email) &&
+      ['rascunho','devolvido',''].includes(o.status || 'rascunho')) return true;
   if (user.perfil === 'aprovador' && o.aprovador === user.email &&
       o.status === 'aguardando') return true;
   // Observadores e gestores não editam
@@ -3459,9 +3528,10 @@ function getListaRel() {
   var user = window._USER;
   if (!user) return [];
   var all = hist.length ? hist : JSON.parse(_ck('orc_h2') || '[]');
-  if (user.perfil === 'criador')    return all.filter(function(o){ return o.criador === user.email; });
-  if (user.perfil === 'aprovador')  return all.filter(function(o){ return o.aprovador === user.email; });
-  if (user.perfil === 'observador') return all.filter(function(o){ return (o.observadores||[]).includes(user.email); });
+  if (user.perfil === 'criador')               return all.filter(function(o){ return o.criador === user.email; });
+  if (user.perfil === 'solicitante_aprovador') return all.filter(function(o){ return o.aprovador === user.email || o.focal_email === user.email || o.solicitante === user.email; });
+  if (user.perfil === 'aprovador')             return all.filter(function(o){ return o.aprovador === user.email; });
+  if (user.perfil === 'observador')            return all.filter(function(o){ return (o.observadores||[]).includes(user.email); });
   return all; // admin vê tudo
 }
 
@@ -5002,7 +5072,7 @@ function abrirModalPerfil() {
   if (!user) return;
 
   const labels = {
-    admin:'Administrador', criador:'Criador', aprovador:'Aprovador',
+    admin:'Administrador', criador:'Criador', aprovador:'Aprovador', solicitante_aprovador:'Solicitante/Aprovador',
     observador:'Observador', gestor_cc:'Gestor CC', gestor_criador:'Gestor de Criadores'
   };
 
@@ -5030,7 +5100,7 @@ function abrirModalPerfil() {
   // Seção de delegação (só para criador e aprovador)
   const delWrap = document.getElementById('del-perfil-wrap');
   if (delWrap) {
-    if (['criador','aprovador'].includes(user.perfil)) {
+    if (['criador','aprovador','solicitante_aprovador'].includes(user.perfil)) {
       const bloqueado = estaBloqueado(user.email);
       const delAtiva  = getDelegacaoAtiva(user.email);
       // Usa _ghData se disponível, senão cookie
