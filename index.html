@@ -739,7 +739,20 @@ function _ckSet(key, val, days) {
 // ── ESTADO ────────────────────────────────────────────────────────
 let emails=[];
 let observadores=[];
-let hist=JSON.parse(_ck('orc_h2')||'[]');
+let hist=(function(){
+  try {
+    var _raw = _ck('orc_h2') || '[]';
+    var _arr = JSON.parse(_raw);
+    // Detecta corrupção: sequência de chars estranhos como Ã, Â seguidos de letra
+    var _sample = JSON.stringify(_arr.slice(0,3));
+    if (/[ÃÂ][ÂÀÁÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØ]/.test(_sample)) {
+      console.warn('[hist] Cookie corrompido detectado — limpando cache local');
+      _ckSet('orc_h2', '[]');
+      return [];
+    }
+    return _arr;
+  } catch(e) { return []; }
+})();
 // Corrige entradas com número corrompido (ex: ORC-NAN) geradas por bug anterior
 (function(){
   let dirty=false;
@@ -5229,10 +5242,11 @@ if (window._USER) {
           var _meta = await _resp.json();
           var _raw  = atob(_meta.content.split('\\n').join(''));
           var _data = JSON.parse(_raw);
-          if (_data && Array.isArray(_data.orc_h2)) {
-            // Sempre atualiza — status pode ter mudado mesmo com mesmo tamanho
+          if (_data && Array.isArray(_data.orc_h2) && _data.orc_h2.length > 0) {
+            // Sempre atualiza do GitHub — fonte da verdade
             hist = _data.orc_h2;
-            _ckSet('orc_h2', JSON.stringify(hist));
+            var _histStr = JSON.stringify(hist);
+            _ckSet('orc_h2', _histStr);
             renderHist();
           }
         }
