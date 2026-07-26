@@ -301,48 +301,51 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 </head>
 <body>
 <script>
-// Verificação de sessão via cookie — leitura robusta multi-formato
+// Verificação de sessão via cookie
 (function(){
-  // Tenta todas as variações possíveis de como o cookie pode estar gravado
-  function lerCookieUsuario() {
+  try {
+    // Lê todos os cookies e procura orc_user em qualquer formato
+    var allCookies = document.cookie;
     var raw = null;
-    var parts = document.cookie.split(';');
-    var chaves = ['orc_user', encodeURIComponent('orc_user')];
+    var parts = allCookies.split(';');
+    var candidatos = [];
     for (var i = 0; i < parts.length; i++) {
       var c = parts[i].trim();
       var eqIdx = c.indexOf('=');
       if (eqIdx < 0) continue;
       var k = c.substring(0, eqIdx).trim();
       var v = c.substring(eqIdx + 1);
-      var kDec = '';
-      try { kDec = decodeURIComponent(k); } catch(e) { kDec = k; }
-      if (k === 'orc_user' || kDec === 'orc_user') {
-        // Tenta decodificar o valor
-        try { raw = decodeURIComponent(v); } catch(e) { raw = v; }
-        break;
+      var kd = k;
+      try { kd = decodeURIComponent(k); } catch(e){}
+      if (kd === 'orc_user' || k === 'orc_user') {
+        try { candidatos.push(decodeURIComponent(v)); } catch(e) { candidatos.push(v); }
       }
     }
-    return raw;
-  }
-
-  try {
-    var raw = lerCookieUsuario();
+    // Tenta cada candidato até encontrar um válido
+    for (var ci = 0; ci < candidatos.length; ci++) {
+      raw = candidatos[ci];
+      var testU = raw;
+      try { testU = JSON.parse(testU); } catch(e){ continue; }
+      if (typeof testU === 'string') { try { testU = JSON.parse(testU); } catch(e){ continue; } }
+      if (testU && typeof testU === 'object' && testU.email) { raw = candidatos[ci]; break; }
+    }
     if (raw) {
-      var u = JSON.parse(raw);
-      // Caso de double-stringify: u é ainda uma string
-      if (typeof u === 'string') u = JSON.parse(u);
-      var age = Date.now() - (u._ts || 0);
-      if (u && u.email && u.perfil && age < 8 * 3600 * 1000) {
-        // Normaliza perfil legado
-        if (u.perfil === 'aprovador') u.perfil = 'solicitante_aprovador';
-        window._USER = u;
-        var perfisGestor = ['gestor_cc','gestor_criador','observador'];
-        if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
-        return; // sessão OK
+      var u = raw;
+      // Suporta double-stringify
+      if (typeof u === 'string') { try { u = JSON.parse(u); } catch(e){} }
+      if (typeof u === 'string') { try { u = JSON.parse(u); } catch(e){} }
+      if (u && typeof u === 'object' && u.email && u.perfil) {
+        var age = Date.now() - (u._ts || 0);
+        if (age < 8 * 3600 * 1000) {
+          if (u.perfil === 'aprovador') u.perfil = 'solicitante_aprovador';
+          window._USER = u;
+          var perfisGestor = ['gestor_cc','gestor_criador','observador'];
+          if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
+          return; // OK
+        }
       }
     }
-  } catch(e) { console.error('[Sessão] Erro:', e.message); }
-  // Sem sessão válida
+  } catch(e) { console.error('[Sessão]', e.message); }
   window.location.replace('./login.html');
 })();
 </script>
