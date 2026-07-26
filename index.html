@@ -401,6 +401,9 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           </div>
           <div id="dd_proj" class="dropdown"></div>
         </div>
+        <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente"></div>
+        <div class="field"><label>Data Gravação <span class="req">*</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
+        <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
       </div>
     </div>
   </div>
@@ -410,9 +413,6 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     <div class="card-header"><span>🎬</span><h2>Dados da Gravação Estúdios</h2></div>
     <div class="card-body">
       <div class="grid-4">
-        <div class="field"><label>Data Gravação <span class="req">*</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
-        <div class="field"><label>Data Exibição</label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
-        <div class="field"><label>Cliente <span class="req">*</span></label><input id="f_cliente" placeholder="Nome do cliente"></div>
         <div class="field" style="position:relative">
           <label>Ponto Focal Merchandising</label>
           <input id="f_focal" placeholder="Buscar aprovador..." autocomplete="off"
