@@ -1,6 +1,9 @@
 {
-  "_exportadoEm": "2026-07-21T16:58:16.488Z",
-  "_exportadoPor": "admin@g.globo",
+  "_exportadoEm": "2026-07-26T04:28:38.060601",
+  "_exportadoPor": "sistema/restauracao",
+  "_atualizadoEm": "2026-07-26T04:28:38.060744",
+  "_atualizadoPor": "sistema/restauracao",
+  "_cacheBust": 1785040118,
   "orc_h2": [
     {
       "num": "ORC-042",
@@ -3498,6 +3501,9 @@
       "sandro.teste@g.globo"
     ]
   },
+  "orc_vinculos_aprov": {
+    "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
+  },
   "orc_delegacoes": [
     {
       "id": "DEL-1784545569426",
@@ -3576,11 +3582,5 @@
       "rejeitadoEm": "24/07/2026, 11:29:57"
     }
   ],
-  "orc_c2": {},
-  "_atualizadoEm": "2026-07-24T19:30:12.702Z",
-  "_atualizadoPor": "admin@g.globo",
-  "orc_vinculos_aprov": {
-    "thamires.oliveira@g.globo": "GL160602002 - Dados & Insights"
-  },
-  "_cacheBust": "20260724053908"
+  "orc_c2": {}
 }
