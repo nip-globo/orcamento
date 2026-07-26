@@ -1500,8 +1500,28 @@ function validar(o){
   if(!o.proj)     return'Preencha o Nome do Projeto.';
   // Data de Gravação não obrigatória
   if(!(document.getElementById('f_fin')?.value||'').trim()) return'O campo Finalidade é obrigatório.';
-  // Aprovador só obrigatório para perfil Criador e Admin
+  // Lê perfil do usuário — window._USER ou fallback do cookie
   var _perfilAtual = (window._USER && window._USER.perfil) ? window._USER.perfil : '';
+  if (!_perfilAtual) {
+    try {
+      var _parts = document.cookie.split(';');
+      for (var _i = 0; _i < _parts.length; _i++) {
+        var _c = _parts[_i].trim();
+        var _eq = _c.indexOf('=');
+        if (_eq < 0) continue;
+        var _k = _c.substring(0, _eq).trim();
+        var _kd = _k; try { _kd = decodeURIComponent(_k); } catch(e){}
+        if (_kd === 'orc_user') {
+          var _v = _c.substring(_eq + 1);
+          try { _v = decodeURIComponent(_v); } catch(e){}
+          var _u = JSON.parse(_v);
+          if (typeof _u === 'string') _u = JSON.parse(_u);
+          _perfilAtual = (_u && _u.perfil) ? _u.perfil : '';
+          break;
+        }
+      }
+    } catch(e){}
+  }
   if(_perfilAtual === '' || _perfilAtual === 'criador' || _perfilAtual === 'admin') {
     if(!(document.getElementById('f_aprovador')?.value||'').trim()) return'Selecione um Aprovador entre os destinatários.';
   }
