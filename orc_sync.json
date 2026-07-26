@@ -1,31 +1,31 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-26T19:28:32.047Z",
+  "_atualizadoEm": "2026-07-26T19:31:46.455Z",
   "_atualizadoPor": "sistema/restauracao",
-  "_cacheBust": 1785094112047,
+  "_cacheBust": 1785094306455,
   "orc_h2": [
     {
       "num": "ORC-043",
       "tipoAcao": "AÇÃO BÁSICA",
       "cc": "GL160602002 - Dados & Insights",
-      "proj": "MAIS VOCÊ 2026",
+      "proj": "DOMINGÃO 2026",
       "dataG": "",
       "dataE": "",
       "observadores": [
         "sandro.teste@g.globo"
       ],
-      "cliente": "SEARA",
+      "cliente": "VIVO",
       "focal": "",
       "cap": "N/A",
       "cena": "N/A",
-      "prog": "MAIS VOCÊ 2026",
+      "prog": "DOMINGÃO 2026",
       "ppm": "",
       "tac": "",
-      "contabil": "P.TSH.000014-006-003 - MAIS VOCÊ/2026/AÇÕES MERCHANDISING",
+      "contabil": "P.TSH.000031-006-003 - DOMINGÃO/2026/AÇÕES MERCHANDISING",
       "sla": "26/07/2026",
       "dataSolicitacao": "26/07/2026",
-      "meta": "34560",
+      "meta": "23450",
       "cr": "0000000 – INDIRETO",
       "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
       "obs": "TESTE",
@@ -37,7 +37,7 @@
       "emails": [
         "sandro.teste@g.globo"
       ],
-      "dataEnvio": "26/07/2026, 16:28:31",
+      "dataEnvio": "26/07/2026, 16:31:45",
       "aprovador": "",
       "criador": "",
       "focal_email": "sandro.aprovador@g.globo",
@@ -3255,7 +3255,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160603001 - Dramaturgia e GestÃ£o de Elenco",
+      "ccVinculado": "GL160603001 - Dramaturgia e GestÃÂ£o de Elenco",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3266,7 +3266,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160503005 - ProduÃ§Ã£o Integrada - Formatos PublicitÃ¡rios",
+      "ccVinculado": "GL160503005 - ProduÃÂ§ÃÂ£o Integrada - Formatos PublicitÃÂ¡rios",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3277,7 +3277,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606001 - Variedades, Realities e AuditÃ³rio",
+      "ccVinculado": "GL160606001 - Variedades, Realities e AuditÃÂ³rio",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3288,7 +3288,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160601001 - Produtos PublicitÃ¡rios Canais",
+      "ccVinculado": "GL160601001 - Produtos PublicitÃÂ¡rios Canais",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3299,7 +3299,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160609004 - Projetos MercadolÃ³gicos e Filmes",
+      "ccVinculado": "GL160609004 - Projetos MercadolÃÂ³gicos e Filmes",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3332,7 +3332,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160603003 - GestÃ£o de Elenco",
+      "ccVinculado": "GL160603003 - GestÃÂ£o de Elenco",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3354,7 +3354,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160602007 - Formatos PublicitÃ¡rios e Produtos",
+      "ccVinculado": "GL160602007 - Formatos PublicitÃÂ¡rios e Produtos",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3365,13 +3365,13 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607004 - CriaÃ§Ã£o e PMO Esporte e NotÃ­cias",
+      "ccVinculado": "GL160607004 - CriaÃÂ§ÃÂ£o e PMO Esporte e NotÃÂ­cias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
     {
-      "email": "joÃ£o.nogueira@g.globo",
-      "nome": "JoÃ£o Nogueira",
+      "email": "joÃÂ£o.nogueira@g.globo",
+      "nome": "JoÃÂ£o Nogueira",
       "senha": "123456",
       "perfil": "gestor_cc",
       "ativo": true,
@@ -3387,7 +3387,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607001 - Esporte e NotÃ­cias",
+      "ccVinculado": "GL160607001 - Esporte e NotÃÂ­cias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3398,7 +3398,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606004 - Variedades e AuditÃ³rio",
+      "ccVinculado": "GL160606004 - Variedades e AuditÃÂ³rio",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3409,7 +3409,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160606005 - Variedades e ProduÃ§Ãµes Externas",
+      "ccVinculado": "GL160606005 - Variedades e ProduÃÂ§ÃÂµes Externas",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3453,7 +3453,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160607002 - Planejamento NotÃ­cias",
+      "ccVinculado": "GL160607002 - Planejamento NotÃÂ­cias",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3497,7 +3497,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160602009 - ProduÃ§Ã£o IntegradaLicenciamento",
+      "ccVinculado": "GL160602009 - ProduÃÂ§ÃÂ£o IntegradaLicenciamento",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3508,7 +3508,7 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160609001 - TerritÃ³rios",
+      "ccVinculado": "GL160609001 - TerritÃÂ³rios",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
@@ -3519,13 +3519,13 @@
       "perfil": "gestor_cc",
       "ativo": true,
       "pendente": false,
-      "ccVinculado": "GL160508010 - ProduÃ§Ã£o Integrada - Branded Content e Social",
+      "ccVinculado": "GL160508010 - ProduÃÂ§ÃÂ£o Integrada - Branded Content e Social",
       "criadoEm": "24/07/2026, 01:16:49",
       "importadoDaBase": true
     },
     {
-      "email": "joaÂ£o.nogueira@g.globo",
-      "nome": "JoÃÂ£o Nogueira",
+      "email": "joaÃÂ£o.nogueira@g.globo",
+      "nome": "JoÃÂÃÂ£o Nogueira",
       "senha": "123456",
       "perfil": "gestor_cc",
       "ativo": true,
