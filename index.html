@@ -305,7 +305,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
 (function(){
   function getCookie(key) {
     try {
-      // Tenta múltiplas variações da chave
+      // Tenta com e sem encodeURIComponent na chave
       var searches = [encodeURIComponent(key) + '=', key + '='];
       var parts = document.cookie.split(';');
       for (var s = 0; s < searches.length; s++) {
@@ -313,22 +313,8 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         for (var i = 0; i < parts.length; i++) {
           var c = parts[i].trim();
           if (c.indexOf(name) === 0) {
-            var raw = c.substring(name.length);
-            try { return decodeURIComponent(raw); } catch(e) { return raw; }
+            try { return decodeURIComponent(c.substring(name.length)); } catch(e) { return c.substring(name.length); }
           }
-        }
-      }
-      // Fallback: busca case-insensitive e sem encode
-      var lkey = key.toLowerCase();
-      for (var i = 0; i < parts.length; i++) {
-        var c = parts[i].trim();
-        var eqIdx = c.indexOf('=');
-        if (eqIdx < 0) continue;
-        var k = c.substring(0, eqIdx).trim();
-        try { k = decodeURIComponent(k); } catch(e) {}
-        if (k.toLowerCase() === lkey) {
-          var raw = c.substring(eqIdx + 1);
-          try { return decodeURIComponent(raw); } catch(e) { return raw; }
         }
       }
     } catch(e) {}
@@ -340,16 +326,6 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
       var u = JSON.parse(raw);
       var age = Date.now() - (u._ts || 0);
       if (u && u.email && u.perfil && age < 8 * 3600 * 1000) {
-        // Normaliza perfil legado: 'aprovador' → 'solicitante_aprovador'
-        if (u.perfil === 'aprovador') {
-          u.perfil = 'solicitante_aprovador';
-          // Regrava o cookie com perfil normalizado (mesmo formato do STORE.set)
-          try {
-            var uStr = JSON.stringify(u);
-            var exp = '; expires=' + new Date(Date.now() + 8*3600*1000).toUTCString();
-            document.cookie = encodeURIComponent('orc_user') + '=' + encodeURIComponent(uStr) + exp + '; path=/; SameSite=Lax';
-          } catch(e) {}
-        }
         window._USER = u;
         var perfisGestor = ['gestor_cc','gestor_criador','observador'];
         if (perfisGestor.includes(u.perfil)) { window.location.replace('./gestor.html'); return; }
@@ -378,7 +354,6 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     </button>
     <span class="orc-badge-big" id="hdrNum">ORC-001</span>
     <div id="userBadge" style="display:flex;align-items:center;gap:8px"></div>
-    <a href="login.html" onclick="document.cookie='orc_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';" style="background:rgba(239,68,68,.25);border:1px solid rgba(239,68,68,.4);border-radius:6px;padding:5px 10px;color:#fff;font-size:11px;text-decoration:none;white-space:nowrap;font-weight:700" id="btn-sair-fixo">Sair</a>
   </div>
 </div>
 
