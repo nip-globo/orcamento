@@ -58,7 +58,9 @@
       if (!r.ok) throw new Error('read ' + r.status);
       const meta = await r.json();
       _cacheSha  = meta.sha;
-      const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+      const _b64b = meta.content.replace(/[\r\n]/g, '');
+      const _bytesb = Uint8Array.from(atob(_b64b), c => c.charCodeAt(0));
+      const data = JSON.parse(new TextDecoder('utf-8').decode(_bytesb));
       _cache = data; _cacheTs = Date.now();
       return data;
     } catch (e) {
