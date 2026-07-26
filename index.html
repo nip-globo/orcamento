@@ -2322,8 +2322,12 @@ async function enviar(){
     o.status        = 'aguardando'; // sempre envia para aprovação
     // Se era um 'solicitado', o Criador assume como criador do orçamento
     if (stAnterior === 'solicitado') {
-      o.criador = window._USER?.email || '';
-      o.solicitante = hist[idxEdit]?.solicitante || hist[idxEdit]?.criador || '';
+      o.criador   = window._USER?.email || '';
+      o.solicitante = hist[idxEdit]?.solicitante || hist[idxEdit]?.focal_email || '';
+      // O aprovador deve ser o Solicitante/Aprovador, não o Criador
+      if (!o.aprovador || o.aprovador === window._USER?.email) {
+        o.aprovador = o.solicitante || hist[idxEdit]?.solicitante || '';
+      }
     } else {
       o.criador = hist[idxEdit]?.criador || o.criador;
     }
@@ -3081,7 +3085,21 @@ function editarOrc(idx) {
   renderEmails();
   setTimeout(() => {
     const selAprov = document.getElementById('f_aprovador');
-    if (selAprov && o.aprovador) selAprov.value = o.aprovador;
+    if (o.status === 'solicitado') {
+      // Para orçamentos solicitados, o aprovador é o Solicitante/Aprovador
+      const _aprovSol = o.solicitante || o.focal_email || '';
+      if (_aprovSol && !emails.includes(_aprovSol)) {
+        emails.push(_aprovSol);
+        renderEmails();
+      }
+      // Aguarda renderEmails popular o select antes de selecionar
+      setTimeout(() => {
+        const _sel = document.getElementById('f_aprovador');
+        if (_sel) _sel.value = _aprovSol;
+      }, 300);
+    } else if (selAprov && o.aprovador) {
+      selAprov.value = o.aprovador;
+    }
   }, 100);
 
   calc();
