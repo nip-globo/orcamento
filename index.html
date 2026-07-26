@@ -1472,17 +1472,20 @@ async function registrarSP(orc){
 function montar(){
   const t=calc();
   const contas={};
-  // Apenas linhas dinâmicas
+  // Herdar campos do original se estiver complementando um 'solicitado'
+  const _orig = (window._editandoIdx!=null && hist[window._editandoIdx]?.status==='solicitado')
+    ? hist[window._editandoIdx] : null;
+  const _svx = (id, key) => sv(id) || (_orig && _orig[key||id.replace('f_','')]) || '';
   const extras = getExtras();
   extras.forEach((e,i)=>{ contas['extra_'+i]={nome:e.nome,tipo:e.tipo,valor:e.valor,desc:e.desc,extra:true}; });
   return{
-    num:sv('f_num'),tipoAcao:sv('f_tipoAcao'),cc:sv('f_cc'),
-    proj:sv('f_proj'),dataG:sv('f_dataG'),dataE:sv('f_dataE'),
+    num:sv('f_num'),tipoAcao:_svx('f_tipoAcao','tipoAcao'),cc:_svx('f_cc','cc'),
+    proj:_svx('f_proj','proj'),dataG:sv('f_dataG'),dataE:sv('f_dataE'),
     observadores:[...observadores],
     cliente:sv('f_cliente'),focal:sv('f_focal'),cap:sv('f_cap')||'N/A',
     cena:sv('f_cena')||'N/A',prog:sv('f_prog'),ppm:sv('f_ppm'),
-    tac:sv('f_tac'),contabil:sv('f_contabil'),sla:sv('f_sla'),dataSolicitacao:sv('f_sla'),meta:sv('f_meta'),
-    cr:sv('f_cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
+    tac:sv('f_tac'),contabil:_svx('f_contabil','contabil'),sla:_svx('f_sla','sla'),dataSolicitacao:_svx('f_sla','dataSolicitacao'),meta:_svx('f_meta','meta'),
+    cr:_svx('f_cr','cr'),fin:(document.getElementById('f_fin')?.value||'').trim(),
     obs:sv('f_obs'),contas,ci:nv('c_ind'),
     tp:t.tp,ct:t.ct,ta:t.ta,
     emails:[...emails],dataEnvio:new Date().toLocaleString('pt-BR'),
