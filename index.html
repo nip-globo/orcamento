@@ -3060,14 +3060,23 @@ function editarOrc(idx) {
   calc();
   window.scrollTo({top:0, behavior:'smooth'});
 
-  // Muda o botão de enviar para "Salvar Edição"
+  // Muda o botão de enviar — diferente para solicitado x edição normal
   const btn = document.getElementById('btnEnv');
-  if (btn) { btn.textContent = '💾 Salvar Edição'; btn.style.background = 'linear-gradient(135deg,#EA580C,#C2410C)'; }
+  if (btn) {
+    if (o.status === 'solicitado') {
+      btn.textContent = '📤 Complementar e Enviar para Aprovação';
+      btn.style.background = 'linear-gradient(135deg,#059669,#047857)';
+    } else {
+      btn.textContent = '💾 Salvar Edição';
+      btn.style.background = 'linear-gradient(135deg,#EA580C,#C2410C)';
+    }
+  }
 
   const sbox = document.getElementById('sbox');
   sbox.className = 'sbox info'; sbox.style.display = 'block';
-  sbox.innerHTML = `✏️ Editando <strong>${o.num}</strong>${o.status==='devolvido'?' — <span style="color:#2563EB">Devolvido: '+o.obsAprovacao+'</span>':''}<br>
-    <span style="font-size:11px">Faça as correções e clique em <strong>Salvar Edição</strong>.</span>`;
+  sbox.innerHTML = o.status === 'solicitado'
+    ? `📋 Complementando <strong>${o.num}</strong> — solicitado por <strong>${o.solicitante||o.focal||'—'}</strong>. Preencha os Dados da Gravação, Contas e selecione o Aprovador.`
+    : `✏️ Editando <strong>${o.num}</strong>${o.status==='devolvido'?' — <span style="color:#DC2626">Devolvido para correção</span>':''}.`;
 }
 
 function cancelarEdicao() {
