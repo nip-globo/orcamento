@@ -71,7 +71,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
   outline:none;border-color:var(--azul);background:#fff;
   box-shadow:0 0 0 3px rgba(59,111,232,.1)
 }
-.field input[readonly]{background:var(--azul-clr);color:var(--azul-esc);font-weight:700;cursor:default;border-color:transparent}
+.field input[readonly],.field textarea[readonly]{background:#F0F4FF;color:#3B5BA8;font-weight:600;cursor:default;border-color:#C8D5F5;border-style:dashed;opacity:.92}
 .field input[type=date],.field input[type=number],.field input[type=email],.field input[type=password]{text-transform:none}
 .field select{text-transform:none;cursor:pointer}
 .field textarea{min-height:68px;resize:vertical}
@@ -416,7 +416,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
       <div class="grid-4">
         <div class="field" style="position:relative">
           <label>Ponto Focal Merchandising</label>
-          <input id="f_focal" placeholder="Buscar aprovador..." autocomplete="off"
+          <input id="f_focal" placeholder="Preenchido automaticamente pelo Solicitante" autocomplete="off"
             oninput="sugerirFocal()" onblur="setTimeout(()=>document.getElementById('dd-focal').classList.remove('open'),200)"
             style="width:100%;box-sizing:border-box;text-transform:none">
           <div id="dd-focal" class="email-dd" style="top:calc(100% + 2px);left:0;right:0;min-width:0;width:100%;z-index:9999;position:absolute"></div>
@@ -3136,15 +3136,11 @@ function initPerfil() {
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
     setTimeout(function() {
-      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta'];
+      var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla'];
       camposIdent.forEach(function(id) {
         var el = document.getElementById(id);
         if (el && !el.readOnly) {
           el.setAttribute('readonly', '');
-          el.style.background = '#EFF6FF';
-          el.style.color = '#1A3A8F';
-          el.style.cursor = 'default';
-          el.style.fontWeight = '700';
         }
       });
       // Desabilita dropdowns dos campos readonly
