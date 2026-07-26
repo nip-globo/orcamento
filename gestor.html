@@ -318,7 +318,9 @@ async function _ghSolGet() {
   if (!r.ok) throw new Error('Erro ao ler dados: ' + r.status);
   const meta = await r.json();
   const sha  = meta.sha;
-  const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+  const _b1 = meta.content.replace(/[\r\n]/g,'');
+  const _by1 = Uint8Array.from(atob(_b1), c => c.charCodeAt(0));
+  const data = JSON.parse(new TextDecoder('utf-8').decode(_by1));
   return { token, sha, data };
 }
 
@@ -509,7 +511,11 @@ function showTab(id) {
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(meta){
         if (meta && meta.content) {
-          try { _ghData = JSON.parse(atob(meta.content.replace(/\n/g,''))); } catch(e){}
+          try {
+          const _b2 = meta.content.replace(/[\r\n]/g,'');
+          const _by2 = Uint8Array.from(atob(_b2), c => c.charCodeAt(0));
+          _ghData = JSON.parse(new TextDecoder('utf-8').decode(_by2));
+        } catch(e){}
         }
         if (wrap) wrap.innerHTML = renderPendentes();
         // Atualiza só o badge de pendentes
