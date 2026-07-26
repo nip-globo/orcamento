@@ -170,8 +170,7 @@ body{font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;ali
         <select id="sol-perfil" onchange="atualizarGestoresSolicitacao()">
           <option value="">Selecione o perfil...</option>
           <option value="criador">Criador</option>
-          <option value="solicitante_aprovador">Solicitante/Aprovador</option>
-          <option value="aprovador">Aprovador (legado)</option>
+          <option value="aprovador">Aprovador</option>
           <option value="observador">Observador</option>
         </select>
       </div>
@@ -329,7 +328,7 @@ async function fazerLogin() {
     return;
   }
 
-  // Salva sessão em cookie (~8h)
+  // Salva sessão em cookie (~8h) — normaliza 'aprovador' → 'solicitante_aprovador'
   const perfilFinal = user.perfil === 'aprovador' ? 'solicitante_aprovador' : user.perfil;
   const sess = { email: user.email, nome: user.nome, perfil: perfilFinal, _ts: Date.now() };
   STORE.set('orc_user', JSON.stringify(sess), 0.33);
@@ -589,11 +588,6 @@ async function confirmarNovaSenha() {
       const sess = JSON.parse(raw);
       const age  = Date.now() - (sess._ts || 0);
       if (sess.email && sess.perfil && age < 8 * 3600 * 1000) {
-        // Normaliza perfil legado no cookie
-        if (sess.perfil === 'aprovador') {
-          sess.perfil = 'solicitante_aprovador';
-          STORE.set('orc_user', JSON.stringify({...sess, _ts: sess._ts}), 0.33);
-        }
         const gestores = ['gestor_cc','gestor_criador','observador'];
         const destino  = gestores.includes(sess.perfil) ? 'gestor.html' : 'index.html';
         // Evita redirecionar para a própria página de login
