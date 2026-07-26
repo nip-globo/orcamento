@@ -3509,6 +3509,17 @@ function marcarCiente(idx) {
   o.cientePor = window._USER?.nome || '';
   const _hjson3=JSON.stringify(hist);
   _ckSet('orc_h2',_hjson3);
+  // Salvar no GitHub via SP_BRIDGE ou direto
+  (async function(){
+    try {
+      if (window.SP_BRIDGE && !window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
+      if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
+        await window.SP_BRIDGE.set('orc_h2', _hjson3);
+      } else {
+        await salvarSolicitacaoGH(_hjson3);
+      }
+    } catch(e){ console.error('[Aprovação] Erro ao salvar:', e); }
+  })();
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
@@ -3642,6 +3653,17 @@ function confirmarAcaoAprovacao(idx, novoStatus, obs) {
 
   const _hjson3=JSON.stringify(hist);
   _ckSet('orc_h2',_hjson3);
+  // Salvar no GitHub via SP_BRIDGE ou direto
+  (async function(){
+    try {
+      if (window.SP_BRIDGE && !window.SP_BRIDGE.ready) await window.SP_BRIDGE.init();
+      if (window.SP_BRIDGE && window.SP_BRIDGE.ready) {
+        await window.SP_BRIDGE.set('orc_h2', _hjson3);
+      } else {
+        await salvarSolicitacaoGH(_hjson3);
+      }
+    } catch(e){ console.error('[Aprovação] Erro ao salvar:', e); }
+  })();
   if(_spReady) spSave('orc_h2',_hjson3);
   renderHist();
   renderNotificacoes();
