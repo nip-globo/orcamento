@@ -2420,7 +2420,12 @@ async function enviar(){
 
   // 4. Salva histórico (edição substitui; novo orçamento adiciona)
   if (window._editandoIdx !== undefined && window._editandoIdx !== null) {
-    const idxEdit   = window._editandoIdx;
+    // Recalcular idxEdit pelo número para resistir a recargas do hist
+    var idxEdit = window._editandoIdx;
+    if (window._editandoNum) {
+      var _idxByNum = hist.findIndex(function(x){ return x.num === window._editandoNum; });
+      if (_idxByNum >= 0) idxEdit = _idxByNum;
+    }
     const stAnterior = hist[idxEdit]?.status || 'rascunho';
     o.status        = 'aguardando'; // sempre envia para aprovação
     // Se era um 'solicitado', o Criador assume como criador do orçamento
@@ -2461,7 +2466,13 @@ async function enviar(){
   }
   const _hj1=JSON.stringify(hist);
   // Salva APENAS no GitHub (não grava cookie para evitar corrupção)
-  salvarSolicitacaoGH(_hj1).catch(function(e){ console.error('[Enviar]',e); });
+  salvarSolicitacaoGH(_hj1).then(function(ok){
+    if (!ok) {
+      var sboxE = document.getElementById('sbox');
+      if (sboxE) { sboxE.className='sbox err'; sboxE.style.display='block';
+        sboxE.textContent='⚠️ Orçamento salvo localmente mas não sincronizado com GitHub. Tente novamente.'; }
+    }
+  }).catch(function(e){ console.error('[Enviar]',e); });
   if(_spReady) spSave('orc_h2',_hj1);
   if(_syncAtivo&&_syncDirHandle) syncExportar();
   _histPage = 0;
@@ -3143,6 +3154,7 @@ function editarOrc(idx) {
 
   // Marca que estamos editando (guarda o índice)
   window._editandoIdx = idx;
+  window._editandoNum = o.num; // guarda número para reencontrar após sync
 
   // Limpa e preenche o formulário com os dados do orçamento
   limpar(false);
