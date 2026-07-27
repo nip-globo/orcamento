@@ -59,7 +59,10 @@
       const meta = await r.json();
       _cacheSha  = meta.sha;
       const _b64b = meta.content.replace(/[\r\n]/g, '');
-      const _bytesb = Uint8Array.from(atob(_b64b), c => c.charCodeAt(0));
+      // Decodificar em chunks para evitar limite do call stack
+      const _rawStr = atob(_b64b);
+      const _bytesb = new Uint8Array(_rawStr.length);
+      for (let _bi = 0; _bi < _rawStr.length; _bi++) _bytesb[_bi] = _rawStr.charCodeAt(_bi);
       const data = JSON.parse(new TextDecoder('utf-8').decode(_bytesb));
       _cache = data; _cacheTs = Date.now();
       return data;
