@@ -3319,6 +3319,18 @@ function editarOrc(idx) {
 
   calc();
   setTimeout(calcMeta, 100);
+  // Reaplicar readonly nos campos do Solicitante após carregar o orçamento
+  if (window._USER && window._USER.perfil === 'criador') {
+    setTimeout(function() {
+      var _roFields = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin',
+        'f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla',
+        'f_cap','f_cena','f_prog'];
+      _roFields.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.setAttribute('readonly','');
+      });
+    }, 150);
+  }
   window.scrollTo({top:0, behavior:'smooth'});
 
   // Muda o botão de enviar — diferente para solicitado x edição normal
