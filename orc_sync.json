@@ -1,7 +1,7 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T14:31:08.814Z",
+  "_atualizadoEm": "2026-07-27T14:32:35.750Z",
   "_atualizadoPor": "",
   "_cacheBust": 1785133059341,
   "orc_h2": [
@@ -4444,6 +4444,17 @@
       "ccVinculado": "GL160602005 - Planejamento, Licenciamento e Narrativas",
       "criadoEm": "24/07/2026, 14:31:03",
       "importadoDaBase": true
+    },
+    {
+      "email": "nathalia.teste@g.globo",
+      "nome": "Nathalia Abreu",
+      "senha": "123456",
+      "perfil": "aprovador",
+      "ativo": true,
+      "pendente": false,
+      "criadoEm": "27/07/2026, 11:32:35",
+      "aprovadoPor": "admin",
+      "aprovadoEm": "27/07/2026, 11:32:35"
     }
   ],
   "orc_vinculos": {
@@ -4539,7 +4550,9 @@
       "gestor": "nathalia.abreu@g.globo",
       "justif": "",
       "solicitadoEm": "27/07/2026, 11:31:08",
-      "status": "pendente"
+      "status": "aprovado",
+      "aprovadoPor": "admin",
+      "aprovadoEm": "27/07/2026, 11:32:35"
     }
   ],
   "orc_c2": {}
