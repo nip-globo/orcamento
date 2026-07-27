@@ -478,13 +478,16 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
           <label>Escopo da Entrega Comercial <span style="font-weight:400;font-size:11px;color:#94A3B8">(Orientações)</span></label>
           <textarea id="f_obs" placeholder="Descreva o escopo da entrega, orientações e informações adicionais para o Criador do orçamento..."
             style="min-height:120px;resize:vertical;width:100%;box-sizing:border-box"></textarea>
-          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div id="div_anexo_upload" style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <label for="f_anexo" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#F1F5F9;border:1.5px dashed #94A3B8;border-radius:7px;padding:6px 14px;font-size:12px;color:#475569;font-weight:600;transition:background .2s" onmouseover="this.style.background='#E2E8F0'" onmouseout="this.style.background='#F1F5F9'">
               📎 Anexar documento de orientação
               <input type="file" id="f_anexo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.png,.jpg" style="display:none" onchange="handleAnexo(this)">
             </label>
             <span id="f_anexo_nome" style="font-size:12px;color:#059669;font-weight:600"></span>
             <button id="f_anexo_remover" onclick="removerAnexo()" style="display:none;background:none;border:none;color:#DC2626;cursor:pointer;font-size:12px">✕ Remover</button>
+          </div>
+          <div id="div_anexo_link" style="margin-top:8px;display:none">
+            <span id="f_anexo_link_texto" style="font-size:12px;color:#2563EB;font-weight:600"></span>
           </div>
           <div id="f_anexo_preview" style="margin-top:6px;font-size:11px;color:#64748B"></div>
         </div>
@@ -2272,18 +2275,35 @@ function removerAnexo() {
 
 function carregarAnexo(o) {
   // Restaura o anexo ao editar um orçamento
+  var _perfil = window._USER && window._USER.perfil;
   if (o.anexoBase64 && o.anexoNome) {
     _anexoBase64 = o.anexoBase64;
     _anexoNome   = o.anexoNome;
     _anexoTipo   = o.anexoTipo || '';
-    const nome = document.getElementById('f_anexo_nome');
-    const btn  = document.getElementById('f_anexo_remover');
-    const prev = document.getElementById('f_anexo_preview');
-    if (nome) nome.textContent = '📄 ' + _anexoNome;
-    if (btn)  btn.style.display = 'inline';
-    if (prev) prev.textContent  = 'Arquivo carregado do orçamento';
+    if (_perfil === 'criador' || _perfil === 'admin') {
+      // Criador vê o anexo como link para download — não pode alterar
+      var divLink = document.getElementById('div_anexo_link');
+      var divUpload = document.getElementById('div_anexo_upload');
+      var linkTexto = document.getElementById('f_anexo_link_texto');
+      if (divUpload) divUpload.style.display = 'none';
+      if (divLink) divLink.style.display = 'block';
+      if (linkTexto) linkTexto.innerHTML = '<a href="' + o.anexoBase64 + '" download="' + o.anexoNome + '" style="color:#2563EB;font-weight:700;font-size:13px">📎 ' + o.anexoNome + ' — clique para baixar</a>';
+    } else {
+      // Solicitante/Aprovador vê o upload normal
+      var nome = document.getElementById('f_anexo_nome');
+      var btn  = document.getElementById('f_anexo_remover');
+      var prev = document.getElementById('f_anexo_preview');
+      if (nome) nome.textContent = '📄 ' + _anexoNome;
+      if (btn)  btn.style.display = 'inline';
+      if (prev) prev.textContent  = 'Arquivo carregado do orçamento';
+    }
   } else {
     removerAnexo();
+    // Se Criador e sem anexo, ocultar área de link
+    if (_perfil === 'criador' || _perfil === 'admin') {
+      var divLink2 = document.getElementById('div_anexo_link');
+      if (divLink2) divLink2.style.display = 'none';
+    }
   }
 }
 
@@ -3408,6 +3428,11 @@ function initPerfil() {
   // O Criador recebe o orçamento e complementa com Dados da Gravação e Contas
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
+    // Ocultar botão de upload de anexo para o Criador
+    setTimeout(function() {
+      var _divUpload = document.getElementById('div_anexo_upload');
+      if (_divUpload) _divUpload.style.display = 'none';
+    }, 80);
     setTimeout(function() {
       var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla','f_cap','f_cena'];
       camposIdent.forEach(function(id) {
