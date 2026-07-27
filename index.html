@@ -3515,12 +3515,16 @@ function initPerfil() {
   if (perfil === 'solicitante_aprovador') {
     // Mostrar card Criador Designado e popular com criadores do sistema
     setTimeout(function() {
+      // Ler usuários do cookie/sync
+      var _todosUsers = [];
+      try { _todosUsers = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+
       // Card Criador Designado
       var cardCD = document.getElementById('card-criador-designado');
       if (cardCD) cardCD.style.display = 'block';
       var selCD = document.getElementById('f_criador_designado');
-      if (selCD && typeof usuariosSistema !== 'undefined') {
-        var criadores = usuariosSistema.filter(function(u){ return u.ativo !== false && u.perfil === 'criador'; });
+      if (selCD) {
+        var criadores = _todosUsers.filter(function(u){ return u.ativo !== false && u.perfil === 'criador'; });
         selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
           criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
         selCD.onchange = function() {
@@ -3534,24 +3538,23 @@ function initPerfil() {
       var cardOD = document.getElementById('card-obs-designado');
       if (cardOD) cardOD.style.display = 'block';
       var selOD = document.getElementById('f_obs_designado');
-      if (selOD && typeof usuariosSistema !== 'undefined') {
-        // Observadores: todos os perfis podem ser observadores exceto admin
-        var obsUsers = usuariosSistema.filter(function(u){
+      if (selOD) {
+        var obsUsers = _todosUsers.filter(function(u){
           return u.ativo !== false && u.perfil !== 'admin' && u.email !== (window._USER && window._USER.email);
         });
+        var perfilLabel = function(p){
+          return p === 'solicitante_aprovador' ? 'Sol./Aprov.' : p === 'criador' ? 'Criador' :
+                 p === 'observador' ? 'Observador' : p === 'gestor_cc' ? 'Gestor CC' :
+                 p === 'gestor_criador' ? 'Gestor Criadores' : p;
+        };
         selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
           obsUsers.map(function(u){
-            return '<option value="'+u.email+'">'+u.nome+' — '+u.perfil.replace('solicitante_aprovador','Sol./Aprov.').replace('criador','Criador').replace('observador','Observador').replace('gestor_cc','Gestor CC')+' ('+u.email+')</option>';
+            return '<option value="'+u.email+'">'+u.nome+' — '+perfilLabel(u.perfil)+' ('+u.email+')</option>';
           }).join('');
         selOD.onchange = function() {
           var email = this.value;
           if (!email) return;
-          // Adicionar aos observadores
-          if (!observadores.includes(email)) {
-            observadores.push(email);
-            renderObs();
-          }
-          // Reset select para permitir múltiplas seleções
+          if (!observadores.includes(email)) { observadores.push(email); renderObs(); }
           this.value = '';
         };
       }
