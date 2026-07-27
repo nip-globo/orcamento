@@ -2332,10 +2332,16 @@ async function salvarSolicitacaoGH(historicoJSON) {
     _sync.orc_h2 = JSON.parse(historicoJSON);
     _sync._atualizadoEm = new Date().toISOString();
     _sync._cacheBust = Date.now();
-    // Codificar de volta: string UTF-8 → bytes → base64
+    // Codificar de volta: string UTF-8 → bytes → base64 em chunks
     var _json = JSON.stringify(_sync, null, 2);
     var _encBytes = new TextEncoder().encode(_json);
-    var _b64 = btoa(String.fromCharCode.apply(null, _encBytes));
+    // String.fromCharCode.apply falha com arrays > 65536 — usar chunks
+    var _b64 = '';
+    var _chunkSize = 8192;
+    for (var _ci = 0; _ci < _encBytes.length; _ci += _chunkSize) {
+      _b64 += String.fromCharCode.apply(null, _encBytes.subarray(_ci, _ci + _chunkSize));
+    }
+    _b64 = btoa(_b64);
     var _rPut = await fetch(_api, {
       method:'PUT',
       headers:Object.assign({},_hdr,{'Content-Type':'application/json'}),
