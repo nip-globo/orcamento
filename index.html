@@ -3515,9 +3515,16 @@ function initPerfil() {
   if (perfil === 'solicitante_aprovador') {
     // Mostrar card Criador Designado e popular com criadores do sistema
     setTimeout(function() {
-      // Ler usuários do cookie/sync
+      // Ler usuários do cookie/sync — tentar até 5s
       var _todosUsers = [];
-      try { _todosUsers = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+      var _tentativasUsers = 0;
+      function _popularSelects() {
+        try { _todosUsers = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+        if (_todosUsers.length === 0 && _tentativasUsers < 10) {
+          _tentativasUsers++;
+          setTimeout(_popularSelects, 500);
+          return;
+        }
 
       // Card Criador Designado
       var cardCD = document.getElementById('card-criador-designado');
@@ -3558,6 +3565,7 @@ function initPerfil() {
           this.value = '';
         };
       }
+      _popularSelects();
     }, 300);
 
     // Garante que campos editáveis pelo Solicitante não fiquem readonly
