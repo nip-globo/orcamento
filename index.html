@@ -2718,6 +2718,7 @@ function renderHist(){
               </div>`).join('')}
           </div>
           ${o.obs?`<div style="margin-top:10px;font-size:11.5px;color:#475569;background:#fff;border-radius:6px;padding:8px 10px;border:1px solid #E2E8F0"><strong style="color:#1B2A4A">Obs.:</strong> ${o.obs}</div>`:''}
+          ${o.anexoNome?`<div style="margin-top:8px"><button onclick="abrirAnexoHist(${idxReal})" style="background:#EFF6FF;border:1.5px solid #2563EB;border-radius:6px;padding:6px 14px;color:#2563EB;font-weight:700;font-size:12px;cursor:pointer">📎 ${o.anexoNome} — clique para abrir</button></div>`:''}
         </div>
 
         <table style="width:100%;border-collapse:collapse;font-size:12px">
