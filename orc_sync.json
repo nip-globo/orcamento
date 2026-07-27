@@ -1,9 +1,9 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T06:06:11.859Z",
+  "_atualizadoEm": "2026-07-27T06:07:09.661Z",
   "_atualizadoPor": "sandro.aprovador@g.globo",
-  "_cacheBust": 1785132371859,
+  "_cacheBust": 1785132429661,
   "orc_h2": [
     {
       "num": "ORC-052",
@@ -69,12 +69,12 @@
       "emails": [
         "sandro.aprovador@g.globo"
       ],
-      "dataEnvio": "27/07/2026, 03:01:58",
+      "dataEnvio": "27/07/2026, 03:07:08",
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
-      "focal_email": "sandro.aprovador@g.globo",
-      "solicitante": "sandro.aprovador@g.globo",
-      "status": "devolvido",
+      "focal_email": "",
+      "solicitante": "",
+      "status": "aguardando",
       "historicoStatus": [
         {
           "status": "reenviado",
@@ -87,11 +87,14 @@
           "obs": "CORRIGIR O ENVIO POR E-MAIL.",
           "data": "27/07/2026, 03:06:10",
           "por": "Sandro Rosa"
+        },
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "27/07/2026, 03:07:08",
+          "por": "Sandro Silva"
         }
-      ],
-      "obsAprovacao": "CORRIGIR O ENVIO POR E-MAIL.",
-      "dataAcao": "27/07/2026, 03:06:10",
-      "aprovadorNome": "Sandro Rosa"
+      ]
     },
     {
       "num": "ORC-051",
