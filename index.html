@@ -5582,7 +5582,9 @@ if (window._USER) {
         if (_resp.ok) {
           var _meta = await _resp.json();
           var _b64  = _meta.content.replace(/[\r\n]/g,'');
-          var _bytes = Uint8Array.from(atob(_b64), function(c){ return c.charCodeAt(0); });
+          var _rawStr = atob(_b64);
+          var _bytes = new Uint8Array(_rawStr.length);
+          for (var _i=0; _i<_rawStr.length; _i++) _bytes[_i] = _rawStr.charCodeAt(_i);
           var _data = JSON.parse(new TextDecoder('utf-8').decode(_bytes));
           if (_data && Array.isArray(_data.orc_h2) && _data.orc_h2.length > 0) {
             // Sempre atualiza do GitHub — fonte da verdade
