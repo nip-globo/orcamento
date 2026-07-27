@@ -2407,6 +2407,14 @@ async function enviar(){
   btn.disabled=true;btn.textContent='⏳ Processando...';
   sbox.className='sbox info';sbox.style.display='block';
 
+  // Timeout de segurança: reseta o botão após 20s se algo travar
+  const _btnReset = setTimeout(function(){
+    if (btn.disabled) {
+      btn.disabled=false; btn.textContent='📤 Enviar Orçamento';
+      sbox.className='sbox err'; sbox.textContent='⚠️ Tempo esgotado. Verifique o histórico e tente novamente.';
+    }
+  }, 20000);
+
   // ── FLUXO SIMPLIFICADO: Solicitante/Aprovador só salva no GitHub, sem Excel/Outlook ──
   if (window._USER?.perfil === 'solicitante_aprovador') {
     o.status      = 'solicitado';
@@ -2430,6 +2438,7 @@ async function enviar(){
     sbox.className = 'sbox ok';
     sbox.innerHTML = `✅ <strong>${o.num}</strong> — Solicitação enviada ao Criador com sucesso!`;
     btn.disabled = false;
+    clearTimeout(_btnReset);
     btn.textContent = '📤 Enviar Solicitação ao Criador';
     setTimeout(() => { limpar(false); sbox.style.display='none'; }, 4000);
     return;
@@ -2528,6 +2537,7 @@ async function enviar(){
     `📎 <strong>Passo 3:</strong> Anexe o arquivo Excel baixado ao e-mail antes de enviar.`+
     (spMsg ? `<br>${spMsg}` : '');
 
+  clearTimeout(_btnReset);
   btn.disabled=false;btn.textContent='📤 Enviar Orçamento';
   setTimeout(()=>limpar(false),3500);
 }
