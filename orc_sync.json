@@ -1,9 +1,9 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T06:07:13.031Z",
+  "_atualizadoEm": "2026-07-27T06:10:04.157Z",
   "_atualizadoPor": "sandro.aprovador@g.globo",
-  "_cacheBust": 1785132433031,
+  "_cacheBust": 1785132604157,
   "orc_h2": [
     {
       "num": "ORC-052",
@@ -74,7 +74,18 @@
       "criador": "sandro.teste@g.globo",
       "focal_email": "",
       "solicitante": "",
-      "status": "aguardando"
+      "status": "devolvido",
+      "obsAprovacao": "AJUSTAR ENVIO.",
+      "dataAcao": "27/07/2026, 03:10:03",
+      "aprovadorNome": "Sandro Rosa",
+      "historicoStatus": [
+        {
+          "status": "devolvido",
+          "obs": "AJUSTAR ENVIO.",
+          "data": "27/07/2026, 03:10:03",
+          "por": "Sandro Rosa"
+        }
+      ]
     },
     {
       "num": "ORC-052",
