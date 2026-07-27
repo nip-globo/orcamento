@@ -657,7 +657,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
   <div class="card">
     <div class="card-header"><span>🚀</span><h2>Ações</h2></div>
     <div class="card-body">
-      <button class="btn-enviar" id="btnEnv" onclick="enviar()">📤 Enviar Orçamento</button>
+      <button class="btn-enviar" id="btnEnv" onclick="enviarClick()">📤 Enviar Orçamento</button>
       <button class="btn-limpar" onclick="salvarRascunho()" style="color:#64748B;margin-bottom:4px">📝 Salvar Rascunho</button>
       <button class="btn-limpar" onclick="limpar()">🗑 Limpar Formulário</button>
       <div class="sbox" id="sbox"></div>
@@ -2391,6 +2391,18 @@ async function salvarSolicitacaoGH(historicoJSON) {
   }
 }
 
+function enviarClick(){
+  // Abre a janela IMEDIATAMENTE no contexto do click (antes de qualquer async)
+  // para evitar bloqueio de popup pelo browser
+  if (window._USER?.perfil !== 'solicitante_aprovador') {
+    const _oPreview = montar();
+    if (!validar(_oPreview)) {
+      try { abrirJanelaEnvio(_oPreview); } catch(e){ console.warn('[JanelaClick]',e); }
+    }
+  }
+  enviar();
+}
+
 async function enviar(){
   if (estaBloqueado(window._USER?.email || '')) {
     const sbox=document.getElementById('sbox');
@@ -2447,9 +2459,7 @@ async function enviar(){
   sbox.textContent='Gerando Excel e abrindo Outlook...';
   let spMsg='';
   try {
-    // 1. Abre janela PRIMEIRO (antes de qualquer await para não ser bloqueada)
-    try { abrirJanelaEnvio(o); } catch(eJan){ console.warn('[Janela]',eJan); }
-    // 2. Baixa Excel
+    // 1. Janela já aberta pelo enviarClick() — apenas baixa o Excel
     const blob=gerarExcel(o);
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
