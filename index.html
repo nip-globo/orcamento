@@ -819,6 +819,7 @@ function calc(){
   document.getElementById('v_ci').textContent=fBRL(ci);
   document.getElementById('v_ct').textContent=fBRL(ct);
   document.getElementById('v_ta').textContent=fBRL(ta);
+  if(typeof calcMeta==='function') calcMeta();
   return{tp,ci,ct,ta};
 }
 
