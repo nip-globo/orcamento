@@ -412,7 +412,11 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
         </div>
         <div class="field"><label>Data Gravação <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="date" id="f_dataG" onchange="validarDatas()"></div>
         <div class="field"><label>Data Exibição <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="date" id="f_dataE" onchange="validarDatas()"></div>
-        <div class="field"><label>Meta Orçamentária (R$) <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="number" id="f_meta" min="0" step="0.01" placeholder="0,00" style="width:100%;border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:Nunito,inherit"></div>
+        <div class="field"><label>Meta Orçamentária (R$) <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="number" id="f_meta" min="0" step="0.01" placeholder="0,00" style="width:100%;border:1.5px solid #CBD5E1;border-radius:7px;padding:8px 11px;font-size:13px;font-family:Nunito,inherit" oninput="calcMeta()"></div>
+        <div class="field" id="div_meta_status" style="display:none">
+          <label id="lbl_meta_status" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px"></label>
+          <div id="val_meta_status" style="font-size:16px;font-weight:800;padding:6px 0"></div>
+        </div>
         <div class="field"><label>Capítulo <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="text" id="f_cap" placeholder="Ex: 67"></div>
         <div class="field"><label>Cena <span style="font-weight:400;font-size:11px;color:#94A3B8">(opcional)</span></label><input type="text" id="f_cena" placeholder="Ex: 38"></div>
       </div>
@@ -3279,6 +3283,7 @@ function editarOrc(idx) {
   }
 
   calc();
+  setTimeout(calcMeta, 100);
   window.scrollTo({top:0, behavior:'smooth'});
 
   // Muda o botão de enviar — diferente para solicitado x edição normal
@@ -3893,6 +3898,45 @@ function podeDuplicar(o) {
   // Solicitante/Aprovador pode duplicar seus próprios orçamentos
   // Criador NÃO pode duplicar (cria a partir de solicitações)
   return ['admin','solicitante_aprovador'].includes(user?.perfil);
+}
+
+function calcMeta() {
+  var meta = parseFloat(document.getElementById('f_meta')?.value || 0) || 0;
+  if (meta <= 0) {
+    var div = document.getElementById('div_meta_status');
+    if (div) div.style.display = 'none';
+    return;
+  }
+  // Buscar total da ação do span v_ta
+  var taSpan = document.getElementById('v_ta');
+  var taStr  = taSpan ? taSpan.textContent.replace(/[R$ \s.]/g,'').replace(',','.') : '0';
+  var ta     = parseFloat(taStr) || 0;
+  var diff   = ta - meta;
+  var dentroMeta = (ta <= meta);
+  var div    = document.getElementById('div_meta_status');
+  var lbl    = document.getElementById('lbl_meta_status');
+  var val    = document.getElementById('val_meta_status');
+  if (!div) return;
+  div.style.display = 'block';
+  if (dentroMeta) {
+    lbl.textContent   = '✅ Dentro da Meta Orçamentária';
+    lbl.style.color   = '#15803D';
+    val.textContent   = (diff < 0 ? '+ ' : '') + fBRL(Math.abs(diff));
+    val.style.color   = '#15803D';
+    div.style.background = '#F0FDF4';
+    div.style.border  = '1.5px solid #86EFAC';
+    div.style.borderRadius = '7px';
+    div.style.padding = '6px 10px';
+  } else {
+    lbl.textContent   = '⚠️ Fora da Meta Orçamentária';
+    lbl.style.color   = '#DC2626';
+    val.textContent   = '+ ' + fBRL(diff);
+    val.style.color   = '#DC2626';
+    div.style.background = '#FEF2F2';
+    div.style.border  = '1.5px solid #FCA5A5';
+    div.style.borderRadius = '7px';
+    div.style.padding = '6px 10px';
+  }
 }
 
 function statusBadge(status, ciente) {
