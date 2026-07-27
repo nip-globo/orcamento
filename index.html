@@ -3545,11 +3545,13 @@ function initPerfil() {
           var obsU = _todos.filter(function(u){ return u.ativo!==false && u.perfil!=='admin' && u.email!==_meEmail; });
           selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
             obsU.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' — '+_pLabel(u.perfil)+' ('+u.email+')</option>'; }).join('');
-          selOD.onchange = function() {
-            var em = this.value; if (!em) return;
+          selOD.addEventListener('change', function() {
+            var em = this.options[this.selectedIndex].value;
+            if (!em) return;
             if (!observadores.includes(em)) { observadores.push(em); renderObs(); }
-            this.value = '';
-          };
+            var _sel = this;
+            setTimeout(function(){ _sel.value = ''; }, 10);
+          });
         }
       };
       // Mostrar cards imediatamente; dados chegam via sync
