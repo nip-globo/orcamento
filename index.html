@@ -2324,29 +2324,25 @@ function carregarAnexo(o) {
   }, 200);
 }
 
-async function abrirAnexoHist(idx) {
+function abrirAnexoHist(idx) {
   var o = hist[idx];
-  if (!o || !o.anexoNome) { alert('Nenhum anexo disponivel.'); return; }
+  if (!o || !o.anexoNome) { alert('Nenhum anexo disponivel para este orcamento.'); return; }
   var b64 = o.anexoBase64 || '';
-  if (!b64 || b64.length < 100) {
-    try {
-      var _p1=atob('Z2hwX1licE1CbVo5enox'), _p2=atob('dURnN3lybHA2end6NjJVWHJFcjNVb2JXeQ==');
-      var _tk=_p1+_p2;
-      var _api='https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json?ref=main&t='+Date.now();
-      var _resp=await fetch(_api,{headers:{'Authorization':'Bearer '+_tk,'Accept':'application/vnd.github.v3+json'}});
-      var _meta=await _resp.json();
-      var _rawStr=atob(_meta.content.split('\n').join(''));
-      var _bytes=new Uint8Array(_rawStr.length);
-      for(var _i=0;_i<_rawStr.length;_i++) _bytes[_i]=_rawStr.charCodeAt(_i);
-      var _sync=JSON.parse(new TextDecoder('utf-8').decode(_bytes));
-      var _orc=_sync.orc_h2.find(function(x){return x.num===o.num;});
-      if(_orc&&_orc.anexoBase64) b64=_orc.anexoBase64;
-    } catch(e){console.error('[abrirAnexo]',e);}
+  if (!b64 || b64.length < 100) { alert('Anexo nao carregado ainda. Aguarde a sincronizacao e tente novamente.'); return; }
+  // Abrir em nova aba (funciona sem restrição de popup pois é chamado no click)
+  var win = window.open();
+  if (win) {
+    win.document.write('<html><head><title>' + o.anexoNome + '</title></head><body style="margin:0">' +
+      '<iframe src="' + b64 + '" style="width:100%;height:100vh;border:none"></iframe>' +
+      '</body></html>');
+    win.document.close();
+  } else {
+    // Fallback: download direto
+    var a = document.createElement('a');
+    a.href = b64;
+    a.download = o.anexoNome;
+    a.click();
   }
-  if (!b64||b64.length<100) { alert('Nao foi possivel carregar o anexo.'); return; }
-  var a=document.createElement('a');
-  a.href=b64; a.download=o.anexoNome; a.style.display='none';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
 async function salvarSolicitacaoGH(historicoJSON) {
