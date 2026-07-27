@@ -3890,7 +3890,9 @@ function abrirPDFHist(idx){
 
 function podeDuplicar(o) {
   const user = window._USER;
-  return ['admin','criador'].includes(user?.perfil);
+  // Solicitante/Aprovador pode duplicar seus próprios orçamentos
+  // Criador NÃO pode duplicar (cria a partir de solicitações)
+  return ['admin','solicitante_aprovador'].includes(user?.perfil);
 }
 
 function statusBadge(status, ciente) {
