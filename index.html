@@ -584,6 +584,18 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     </div>
   </div>
 
+<!-- Observadores Designados (só para Solicitante/Aprovador) -->
+  <div class="card" id="card-obs-designado" style="display:none">
+    <div class="card-header"><span>👁️</span><h2>Adicionar Observadores</h2></div>
+    <div class="card-body">
+      <p style="font-size:11.5px;color:#64748B;margin:0 0 8px">Selecione um ou mais observadores do sistema:</p>
+      <select id="f_obs_designado" style="width:100%;padding:8px 10px;border:1.5px solid #CBD5E1;border-radius:7px;font-size:13px;font-family:Nunito,inherit;color:#1B2A4A">
+        <option value="">— Selecione um Observador —</option>
+      </select>
+      <div style="margin-top:6px;font-size:11px;color:#64748B">Os observadores selecionados são adicionados automaticamente ao campo Observadores abaixo.</div>
+    </div>
+  </div>
+
 <!-- Destinatários -->
   <div class="card">
     <div class="card-header"><span>📧</span><h2>Destinatários <span class="req">*</span></h2></div>
@@ -3503,6 +3515,7 @@ function initPerfil() {
   if (perfil === 'solicitante_aprovador') {
     // Mostrar card Criador Designado e popular com criadores do sistema
     setTimeout(function() {
+      // Card Criador Designado
       var cardCD = document.getElementById('card-criador-designado');
       if (cardCD) cardCD.style.display = 'block';
       var selCD = document.getElementById('f_criador_designado');
@@ -3510,14 +3523,36 @@ function initPerfil() {
         var criadores = usuariosSistema.filter(function(u){ return u.ativo !== false && u.perfil === 'criador'; });
         selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
           criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
-        // Ao selecionar, adicionar automaticamente aos destinatários
         selCD.onchange = function() {
           var email = this.value;
           if (!email) return;
-          if (!emails.includes(email)) {
-            emails.push(email);
-            renderEmails();
+          if (!emails.includes(email)) { emails.push(email); renderEmails(); }
+        };
+      }
+
+      // Card Observadores Designados
+      var cardOD = document.getElementById('card-obs-designado');
+      if (cardOD) cardOD.style.display = 'block';
+      var selOD = document.getElementById('f_obs_designado');
+      if (selOD && typeof usuariosSistema !== 'undefined') {
+        // Observadores: todos os perfis podem ser observadores exceto admin
+        var obsUsers = usuariosSistema.filter(function(u){
+          return u.ativo !== false && u.perfil !== 'admin' && u.email !== (window._USER && window._USER.email);
+        });
+        selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
+          obsUsers.map(function(u){
+            return '<option value="'+u.email+'">'+u.nome+' — '+u.perfil.replace('solicitante_aprovador','Sol./Aprov.').replace('criador','Criador').replace('observador','Observador').replace('gestor_cc','Gestor CC')+' ('+u.email+')</option>';
+          }).join('');
+        selOD.onchange = function() {
+          var email = this.value;
+          if (!email) return;
+          // Adicionar aos observadores
+          if (!observadores.includes(email)) {
+            observadores.push(email);
+            renderObs();
           }
+          // Reset select para permitir múltiplas seleções
+          this.value = '';
         };
       }
     }, 300);
