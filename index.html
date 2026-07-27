@@ -1497,11 +1497,21 @@ function montar(){
   const t=calc();
   const contas={};
   // Herdar campos do original se estiver complementando um 'solicitado'
-  const _orig = (window._editandoIdx!=null && hist[window._editandoIdx]?.status==='solicitado')
-    ? hist[window._editandoIdx] : null;
+  // Encontrar o orçamento original pelo número (resistente a recargas do hist)
+  var _origOrc = null;
+  if (window._editandoNum) {
+    _origOrc = hist.find(function(x){ return x.num === window._editandoNum; });
+  } else if (window._editandoIdx != null) {
+    _origOrc = hist[window._editandoIdx];
+  }
+  const _orig = (_origOrc && _origOrc.status === 'solicitado') ? _origOrc : null;
   const _svx = (id, key) => sv(id) || (_orig && _orig[key||id.replace('f_','')]) || '';
   const extras = getExtras();
   extras.forEach((e,i)=>{ contas['extra_'+i]={nome:e.nome,tipo:e.tipo,valor:e.valor,desc:e.desc,extra:true}; });
+  // Log para diagnóstico
+  if (extras.length === 0 && window._editandoNum) {
+    console.warn('[montar] getExtras retornou vazio para', window._editandoNum, '— verifique se a seção Contas está visível');
+  }
   return{
     num:sv('f_num'),tipoAcao:_svx('f_tipoAcao','tipoAcao'),cc:_svx('f_cc','cc'),
     proj:_svx('f_proj','proj'),dataG:sv('f_dataG'),dataE:sv('f_dataE'),
@@ -3161,6 +3171,15 @@ function editarOrc(idx) {
   // Marca que estamos editando (guarda o índice)
   window._editandoIdx = idx;
   window._editandoNum = o.num; // guarda número para reencontrar após sync
+  // Para orçamentos solicitados, garantir que seção Contas está visível para o Criador
+  if (o.status === 'solicitado') {
+    document.querySelectorAll('.main > .card').forEach(function(card) {
+      var hdr = card.querySelector('.card-header h2');
+      if (hdr && hdr.textContent.trim().includes('Contas e Valores')) {
+        card.style.display = 'block';
+      }
+    });
+  }
 
   // Limpa e preenche o formulário com os dados do orçamento
   limpar(false);
