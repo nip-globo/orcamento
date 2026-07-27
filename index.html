@@ -3516,26 +3516,20 @@ function initPerfil() {
     // Mostrar card Criador Designado e popular com criadores do sistema
     setTimeout(function() {
       // Popular selects de Criador e Observadores — com retry até dados carregarem
-      (function _popularSelects(tentativa) {
+      // Registrar função global para popular selects (chamada pela sync também)
+      window._preencherSelectsUsuarios = function() {
         var _todos = window._todosUsuarios || [];
-        if (_todos.length === 0) {
-          try { _todos = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
-        }
-        if (_todos.length === 0 && tentativa < 15) {
-          setTimeout(function(){ _popularSelects(tentativa + 1); }, 500);
-          return;
-        }
+        if (!_todos.length) return;
         var _meEmail = window._USER && window._USER.email;
         var _pLabel = function(p){
           return p==='solicitante_aprovador'?'Sol./Aprov.':p==='criador'?'Criador':
                  p==='observador'?'Observador':p==='gestor_cc'?'Gestor CC':
                  p==='gestor_criador'?'Gestor Criadores':p;
         };
-        // Card Criador Designado
         var cardCD = document.getElementById('card-criador-designado');
         if (cardCD) cardCD.style.display = 'block';
         var selCD = document.getElementById('f_criador_designado');
-        if (selCD) {
+        if (selCD && selCD.options.length <= 1) {
           var criadores = _todos.filter(function(u){ return u.ativo!==false && u.perfil==='criador'; });
           selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
             criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
@@ -3544,11 +3538,10 @@ function initPerfil() {
             if (!emails.includes(em)) { emails.push(em); renderEmails(); }
           };
         }
-        // Card Observadores Designados
         var cardOD = document.getElementById('card-obs-designado');
         if (cardOD) cardOD.style.display = 'block';
         var selOD = document.getElementById('f_obs_designado');
-        if (selOD) {
+        if (selOD && selOD.options.length <= 1) {
           var obsU = _todos.filter(function(u){ return u.ativo!==false && u.perfil!=='admin' && u.email!==_meEmail; });
           selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
             obsU.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' — '+_pLabel(u.perfil)+' ('+u.email+')</option>'; }).join('');
@@ -3558,7 +3551,14 @@ function initPerfil() {
             this.value = '';
           };
         }
-      })(0);
+      };
+      // Mostrar cards imediatamente; dados chegam via sync
+      var cardCD0 = document.getElementById('card-criador-designado');
+      var cardOD0 = document.getElementById('card-obs-designado');
+      if (cardCD0) cardCD0.style.display = 'block';
+      if (cardOD0) cardOD0.style.display = 'block';
+      // Se dados já disponíveis, popular agora
+      if (window._todosUsuarios && window._todosUsuarios.length) window._preencherSelectsUsuarios();
     }, 300);
 
     // Garante que campos editáveis pelo Solicitante não fiquem readonly
@@ -5589,10 +5589,13 @@ if (window._USER) {
             hist = _data.orc_h2;
             var _histStr = JSON.stringify(hist);
             _ckSet('orc_h2', _histStr);
-            // Salvar usuários globalmente para uso nos selects
+            // Salvar usuários globalmente e popular selects imediatamente
             if (Array.isArray(_data.orc_usuarios) && _data.orc_usuarios.length > 0) {
               window._todosUsuarios = _data.orc_usuarios;
-              _ckSet('orc_usuarios', JSON.stringify(_data.orc_usuarios));
+              // Popular selects de Criador/Observador se estiverem visíveis
+              if (typeof window._preencherSelectsUsuarios === 'function') {
+                window._preencherSelectsUsuarios();
+              }
             }
             renderHist();
           }
