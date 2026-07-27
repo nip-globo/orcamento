@@ -2274,37 +2274,44 @@ function removerAnexo() {
 }
 
 function carregarAnexo(o) {
-  // Restaura o anexo ao editar um orçamento
-  var _perfil = window._USER && window._USER.perfil;
-  if (o.anexoBase64 && o.anexoNome) {
-    _anexoBase64 = o.anexoBase64;
-    _anexoNome   = o.anexoNome;
-    _anexoTipo   = o.anexoTipo || '';
-    if (_perfil === 'criador' || _perfil === 'admin') {
-      // Criador vê o anexo como link para download — não pode alterar
-      var divLink = document.getElementById('div_anexo_link');
-      var divUpload = document.getElementById('div_anexo_upload');
-      var linkTexto = document.getElementById('f_anexo_link_texto');
+  // Guardar dados do anexo em memória sempre
+  _anexoBase64 = (o.anexoBase64 || '');
+  _anexoNome   = (o.anexoNome   || '');
+  _anexoTipo   = (o.anexoTipo   || '');
+
+  // Aguardar o initPerfil definir o perfil antes de mostrar/ocultar
+  setTimeout(function() {
+    var _perfil = (window._USER && window._USER.perfil) || '';
+    var divUpload = document.getElementById('div_anexo_upload');
+    var divLink   = document.getElementById('div_anexo_link');
+    var linkTexto = document.getElementById('f_anexo_link_texto');
+    var nomeEl    = document.getElementById('f_anexo_nome');
+    var remBtn    = document.getElementById('f_anexo_remover');
+    var prevEl    = document.getElementById('f_anexo_preview');
+
+    if (_perfil === 'criador') {
+      // Criador: ocultar upload, mostrar link de download se houver anexo
       if (divUpload) divUpload.style.display = 'none';
-      if (divLink) divLink.style.display = 'block';
-      if (linkTexto) linkTexto.innerHTML = '<a href="' + o.anexoBase64 + '" download="' + o.anexoNome + '" style="color:#2563EB;font-weight:700;font-size:13px">📎 ' + o.anexoNome + ' — clique para baixar</a>';
+      if (_anexoBase64 && _anexoNome) {
+        if (divLink)   divLink.style.display = 'block';
+        if (linkTexto) linkTexto.innerHTML =
+          '<a href="' + _anexoBase64 + '" download="' + _anexoNome +
+          '" style="color:#2563EB;font-weight:700;font-size:13px">📎 ' +
+          _anexoNome + ' — clique para baixar</a>';
+      } else {
+        if (divLink) divLink.style.display = 'none';
+      }
     } else {
-      // Solicitante/Aprovador vê o upload normal
-      var nome = document.getElementById('f_anexo_nome');
-      var btn  = document.getElementById('f_anexo_remover');
-      var prev = document.getElementById('f_anexo_preview');
-      if (nome) nome.textContent = '📄 ' + _anexoNome;
-      if (btn)  btn.style.display = 'inline';
-      if (prev) prev.textContent  = 'Arquivo carregado do orçamento';
+      // Solicitante/Aprovador ou Admin: upload visível
+      if (divUpload) divUpload.style.display = 'flex';
+      if (divLink)   divLink.style.display   = 'none';
+      if (_anexoBase64 && _anexoNome) {
+        if (nomeEl) nomeEl.textContent = '📄 ' + _anexoNome;
+        if (remBtn) remBtn.style.display = 'inline';
+        if (prevEl) prevEl.textContent  = 'Arquivo carregado do orçamento';
+      }
     }
-  } else {
-    removerAnexo();
-    // Se Criador e sem anexo, ocultar área de link
-    if (_perfil === 'criador' || _perfil === 'admin') {
-      var divLink2 = document.getElementById('div_anexo_link');
-      if (divLink2) divLink2.style.display = 'none';
-    }
-  }
+  }, 200);
 }
 
 async function salvarSolicitacaoGH(historicoJSON) {
@@ -3428,11 +3435,7 @@ function initPerfil() {
   // O Criador recebe o orçamento e complementa com Dados da Gravação e Contas
   if (perfil === 'criador') {
     // Campos de Identificação e Chave Contábil são readonly para o Criador
-    // Ocultar botão de upload de anexo para o Criador
-    setTimeout(function() {
-      var _divUpload = document.getElementById('div_anexo_upload');
-      if (_divUpload) _divUpload.style.display = 'none';
-    }, 80);
+
     setTimeout(function() {
       var camposIdent = ['f_tipoAcao','f_proj','f_cc','f_contabil','f_cr','f_fin','f_obs','f_cliente','f_dataG','f_dataE','f_meta','f_focal','f_sla','f_cap','f_cena'];
       camposIdent.forEach(function(id) {
