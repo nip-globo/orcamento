@@ -2747,12 +2747,17 @@ function renderHist(){
               ['Tipo Ação Comercial', o.tac],
               ['Data da Solicitação', o.sla],
               ['Meta Orçamentária', o.meta ? 'R$ '+parseFloat(o.meta).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—'],
-              (()=>{ if (!o.meta || !o.ta) return null;
-                const _diff = o.ta - parseFloat(o.meta);
-                const _ok = o.ta <= parseFloat(o.meta);
+              (()=>{
+                const _meta = parseFloat(o.meta) || 0;
+                const _ta   = parseFloat(o.ta)   || 0;
+                if (!_meta) return null;
+                const _diff = _ta - _meta;
+                const _ok   = _ta <= _meta;
+                const _cor  = _ok ? '#15803D' : '#DC2626';
+                const _txt  = _ok ? '✅ Dentro da Meta' : '⚠️ Fora da Meta';
+                const _val  = 'R$ ' + Math.abs(_diff).toLocaleString('pt-BR',{minimumFractionDigits:2});
                 return ['Situação Meta',
-                  `<span style="color:${_ok?'#15803D':'#DC2626'};font-weight:700">${_ok?'✅ Dentro':'⚠️ Fora'} — ${_ok?'+ ':''}`+
-                  `R$ ${Math.abs(_diff).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span>`];
+                  '<span style="color:'+_cor+';font-weight:800">'+_txt+' — '+_val+'</span>'];
               })(),
             ].filter(Boolean).map(([lbl,val])=>`
               <div style="font-size:11.5px">
