@@ -1,9 +1,9 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T06:10:04.157Z",
+  "_atualizadoEm": "2026-07-27T06:10:47.864Z",
   "_atualizadoPor": "sandro.aprovador@g.globo",
-  "_cacheBust": 1785132604157,
+  "_cacheBust": 1785132647864,
   "orc_h2": [
     {
       "num": "ORC-052",
@@ -36,7 +36,7 @@
         "extra_0": {
           "nome": "Arte",
           "tipo": "producao",
-          "valor": 23444,
+          "valor": 23450,
           "desc": "",
           "extra": true
         },
@@ -63,27 +63,30 @@
         }
       },
       "ci": 0,
-      "tp": 454344,
+      "tp": 454350,
       "ct": 125000,
-      "ta": 579344,
+      "ta": 579350,
       "emails": [
         "sandro.aprovador@g.globo"
       ],
-      "dataEnvio": "27/07/2026, 03:07:12",
+      "dataEnvio": "27/07/2026, 03:10:46",
       "aprovador": "sandro.aprovador@g.globo",
       "criador": "sandro.teste@g.globo",
       "focal_email": "",
       "solicitante": "",
-      "status": "devolvido",
-      "obsAprovacao": "AJUSTAR ENVIO.",
-      "dataAcao": "27/07/2026, 03:10:03",
-      "aprovadorNome": "Sandro Rosa",
+      "status": "aguardando",
       "historicoStatus": [
         {
           "status": "devolvido",
           "obs": "AJUSTAR ENVIO.",
           "data": "27/07/2026, 03:10:03",
           "por": "Sandro Rosa"
+        },
+        {
+          "status": "reenviado",
+          "obs": "Corrigido e reenviado",
+          "data": "27/07/2026, 03:10:46",
+          "por": "Sandro Silva"
         }
       ]
     },
