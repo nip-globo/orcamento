@@ -2447,36 +2447,15 @@ async function enviar(){
   sbox.textContent='Gerando Excel e abrindo Outlook...';
   let spMsg='';
   try {
-    // 1. Baixa Excel
+    // 1. Abre janela PRIMEIRO (antes de qualquer await para não ser bloqueada)
+    try { abrirJanelaEnvio(o); } catch(eJan){ console.warn('[Janela]',eJan); }
+    // 2. Baixa Excel
     const blob=gerarExcel(o);
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;a.download=`${o.num}_${o.cliente.replace(/\s+/g,'_')}.xls`;
     a.click();URL.revokeObjectURL(url);
     await new Promise(r=>setTimeout(r,600));
-    // 2. Abre janela com PDF + botão para abrir Outlook
-    try {
-      // Tentar abrir janela de envio; se bloqueada pelo popup blocker,
-      // abre o Outlook diretamente e mostra mensagem de instrução
-      const _win = window.open('','_blank','width=900,height=940');
-      if (_win) {
-        window._emailCorpoAtual = gerarCorpoHTMLEmail(o);
-        const _htmlPDF = gerarHTMLOrcamento(o);
-        const _assunto = encodeURIComponent(`${o.num} - Orçamento Merchandising - ${o.cliente}`);
-        const _owaDest = encodeURIComponent(o.emails.join(';'));
-        _win.document.write(_htmlPDF);
-        _win.document.close();
-        setTimeout(function(){
-          const _owaUrl = `https://outlook.office.com/mail/deeplink/compose?to=${_owaDest}&subject=${_assunto}`;
-          window.open(_owaUrl, '_blank');
-        }, 1500);
-      } else {
-        // Popup bloqueado: abrir Outlook diretamente
-        const _assunto = encodeURIComponent(`${o.num} - Orçamento Merchandising - ${o.cliente}`);
-        const _owaDest = encodeURIComponent(o.emails.join(';'));
-        window.open(`https://outlook.office.com/mail/deeplink/compose?to=${_owaDest}&subject=${_assunto}`, '_blank');
-      }
-    } catch(eJan){ console.warn('[Janela]',eJan); }
     await new Promise(r=>setTimeout(r,1500));
     // 3. Registra no SharePoint via sessão
     if(spConectado){
