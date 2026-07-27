@@ -2455,7 +2455,28 @@ async function enviar(){
     a.click();URL.revokeObjectURL(url);
     await new Promise(r=>setTimeout(r,600));
     // 2. Abre janela com PDF + botão para abrir Outlook
-    try { abrirJanelaEnvio(o); } catch(eJan){ console.warn('[Janela]',eJan); }
+    try {
+      // Tentar abrir janela de envio; se bloqueada pelo popup blocker,
+      // abre o Outlook diretamente e mostra mensagem de instrução
+      const _win = window.open('','_blank','width=900,height=940');
+      if (_win) {
+        window._emailCorpoAtual = gerarCorpoHTMLEmail(o);
+        const _htmlPDF = gerarHTMLOrcamento(o);
+        const _assunto = encodeURIComponent(`${o.num} - Orçamento Merchandising - ${o.cliente}`);
+        const _owaDest = encodeURIComponent(o.emails.join(';'));
+        _win.document.write(_htmlPDF);
+        _win.document.close();
+        setTimeout(function(){
+          const _owaUrl = `https://outlook.office.com/mail/deeplink/compose?to=${_owaDest}&subject=${_assunto}`;
+          window.open(_owaUrl, '_blank');
+        }, 1500);
+      } else {
+        // Popup bloqueado: abrir Outlook diretamente
+        const _assunto = encodeURIComponent(`${o.num} - Orçamento Merchandising - ${o.cliente}`);
+        const _owaDest = encodeURIComponent(o.emails.join(';'));
+        window.open(`https://outlook.office.com/mail/deeplink/compose?to=${_owaDest}&subject=${_assunto}`, '_blank');
+      }
+    } catch(eJan){ console.warn('[Janela]',eJan); }
     await new Promise(r=>setTimeout(r,1500));
     // 3. Registra no SharePoint via sessão
     if(spConectado){
@@ -2726,7 +2747,14 @@ function renderHist(){
               ['Tipo Ação Comercial', o.tac],
               ['Data da Solicitação', o.sla],
               ['Meta Orçamentária', o.meta ? 'R$ '+parseFloat(o.meta).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—'],
-            ].map(([lbl,val])=>`
+              (()=>{ if (!o.meta || !o.ta) return null;
+                const _diff = o.ta - parseFloat(o.meta);
+                const _ok = o.ta <= parseFloat(o.meta);
+                return ['Situação Meta',
+                  `<span style="color:${_ok?'#15803D':'#DC2626'};font-weight:700">${_ok?'✅ Dentro':'⚠️ Fora'} — ${_ok?'+ ':''}`+
+                  `R$ ${Math.abs(_diff).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span>`];
+              })(),
+            ].filter(Boolean).map(([lbl,val])=>`
               <div style="font-size:11.5px">
                 <span style="font-size:9.5px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:2px">${lbl}</span>
                 <span style="color:#1e293b">${val||'—'}</span>
