@@ -3515,58 +3515,48 @@ function initPerfil() {
   if (perfil === 'solicitante_aprovador') {
     // Mostrar card Criador Designado e popular com criadores do sistema
     setTimeout(function() {
-      // Ler usuários do cookie/sync — tentar até 5s
-      var _todosUsers = [];
-      var _tentativasUsers = 0;
-      function _popularSelects() {
-        try { _todosUsers = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
-        if (_todosUsers.length === 0 && _tentativasUsers < 10) {
-          _tentativasUsers++;
-          setTimeout(_popularSelects, 500);
+      // Popular selects de Criador e Observadores — com retry até dados carregarem
+      (function _popularSelects(tentativa) {
+        var _todos = [];
+        try { _todos = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+        if (_todos.length === 0 && tentativa < 15) {
+          setTimeout(function(){ _popularSelects(tentativa + 1); }, 500);
           return;
         }
-
-      // Card Criador Designado
-      var cardCD = document.getElementById('card-criador-designado');
-      if (cardCD) cardCD.style.display = 'block';
-      var selCD = document.getElementById('f_criador_designado');
-      if (selCD) {
-        var criadores = _todosUsers.filter(function(u){ return u.ativo !== false && u.perfil === 'criador'; });
-        selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
-          criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
-        selCD.onchange = function() {
-          var email = this.value;
-          if (!email) return;
-          if (!emails.includes(email)) { emails.push(email); renderEmails(); }
+        var _meEmail = window._USER && window._USER.email;
+        var _pLabel = function(p){
+          return p==='solicitante_aprovador'?'Sol./Aprov.':p==='criador'?'Criador':
+                 p==='observador'?'Observador':p==='gestor_cc'?'Gestor CC':
+                 p==='gestor_criador'?'Gestor Criadores':p;
         };
-      }
-
-      // Card Observadores Designados
-      var cardOD = document.getElementById('card-obs-designado');
-      if (cardOD) cardOD.style.display = 'block';
-      var selOD = document.getElementById('f_obs_designado');
-      if (selOD) {
-        var obsUsers = _todosUsers.filter(function(u){
-          return u.ativo !== false && u.perfil !== 'admin' && u.email !== (window._USER && window._USER.email);
-        });
-        var perfilLabel = function(p){
-          return p === 'solicitante_aprovador' ? 'Sol./Aprov.' : p === 'criador' ? 'Criador' :
-                 p === 'observador' ? 'Observador' : p === 'gestor_cc' ? 'Gestor CC' :
-                 p === 'gestor_criador' ? 'Gestor Criadores' : p;
-        };
-        selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
-          obsUsers.map(function(u){
-            return '<option value="'+u.email+'">'+u.nome+' — '+perfilLabel(u.perfil)+' ('+u.email+')</option>';
-          }).join('');
-        selOD.onchange = function() {
-          var email = this.value;
-          if (!email) return;
-          if (!observadores.includes(email)) { observadores.push(email); renderObs(); }
-          this.value = '';
-        };
-      }
-      _popularSelects();
-    }, 300);
+        // Card Criador Designado
+        var cardCD = document.getElementById('card-criador-designado');
+        if (cardCD) cardCD.style.display = 'block';
+        var selCD = document.getElementById('f_criador_designado');
+        if (selCD) {
+          var criadores = _todos.filter(function(u){ return u.ativo!==false && u.perfil==='criador'; });
+          selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
+            criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
+          selCD.onchange = function() {
+            var em = this.value; if (!em) return;
+            if (!emails.includes(em)) { emails.push(em); renderEmails(); }
+          };
+        }
+        // Card Observadores Designados
+        var cardOD = document.getElementById('card-obs-designado');
+        if (cardOD) cardOD.style.display = 'block';
+        var selOD = document.getElementById('f_obs_designado');
+        if (selOD) {
+          var obsU = _todos.filter(function(u){ return u.ativo!==false && u.perfil!=='admin' && u.email!==_meEmail; });
+          selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
+            obsU.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' — '+_pLabel(u.perfil)+' ('+u.email+')</option>'; }).join('');
+          selOD.onchange = function() {
+            var em = this.value; if (!em) return;
+            if (!observadores.includes(em)) { observadores.push(em); renderObs(); }
+            this.value = '';
+          };
+        }
+      })(0);
 
     // Garante que campos editáveis pelo Solicitante não fiquem readonly
     setTimeout(function() {
