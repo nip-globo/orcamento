@@ -2436,28 +2436,28 @@ async function enviar(){
   }
 
   sbox.textContent='Gerando Excel e abrindo Outlook...';
-
-  // 1. Baixa Excel
-  const blob=gerarExcel(o);
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`${o.num}_${o.cliente.replace(/\s+/g,'_')}.xls`;
-  a.click();URL.revokeObjectURL(url);
-
-  await new Promise(r=>setTimeout(r,600));
-
-  // 2. Abre janela com PDF + botão para abrir Outlook com HTML no corpo
-  abrirJanelaEnvio(o);
-
-  await new Promise(r=>setTimeout(r,1500));
-
-  // 3. Registra no SharePoint via sessão
   let spMsg='';
-  if(spConectado){
-    const sp=await registrarSP(o);
-    spMsg=sp.ok?'\n🔗 Registrado no SharePoint.':`\n⚠️ SharePoint: ${sp.msg}`;
-  } else {
-    spMsg='\n📋 SharePoint não conectado — apenas e-mail e Excel.';
+  try {
+    // 1. Baixa Excel
+    const blob=gerarExcel(o);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=`${o.num}_${o.cliente.replace(/\s+/g,'_')}.xls`;
+    a.click();URL.revokeObjectURL(url);
+    await new Promise(r=>setTimeout(r,600));
+    // 2. Abre janela com PDF + botão para abrir Outlook
+    try { abrirJanelaEnvio(o); } catch(eJan){ console.warn('[Janela]',eJan); }
+    await new Promise(r=>setTimeout(r,1500));
+    // 3. Registra no SharePoint via sessão
+    if(spConectado){
+      const sp=await registrarSP(o);
+      spMsg=sp.ok?'\n🔗 Registrado no SharePoint.':`\n⚠️ SharePoint: ${sp.msg}`;
+    } else {
+      spMsg='\n📋 SharePoint não conectado — apenas e-mail e Excel.';
+    }
+  } catch(eEnv){
+    console.error('[Enviar]',eEnv);
+    spMsg='\n⚠️ Erro ao gerar Excel/PDF: '+eEnv.message;
   }
 
   // 4. Salva histórico (edição substitui; novo orçamento adiciona)
