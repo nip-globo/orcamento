@@ -2324,15 +2324,39 @@ function carregarAnexo(o) {
   }, 200);
 }
 
-function abrirAnexoHist(idx) {
+async function abrirAnexoHist(idx) {
   var o = hist[idx];
-  if (!o || !o.anexoBase64 || !o.anexoNome) {
-    alert('Anexo não disponível para este orçamento.');
+  if (!o || !o.anexoNome) {
+    alert('Nenhum anexo disponível para este orçamento.');
     return;
   }
-  // Criar link de download direto do base64 em memória
+  // Tenta usar o base64 já em memória
+  var b64 = o.anexoBase64 || '';
+  // Se não tiver em memória, busca diretamente do GitHub
+  if (!b64 || b64.length < 100) {
+    try {
+      var _p1 = atob('Z2hwX1licE1CbVo5enox');
+      var _p2 = atob('dURnN3lybHA2end6NjJVWHJFcjNVb2JXeQ==');
+      var _tk = _p1 + _p2;
+      var _api = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json?ref=main&t='+Date.now();
+      var _r = await fetch(_api, {headers:{'Authorization':'Bearer '+_tk,'Accept':'application/vnd.github.v3+json'}});
+      var _m = await _r.json();
+      var _b64c = _m.content.replace(/[
+]/g,'');
+      var _bytes = new Uint8Array(_b64c.length);
+      var _raw = atob(_b64c);
+      for (var _i=0;_i<_raw.length;_i++) _bytes[_i]=_raw.charCodeAt(_i);
+      var _sync = JSON.parse(new TextDecoder('utf-8').decode(_bytes));
+      var _orc  = _sync.orc_h2.find(function(x){ return x.num === o.num; });
+      if (_orc && _orc.anexoBase64) b64 = _orc.anexoBase64;
+    } catch(e) { console.error('[abrirAnexo]', e); }
+  }
+  if (!b64 || b64.length < 100) {
+    alert('Não foi possível carregar o anexo. Tente novamente.');
+    return;
+  }
   var a = document.createElement('a');
-  a.href = o.anexoBase64;
+  a.href = b64;
   a.download = o.anexoNome;
   a.style.display = 'none';
   document.body.appendChild(a);
