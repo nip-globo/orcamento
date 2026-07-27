@@ -3517,8 +3517,10 @@ function initPerfil() {
     setTimeout(function() {
       // Popular selects de Criador e Observadores — com retry até dados carregarem
       (function _popularSelects(tentativa) {
-        var _todos = [];
-        try { _todos = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+        var _todos = window._todosUsuarios || [];
+        if (_todos.length === 0) {
+          try { _todos = JSON.parse(_ck('orc_usuarios') || '[]'); } catch(e){}
+        }
         if (_todos.length === 0 && tentativa < 15) {
           setTimeout(function(){ _popularSelects(tentativa + 1); }, 500);
           return;
@@ -5587,6 +5589,11 @@ if (window._USER) {
             hist = _data.orc_h2;
             var _histStr = JSON.stringify(hist);
             _ckSet('orc_h2', _histStr);
+            // Salvar usuários globalmente para uso nos selects
+            if (Array.isArray(_data.orc_usuarios) && _data.orc_usuarios.length > 0) {
+              window._todosUsuarios = _data.orc_usuarios;
+              _ckSet('orc_usuarios', JSON.stringify(_data.orc_usuarios));
+            }
             renderHist();
           }
         }
