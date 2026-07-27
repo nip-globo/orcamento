@@ -1723,7 +1723,7 @@ function gerarExcel(o){
   ${row(o.cc, o.contabil, o.fin)}
   ${hdr('Projeto PPM (Estúdios)','Tipo de Ação Comercial','Data da Solicitação')}
   ${row(o.ppm, o.tac, o.sla, C_CINZC)}
-  ${o.obs ? hdr('Escopo da Entrega Comercial','','') + row(o.obs,'','') : ''}${o.anexoNome ? hdr('Escopo — Anexo','','') + `<tr><td colspan='4' style='padding:6px 8px'><button onclick="abrirAnexoHist(${idxReal})" style="background:none;border:1.5px solid #2563EB;border-radius:6px;padding:5px 12px;color:#2563EB;font-weight:700;font-size:12px;cursor:pointer">📎 ${o.anexoNome} — clique para abrir/baixar</button></td></tr>` : ''}
+  ${o.obs ? hdr('Escopo da Entrega Comercial','','') + row(o.obs,'','') : ''}${o.anexoNome ? hdr('Escopo — Anexo','','') + `<tr><td colspan='4' style='padding:6px 8px'><button onclick="(function(){var _i=hist.findIndex(function(x){return x.num==='${o.num}'});if(_i>=0)abrirAnexoHist(_i);})()" style="background:none;border:1.5px solid #2563EB;border-radius:6px;padding:5px 12px;color:#2563EB;font-weight:700;font-size:12px;cursor:pointer">📎 ${o.anexoNome} — clique para abrir/baixar</button></td></tr>` : ''}
   ${blank()}
 
   <!-- CONTAS -->
@@ -2392,13 +2392,15 @@ async function salvarSolicitacaoGH(historicoJSON) {
 }
 
 function enviarClick(){
-  // Abre a janela IMEDIATAMENTE no contexto do click (antes de qualquer async)
-  // para evitar bloqueio de popup pelo browser
+  // Para o Criador: abrir janela PDF/e-mail imediatamente no contexto do click
+  // (window.open bloqueado se chamado após await)
   if (window._USER?.perfil !== 'solicitante_aprovador') {
-    const _oPreview = montar();
-    if (!validar(_oPreview)) {
-      try { abrirJanelaEnvio(_oPreview); } catch(e){ console.warn('[JanelaClick]',e); }
-    }
+    try {
+      const _oPreview = montar();
+      // Só abre se não houver erro de validação
+      const _err = validar(_oPreview);
+      if (!_err) abrirJanelaEnvio(_oPreview);
+    } catch(e){ console.warn('[JanelaClick]',e); }
   }
   enviar();
 }
