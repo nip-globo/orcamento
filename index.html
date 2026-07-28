@@ -578,7 +578,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     <div class="card-header"><span>🎨</span><h2>Criador Designado <span class="req">*</span></h2></div>
     <div class="card-body">
       <p style="font-size:11.5px;color:#64748B;margin:0 0 8px">Selecione o Criador responsável por montar o orçamento:</p>
-      <select id="f_criador_designado" style="width:100%;padding:8px 10px;border:1.5px solid #CBD5E1;border-radius:7px;font-size:13px;font-family:Nunito,inherit;color:#1B2A4A">
+      <select id="f_criador_designado" onchange="selecionarCriadorDesignado(this)" style="width:100%;padding:8px 10px;border:1.5px solid #CBD5E1;border-radius:7px;font-size:13px;font-family:Nunito,inherit;color:#1B2A4A">
         <option value="">— Selecione um Criador —</option>
       </select>
     </div>
@@ -589,7 +589,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:var(--cinza-bg);color:va
     <div class="card-header"><span>👁️</span><h2>Adicionar Observadores</h2></div>
     <div class="card-body">
       <p style="font-size:11.5px;color:#64748B;margin:0 0 8px">Selecione um ou mais observadores do sistema:</p>
-      <select id="f_obs_designado" style="width:100%;padding:8px 10px;border:1.5px solid #CBD5E1;border-radius:7px;font-size:13px;font-family:Nunito,inherit;color:#1B2A4A">
+      <select id="f_obs_designado" onchange="selecionarObs(this)" style="width:100%;padding:8px 10px;border:1.5px solid #CBD5E1;border-radius:7px;font-size:13px;font-family:Nunito,inherit;color:#1B2A4A">
         <option value="">— Selecione um Observador —</option>
       </select>
       <div style="margin-top:6px;font-size:11px;color:#64748B">Os observadores selecionados são adicionados automaticamente ao campo Observadores abaixo.</div>
@@ -2374,6 +2374,19 @@ function abrirAnexoHist(idx) {
   }
 }
 
+function selecionarObs(sel) {
+  var em = sel.options[sel.selectedIndex].value;
+  if (!em) return;
+  if (!observadores.includes(em)) { observadores.push(em); renderObs(); }
+  setTimeout(function(){ sel.value = ''; }, 10);
+}
+
+function selecionarCriadorDesignado(sel) {
+  var em = sel.options[sel.selectedIndex].value;
+  if (!em) return;
+  if (!emails.includes(em)) { emails.push(em); renderEmails(); }
+}
+
 async function salvarSolicitacaoGH(historicoJSON) {
   try {
     var _p1 = atob('Z2hwX1licE1CbVo5enox');
@@ -3533,10 +3546,7 @@ function initPerfil() {
           var criadores = _todos.filter(function(u){ return u.ativo!==false && u.perfil==='criador'; });
           selCD.innerHTML = '<option value="">— Selecione um Criador —</option>' +
             criadores.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' ('+u.email+')</option>'; }).join('');
-          selCD.onchange = function() {
-            var em = this.value; if (!em) return;
-            if (!emails.includes(em)) { emails.push(em); renderEmails(); }
-          };
+          // onchange tratado por selecionarCriadorDesignado() inline
         }
         var cardOD = document.getElementById('card-obs-designado');
         if (cardOD) cardOD.style.display = 'block';
@@ -3545,13 +3555,7 @@ function initPerfil() {
           var obsU = _todos.filter(function(u){ return u.ativo!==false && u.perfil!=='admin' && u.email!==_meEmail; });
           selOD.innerHTML = '<option value="">— Selecione um Observador —</option>' +
             obsU.map(function(u){ return '<option value="'+u.email+'">'+u.nome+' — '+_pLabel(u.perfil)+' ('+u.email+')</option>'; }).join('');
-          selOD.addEventListener('change', function() {
-            var em = this.options[this.selectedIndex].value;
-            if (!em) return;
-            if (!observadores.includes(em)) { observadores.push(em); renderObs(); }
-            var _sel = this;
-            setTimeout(function(){ _sel.value = ''; }, 10);
-          });
+          // onchange tratado por selecionarObs() inline
         }
       };
       // Mostrar cards imediatamente; dados chegam via sync
