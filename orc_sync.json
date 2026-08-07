@@ -1,10 +1,56 @@
 {
   "_exportadoEm": "2026-07-26T04:28:38.060601",
   "_exportadoPor": "sistema/restauracao",
-  "_atualizadoEm": "2026-07-27T20:59:39.441Z",
+  "_atualizadoEm": "2026-08-06T23:40:00",
   "_atualizadoPor": "",
   "_cacheBust": 1785185979441,
   "orc_h2": [
+    {
+      "num": "ORC-056",
+      "status": "aguardando",
+      "tipoAcao": "AÇÃO BÁSICA",
+      "cc": "GL160603004 - Produção Integrada - Dramaturgia",
+      "proj": "NOVELA III - QUEM AMA CUIDA",
+      "prog": "NOVELA III - QUEM AMA CUIDA",
+      "cliente": "VIVO",
+      "contabil": "P.NOV.000109-001-003 - 21H - QUEM AMA CUIDA/1ª/AÇÕES MERCHANDISING",
+      "cr": "0000000 - INDIRETO",
+      "fin": "FG000023 - PRODUÇÃO TERCEIRIZADA / COPRODUÇÃO",
+      "focal": "Sandro Rosa",
+      "focal_email": "sandro.aprovador@g.globo",
+      "solicitante": "sandro.aprovador@g.globo",
+      "aprovador": "sandro.aprovador@g.globo",
+      "criador": "sandro.teste@g.globo",
+      "dataSolicitacao": "06/08/2026",
+      "sla": "06/08/2026",
+      "dataEnvio": "06/08/2026, 23:36:54",
+      "emails": [
+        "sandro.aprovador@g.globo",
+        "sandro.teste@g.globo"
+      ],
+      "observadores": [],
+      "contas": {},
+      "ta": 70023,
+      "tp": 70023,
+      "ct": 0,
+      "ci": 0,
+      "obs": "",
+      "meta": "",
+      "cap": "N/A",
+      "cena": "N/A",
+      "ppm": "",
+      "tac": "",
+      "dataG": "",
+      "dataE": "",
+      "historicoStatus": [
+        {
+          "status": "reenviado",
+          "data": "06/08/2026, 23:36:54",
+          "por": "Sandro Silva",
+          "obs": "Corrigido e reenviado"
+        }
+      ]
+    },
     {
       "num": "ORC-055",
       "tipoAcao": "AÇÃO BÁSICA",
