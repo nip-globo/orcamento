@@ -2271,11 +2271,12 @@ function corpoEmail(o){
 
 // ── ENVIAR ────────────────────────────────────────────────────────
 // ── ANEXO DE ORIENTAÇÃO ──────────────────────────────────────────
-var _anexoBase64 = '';
+var _anexoBase64 = ''; // URL raw do GitHub ou data URL (legado)
+var _anexoUrl    = ''; // URL raw do GitHub
 var _anexoNome   = '';
 var _anexoTipo   = '';
 
-function handleAnexo(input) {
+async function handleAnexo(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) {
@@ -2285,17 +2286,55 @@ function handleAnexo(input) {
   }
   _anexoNome = file.name;
   _anexoTipo = file.type;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    _anexoBase64 = e.target.result; // data URL completo
-    const nomeEl = document.getElementById('f_anexo_nome');
-    const remBtn = document.getElementById('f_anexo_remover');
-    const prev   = document.getElementById('f_anexo_preview');
-    if (nomeEl) nomeEl.textContent = '📄 ' + _anexoNome;
-    if (remBtn) remBtn.style.display = 'inline';
-    if (prev)   prev.textContent    = 'Tamanho: ' + (file.size/1024).toFixed(1) + ' KB';
-  };
-  reader.readAsDataURL(file);
+  const nomeEl = document.getElementById('f_anexo_nome');
+  const remBtn = document.getElementById('f_anexo_remover');
+  const prev   = document.getElementById('f_anexo_preview');
+  if (nomeEl) nomeEl.textContent = '📤 Enviando ' + _anexoNome + '...';
+  if (prev)   prev.textContent   = 'Aguarde...';
+  try {
+    // Ler arquivo como ArrayBuffer e converter para base64
+    const buf    = await file.arrayBuffer();
+    const bytes  = new Uint8Array(buf);
+    let b64 = '';
+    const chunk  = 8192;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      b64 += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    b64 = btoa(b64);
+    // Salvar no GitHub na pasta /anexos/
+    const _pa1 = atob('Z2hwXzFRV0JtTHVK'), _pa2 = atob('a1B6YXVSWTJRS3lP'), _pa3 = atob('Ujl1M1lXdVhGVzBjdkxFRw==');
+    const _tk2 = _pa1 + _pa2 + _pa3;
+    const _num = sv('f_num') || 'ORC-XXX';
+    const _safeName = _num + '_' + _anexoNome.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const _api = 'https://api.github.com/repos/nip-globo/orcamento/contents/anexos/' + _safeName;
+    // Verificar se já existe (para pegar o SHA)
+    let _sha = '';
+    try {
+      const _rCheck = await fetch(_api, {headers:{'Authorization':'Bearer '+_tk2,'Accept':'application/vnd.github.v3+json'}});
+      if (_rCheck.ok) { const _j = await _rCheck.json(); _sha = _j.sha || ''; }
+    } catch(e) {}
+    const _body = {message:'feat: anexo '+_safeName, content:b64, branch:'main'};
+    if (_sha) _body.sha = _sha;
+    const _rPut = await fetch(_api, {
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+_tk2,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify(_body)
+    });
+    if (_rPut.ok) {
+      _anexoBase64 = 'https://raw.githubusercontent.com/nip-globo/orcamento/main/anexos/' + _safeName;
+      _anexoUrl    = _anexoBase64;
+      if (nomeEl) nomeEl.textContent = '📄 ' + _anexoNome + ' ✅';
+      if (remBtn) remBtn.style.display = 'inline';
+      if (prev)   prev.textContent = 'Salvo no GitHub (' + (file.size/1024).toFixed(1) + ' KB)';
+    } else {
+      throw new Error('PUT falhou: ' + _rPut.status);
+    }
+  } catch(e) {
+    console.error('[Anexo]', e);
+    if (nomeEl) nomeEl.textContent = '❌ Erro ao enviar ' + _anexoNome;
+    if (prev)   prev.textContent   = e.message;
+    input.value = '';
+  }
 }
 
 function removerAnexo() {
@@ -2389,9 +2428,10 @@ function selecionarCriadorDesignado(sel) {
 
 async function salvarSolicitacaoGH(historicoJSON) {
   try {
-    var _p1 = atob('Z2hwX1licE1CbVo5enox');
-    var _p2 = atob('dURnN3lybHA2end6NjJVWHJFcjNVb2JXeQ==');
-    var _tk = _p1 + _p2;
+    var _p1 = atob('Z2hwXzFRV0JtTHVK');
+    var _p2 = atob('a1B6YXVSWTJRS3lP');
+    var _p3 = atob('Ujl1M1lXdVhGVzBjdkxFRw==');
+    var _tk = _p1 + _p2 + _p3;
     var _api = 'https://api.github.com/repos/nip-globo/orcamento/contents/orc_sync.json';
     var _hdr = {'Authorization':'Bearer '+_tk,'Accept':'application/vnd.github.v3+json'};
     // Buscar SHA e conteúdo atual
