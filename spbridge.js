@@ -42,7 +42,7 @@
     }
   };
 
-  function getToken() { var _t=atob('Z2hwX1licE1CbVo5enox')+atob('dURnN3lybHA2end6NjJVWHJFcjNVb2JXeQ=='); return COOKIE.get('gh_token') || _t; }
+  function getToken() { return COOKIE.get('gh_token') || (atob('Z2hwXzFRV0JtTHVK')+atob('a1B6YXVSWTJRS3lP')+atob('Ujl1M1lXdVhGVzBjdkxFRw==')); }
 
   // ── Lê orc_sync.json ──────────────────────────────────────────
   async function ghRead() {
